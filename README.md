@@ -1,4 +1,4 @@
-# Express input validator
+# Express input validator [![Travis](https://img.shields.io/travis/KorbinianKuhn/express-input-validator.svg)](https://travis-ci.org/KorbinianKuhn/express-input-validator/builds)  [![standard](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](http://standardjs.com/)
 
 This package validates variable input parameters for express REST APIs. The validation parameters are described by objects as schemas. The goal of this package is easy readability and flexible customization. The validator provides detailed information about invalid input values that can be automatically sent as an error response to the user.
 
@@ -21,8 +21,8 @@ $ git clone https://github.com/KorbinianKuhn/express-input-validator
 Initialize a new Validator:
 
 ``` javascript
-const eov = require('@korbiniankuhn/express-input-validator');
-const Validator = new eov.Validator();
+const eiv = require('@korbiniankuhn/express-input-validator');
+const Validator = new eiv.Validator();
 ```
 
 Create a new Schema:
@@ -93,7 +93,7 @@ If a schema gets checked by a validator it will get the validators options.
 Every schema and type can get own options which will override the ones of its parent.
 
 ``` javascript
-const Validator = eov.Validator({noEmptyStrings: true});
+const Validator = eiv.Validator({noEmptyStrings: true});
 const schema = Validator.Object({
   empty: Validator.String({noEmptyStrings: false}),
   notEmpty: Validator.String()
@@ -201,12 +201,12 @@ By default the Validator throws an error if the validation fails. It's recommend
 The error middleware responds with a status code 400 and a json if the nexted error is an ValidationError object. Otherwise it will next the error.
 
 ``` javascript
-const eov = require('express-object-validator');
+const eiv = require('@korbiniankuhn/express-input-validator');
 
-app.use(eov.middleware());
+app.use(eiv.middleware());
 
 // Do not send detailed information about the validation errors.
-app.use(eov.middleware({
+app.use(eiv.middleware({
   sendDetails: false
 }));
 ```
@@ -233,7 +233,7 @@ $ npm run coverage
 
 ## Contribution
 
-Fork this repository and push in your ideas.
+Get involved and push in your ideas.
 
 Do not forget to add corresponding tests to keep up 100% test coverage.
 
