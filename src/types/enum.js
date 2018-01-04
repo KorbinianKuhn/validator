@@ -2,10 +2,11 @@ const _ = require('lodash');
 const BASE = require('./base');
 
 var _values = Symbol();
+var _options = Symbol();
 
 class ENUM extends BASE {
   constructor(values, options) {
-    super(options);
+    super();
 
     if (!values) {
       throw new Error('Missing values for enum.')
@@ -16,22 +17,21 @@ class ENUM extends BASE {
     }
 
     this[_values] = values;
+    this[_options] = options || {};
   }
 
-  async isValid(value, options = {}) {
-    options = this.getOptions(options);
+  async validate(value, options = {}) {
+    options = _.defaults(this[_options], options);
 
     if (this.isRequired(options) && _.isNil(value)) {
-      this.errorMessage = `Required but is ${value}.`;
-      return false;
+      throw `Required but is ${value}.`;
     }
 
     if (this[_values].indexOf(value) === -1) {
-      this.errorMessage = `'${value}' is not one of [${this[_values].toString()}].`;
-      return false;
+      throw `'${value}' is not one of [${this[_values].toString()}].`;
     }
 
-    return true;
+    return value;
   }
 }
 

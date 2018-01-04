@@ -1,16 +1,7 @@
 const _ = require('lodash');
 const TYPES = require('./types');
 const ValidationError = require('./error');
-
-const DEFAULT_OPTIONS = {
-  requiredAsDefault: true,
-  throwValidationErrors: true,
-  noEmptyStrings: true,
-  noEmptyArrays: true,
-  noEmptyObjects: true
-}
-
-const ALLOWED_TYPES = ['ARRAY', 'BOOLEAN', 'ENUM', 'FUNCTION', 'NUMBER', 'OBJECT', 'REGEX', 'SCHEMA', 'STRING'];
+const defaults = require('./defaults');
 
 var _options = Symbol();
 var _customs = Symbol();
@@ -18,20 +9,7 @@ var _customs = Symbol();
 class Validator {
   constructor(options) {
     this[_customs] = {};
-    this[_options] = {}
-
-    if (options) {
-      for (const key in options) {
-        this[_options][key] = options[key];
-      }
-      for (const key in DEFAULT_OPTIONS) {
-        if (!_.has(this[_options], key)) this[_options][key] = DEFAULT_OPTIONS[key];
-      }
-    } else {
-      for (const key in DEFAULT_OPTIONS) {
-        this[_options][key] = DEFAULT_OPTIONS[key];
-      }
-    }
+    this[_options] = _.defaults(options, defaults.VALIDATOR_OPTIONS);
   }
 
   getOptions() {
@@ -43,7 +21,7 @@ class Validator {
       throw new Error(`Identifier ${name} already set.`);
     }
 
-    if (ALLOWED_TYPES.indexOf(type.constructor.name) === -1) {
+    if (defaults.TYPE_NAMES.indexOf(type.constructor.name) === -1) {
       throw new Error('Unknown type.');
     }
 
@@ -94,23 +72,26 @@ class Validator {
     return TYPES.String(options);
   }
 
-  async isValid(schema, data, options = {}) {
-    try {
-      options = this.getOptions(options);
+  async validate(schema, data, options = {}) {
+    options = _.defaults(options, this[_options]);
 
-      const valid = await schema.isValid(data, options);
-      if (!valid) {
-        this.errorMessage = schema.errorMessage;
-        if (options.throwValidationErrors) {
-          throw new ValidationError('Bad Request. Input parameters and/or values are wrong.', this.errorMessage);
-        }
-        return false;
-      } else {
-        delete this.errorMessage;
-        return true;
-      }
+    if (!_.hasIn(schema, 'constructor.name')) {
+      throw new Error('Invalid schema.');
+    }
+
+    if (defaults.TYPE_NAMES.indexOf(schema.constructor.name) === -1) {
+      throw new Error('Unknown schema.');
+    }
+
+    try {
+      return await schema.validate(data, options);
     } catch (err) {
-      throw err;
+      const error = new ValidationError('Bad Request. Input parameters and/or values are wrong.', err);
+      if (options.throwValidationErrors) {
+        throw error;
+      } else {
+        return error;
+      }
     }
   }
 }

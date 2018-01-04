@@ -2,6 +2,8 @@
 
 This package validates variable input parameters for express REST APIs. The validation parameters are described by objects as schemas. The goal of this package is easy readability and flexible customization. The validator provides detailed information about invalid input values that can be automatically sent as an error response to the user.
 
+It can also parse input value to target types (e.g. strings to boolean, integer or number).
+
 ## Installation
 
 For installation use the [Node Package Manager](https://github.com/npm/npm):
@@ -32,8 +34,8 @@ const schema = Validator.Object({
   name: Validator.String()
 });
 
-Validator.isValid(schema, {name: 'Jane Doe'});
-// true
+Validator.validate(schema, {name: 'Jane Doe'});
+// returns the given object
 ```
 
 The different Schema types:
@@ -86,6 +88,7 @@ If a schema gets checked by a validator it will get the validators options.
 
 - `requiredAsDefault (boolean)`: Sets all parameters of a schema as required if not specified otherwise. Default true.
 - `throwValidationError (boolean)`: Throw an error if validation fails. Default true.
+- `parseToType (boolean)`: Parses input data to type (e.g. 'true' -> true, '1.2' -> 1.2). Default false.
 - `noEmptyStrings (boolean)`: Disallow empty strings. Default true.
 - `noEmptyArrays (boolean)`: Disallow empty arrays. Default true.
 - `noEmptyObjects (boolean)`: Disallow empty objects. Default true.
@@ -104,8 +107,8 @@ const data = {
   notEmpty: 'hi'
 }
 
-Validator.isValid(schema, data);
-// true
+Validator.validate(schema, data);
+// returns data
 ```
 
 ## Types

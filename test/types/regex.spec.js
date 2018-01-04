@@ -11,61 +11,71 @@ describe('REGEX()', function () {
   });
 
   it('required but null should fail', helper.mochaAsync(async() => {
-    const regex = REGEX(/[A-Z]/);
-    const result = await regex.isValid(null, helper.DEFAULT_OPTIONS);
-    result.should.be.false();
-    regex.errorMessage.should.equal('Required but is null.', 'Wrong error message');
+    try {
+      await REGEX(/[A-Z]/).validate(null, helper.DEFAULT_OPTIONS);
+      should.equal(true, false, 'Should throw');
+    } catch (err) {
+      err.should.equal(`Required but is null.`);
+    }
   }));
 
   it('invalid type should fail', helper.mochaAsync(async() => {
-    const regex = REGEX(/[A-Z]/);
-    for (const value of [null, 1234, true]) {
-      const result = await regex.isValid(value);
-      result.should.be.false();
-      regex.errorMessage.should.equal(`Must be string but is ${typeof value}.`, 'Wrong error message')
+    for (const value of [null, 1, 0]) {
+      try {
+        await REGEX(/[A-Z]/).validate(value);
+        should.equal(true, false, 'Should throw');
+      } catch (err) {
+        err.should.equal(`Must be string but is ${typeof value}.`);
+      }
     }
   }));
 
   it('valid value should verify', helper.mochaAsync(async() => {
-    const result = await REGEX(/[A-Z]/).isValid('ABC');
-    result.should.be.ok();
+    const value = await REGEX(/[A-Z]/).validate('ABC');
+    value.should.equal('ABC');
   }));
 
   it('invalid value should fail', helper.mochaAsync(async() => {
-    const regex = REGEX(/[A-Z]/)
-    const result = await regex.isValid('abc');
-    result.should.be.false();
-    regex.errorMessage.should.equal('Value does not match regular expression.', 'Wrong error message');
+    try {
+      await REGEX(/[A-Z]/).validate('abc');
+      should.equal(true, false, 'Should throw');
+    } catch (err) {
+      err.should.equal('Value does not match regular expression.');
+    }
   }));
 
   it('invalid length should fail', helper.mochaAsync(async() => {
-    let regex = REGEX(/[A-Z]/).minLength(5);
-    let result = await regex.isValid('ABC');
-    result.should.be.false();
-    regex.errorMessage.should.equal('Must have at least 5 characters.', 'Wrong error message');
+    try {
+      await REGEX(/[A-Z]/).minLength(5).validate('ABC', helper.DEFAULT_OPTIONS);
+      should.equal(true, false, 'Should throw');
+    } catch (err) {
+      err.should.equal(`Must have at least 5 characters.`);
+    }
 
-    regex = REGEX(/[A-Z]/).maxLength(3);
-    result = await regex.isValid('ABCD');
-    result.should.be.false();
-    regex.errorMessage.should.equal('Must have at most 3 characters.', 'Wrong error message');
+    try {
+      await REGEX(/[A-Z]/).maxLength(3).validate('ABCD', helper.DEFAULT_OPTIONS);
+      should.equal(true, false, 'Should throw');
+    } catch (err) {
+      err.should.equal('Must have at most 3 characters.');
+    }
 
-    regex = REGEX(/[A-Z]/).exactLength(4);
-    result = await regex.isValid('ABC');
-    result.should.be.false();
-    regex.errorMessage.should.equal('Must have exactly 4 characters.', 'Wrong error message');
+    try {
+      await REGEX(/[A-Z]/).exactLength(3).validate('ABCD', helper.DEFAULT_OPTIONS);
+      should.equal(true, false, 'Should throw');
+    } catch (err) {
+      err.should.equal('Must have exactly 3 characters.');
+    }
   }));
 
   it('valid length should verify', helper.mochaAsync(async() => {
-    let regex = REGEX(/[A-Z]/).minLength(3);
-    let result = await regex.isValid('ABC');
-    result.should.be.ok();
+    let value = await REGEX(/[A-Z]/).minLength(3).validate('ABC', helper.DEFAULT_OPTIONS);
+    value.should.equal('ABC');
 
-    regex = REGEX(/[A-Z]/).maxLength(3);
-    result = await regex.isValid('ABC');
-    result.should.be.ok();
+    value = await REGEX(/[A-Z]/).maxLength(3).validate('ABC', helper.DEFAULT_OPTIONS);
+    value.should.equal('ABC');
 
-    regex = REGEX(/[A-Z]/).exactLength(4);
-    result = await regex.isValid('ABCD');
-    result.should.be.ok();
+    value = await REGEX(/[A-Z]/).exactLength(3).validate('ABC', helper.DEFAULT_OPTIONS);
+    value.should.equal('ABC');
   }));
+
 });

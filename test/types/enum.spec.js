@@ -17,22 +17,29 @@ describe('ENUM()', function () {
   });
 
   it('required but null should fail', helper.mochaAsync(async() => {
-    const e = ENUM(['a', 'b', 'c'])
-    const result = await e.isValid(null, helper.DEFAULT_OPTIONS);
-    result.should.be.false();
-    e.errorMessage.should.equal(`Required but is null.`, 'Wrong error message');
+    try {
+      await ENUM(['a', 'b', 'c']).validate(null, helper.DEFAULT_OPTIONS);
+      should.equal(true, false, 'Should throw');
+    } catch (err) {
+      err.should.equal(`Required but is null.`);
+    }
   }));
 
   it('invalid type should fail', helper.mochaAsync(async() => {
-    const e = ENUM(['a', 'b', 'c']);
-    const result = await e.isValid('d');
-    result.should.be.false();
-    e.errorMessage.should.equal(`'d' is not one of [a,b,c].`);
+    for (const value of ['d', null, 1, 0]) {
+      try {
+        await ENUM(['a', 'b', 'c']).validate(value);
+        should.equal(true, false, 'Should throw');
+      } catch (err) {
+        err.should.equal(`'${value}' is not one of [a,b,c].`);
+      }
+    }
   }));
 
   it('valid type should verify', helper.mochaAsync(async() => {
-    const e = ENUM(['a', 'b', 'c']);
-    const result = await e.isValid('b');
-    result.should.be.ok();
+    for (const value of ['a', 'b']) {
+      const result = await ENUM(['a', 'b', 'c']).validate(value);
+      result.should.equal(value);
+    }
   }));
 });

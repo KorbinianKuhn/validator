@@ -6,83 +6,92 @@ const INTEGER = require('../../src/types/integer');
 
 describe('ARRAY()', function () {
   it('required but null should fail', helper.mochaAsync(async() => {
-    const array = ARRAY();
-    const result = await array.isValid(null, helper.DEFAULT_OPTIONS);
-    result.should.be.false();
-    array.errorMessage.should.equal(`Required but is null.`, 'Wrong error message');
+    try {
+      await ARRAY().validate(null, helper.DEFAULT_OPTIONS);
+      should.equal(true, false, 'Should throw');
+    } catch (err) {
+      err.should.equal(`Required but is null.`);
+    }
   }));
 
   it('invalid type should fail', helper.mochaAsync(async() => {
-    const array = ARRAY();
-    const result = await array.isValid(1234, helper.DEFAULT_OPTIONS);
-    result.should.be.false();
-    array.errorMessage.should.equal('Must be array but is number.', 'Wrong error message');
+    try {
+      await ARRAY().validate(1234, helper.DEFAULT_OPTIONS);
+      should.equal(true, false, 'Should throw');
+    } catch (err) {
+      err.should.equal(`Must be array but is number.`);
+    }
   }));
 
   it('valid type should verify', helper.mochaAsync(async() => {
-    const array = ARRAY();
-    let result = array.isValid([], helper.DEFAULT_OPTIONS);
-    result.should.be.ok();
+    let value = await ARRAY().validate([]);
+    should.deepEqual(value, []);
 
-    result = array.isValid(['test'], helper.DEFAULT_OPTIONS).should.be.ok();
-    result.should.be.ok();
+    value = await ARRAY().validate(['test'], helper.DEFAULT_OPTIONS);
+    should.deepEqual(value, ['test']);
   }));
 
   it('invalid length should fail', helper.mochaAsync(async() => {
-    let array = ARRAY().minLength(5);
-    let result = await array.isValid(['test'], helper.DEFAULT_OPTIONS);
-    result.should.be.false();
-    array.errorMessage.should.equal('Must have at least 5 items.', 'Wrong error message');
+    try {
+      await ARRAY().minLength(5).validate(['test'], helper.DEFAULT_OPTIONS);
+      should.equal(true, false, 'Should throw');
+    } catch (err) {
+      err.should.equal(`Must have at least 5 items.`);
+    }
 
-    array = ARRAY().maxLength(5);
-    result = await array.isValid([1, 2, 3, 4, 5, 6], helper.DEFAULT_OPTIONS);
-    result.should.be.false();
-    array.errorMessage.should.equal('Must have at most 5 items.', 'Wrong error message');
+    try {
+      await ARRAY().maxLength(5).validate([1, 2, 3, 4, 5, 6], helper.DEFAULT_OPTIONS);
+      should.equal(true, false, 'Should throw');
+    } catch (err) {
+      err.should.equal('Must have at most 5 items.');
+    }
 
-    array = ARRAY().exactLength(3);
-    result = await array.isValid(['test'], helper.DEFAULT_OPTIONS);
-    result.should.be.false();
-    array.errorMessage.should.equal('Must have exactly 3 items.', 'Wrong error message');
+    try {
+      await ARRAY().exactLength(3).validate(['test'], helper.DEFAULT_OPTIONS);
+      should.equal(true, false, 'Should throw');
+    } catch (err) {
+      err.should.equal('Must have exactly 3 items.');
+    }
   }));
 
   it('valid length should verify', helper.mochaAsync(async() => {
-    let array = ARRAY().minLength(1);
-    let result = await array.isValid(['test'], helper.DEFAULT_OPTIONS);
-    result.should.be.ok();
+    let value = await ARRAY().minLength(1).validate(['test'], helper.DEFAULT_OPTIONS);
+    value.should.deepEqual(['test']);
 
-    array = ARRAY().maxLength(1);
-    result = await array.isValid(['test'], helper.DEFAULT_OPTIONS);
-    result.should.be.ok();
+    value = await ARRAY().maxLength(1).validate(['test'], helper.DEFAULT_OPTIONS);
+    value.should.deepEqual(['test']);
 
-    array = ARRAY().exactLength(1);
-    result = await array.isValid(['test'], helper.DEFAULT_OPTIONS);
-    result.should.be.ok();
+    value = await ARRAY().exactLength(1).validate(['test'], helper.DEFAULT_OPTIONS);
+    value.should.deepEqual(['test']);
   }));
 
   it('array with invalid types should fail', helper.mochaAsync(async() => {
-    const array = ARRAY(INTEGER());
-    const result = await array.isValid(['test', '123'], helper.DEFAULT_OPTIONS);
-    result.should.be.false();
+    try {
+      await ARRAY(INTEGER()).validate(['test'], helper.DEFAULT_OPTIONS);
+      should.equal(true, false, 'Should throw');
+    } catch (err) {
+      err.should.have.property(0, 'Must be integer but is string.');
+    }
   }));
 
   it('array with valid types should verify', helper.mochaAsync(async() => {
-    const array = ARRAY(INTEGER());
-    const result = await array.isValid([1, 2, 3, 4, 5], helper.DEFAULT_OPTIONS);
-    result.should.be.ok();
+    const value = await ARRAY(INTEGER()).validate([1, 2, 3], helper.DEFAULT_OPTIONS);
+    value.should.deepEqual([1, 2, 3]);
   }));
 
   it('empty array should fail', helper.mochaAsync(async() => {
-    const array = ARRAY();
-    const result = await array.isValid([], helper.DEFAULT_OPTIONS);
-    result.should.be.false();
-    array.errorMessage.should.equal('Array is empty.', 'Wrong error message');
+    try {
+      await ARRAY().validate([], helper.DEFAULT_OPTIONS);
+      should.equal(true, false, 'Should throw');
+    } catch (err) {
+      err.should.equal('Array is empty.');
+    }
   }));
 
   it('empty array allowed should verify', helper.mochaAsync(async() => {
-    const array = ARRAY();
-    const result = await array.isValid([], {
+    const value = await ARRAY().validate([], {
       noEmptyArrays: false
     });
-    result.should.be.ok();
+    value.should.deepEqual([]);
   }));
 });

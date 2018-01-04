@@ -1,38 +1,40 @@
 const _ = require('lodash');
 const BASE = require('./base');
 
+var _options = Symbol();
 var _min = Symbol();
 var _max = Symbol();
 
 class INTEGER extends BASE {
   constructor(options) {
-    super(options);
+    super();
+    this[_options] = options || {};
   }
 
-  async isValid(value, options = {}) {
-    options = this.getOptions(options);
+  async validate(value, options = {}) {
+    options = _.defaults(this[_options], options);
 
     if (this.isRequired(options) && _.isNil(value)) {
-      this.errorMessage = `Required but is ${value}.`;
-      return false;
+      throw `Required but is ${value}.`;
+    }
+
+    if (options.parseToType && _.isString(value)) {
+      if (value.match(/^[+\-]?\d+$/)) value = parseInt(value);
     }
 
     if (!_.isInteger(value)) {
-      this.errorMessage = `Must be integer but is ${typeof value}.`;
-      return false;
+      throw `Must be integer but is ${typeof value}.`;
     }
 
     if (this[_min] && value < this[_min]) {
-      this.errorMessage = `Must be at minimum ${this[_min]}.`;
-      return false;
+      throw `Must be at minimum ${this[_min]}.`;
     }
 
     if (this[_max] && value > this[_max]) {
-      this.errorMessage = `Must be at maximum ${this[_max]}.`;
-      return false;
+      throw `Must be at maximum ${this[_max]}.`;
     }
 
-    return true;
+    return value;
   }
 
   min(value) {

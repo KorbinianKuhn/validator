@@ -2,10 +2,11 @@ const _ = require('lodash');
 const BASE = require('./base');
 
 var _func = Symbol();
+var _options = Symbol();
 
 class FUNCTION extends BASE {
   constructor(func, options) {
-    super(options);
+    super();
     if (func === undefined) {
       throw new Error('Missing function.');
     }
@@ -15,22 +16,20 @@ class FUNCTION extends BASE {
     }
 
     this[_func] = func;
+    this[_options] = options || {};
   }
 
-  async isValid(value, options = {}) {
-    options = this.getOptions(options);
+  async validate(value, options = {}) {
+    options = _.defaults(this[_options], options);
 
     if (this.isRequired(options) && _.isNil(value)) {
-      this.errorMessage = `Required but is ${value}.`;
-      return false;
+      throw `Required but is ${value}.`;
     }
 
     try {
-      await this[_func](value, options);
-      return true;
+      return await this[_func](value, options);
     } catch (err) {
-      this.errorMessage = err.message;
-      return false;
+      throw err.message;
     }
   }
 }

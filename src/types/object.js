@@ -6,7 +6,7 @@ var _options = Symbol();
 
 class OBJECT extends BASE {
   constructor(object, options) {
-    super(options);
+    super();
 
     if (object === undefined) {
       throw new Error('Missing object.');
@@ -17,40 +17,37 @@ class OBJECT extends BASE {
     }
 
     this[_object] = object;
+    this[_options] = options || {};
   }
 
-  async isValid(value, options = {}) {
-    options = this.getOptions(options);
+  async validate(value, options = {}) {
+    options = _.defaults(this[_options], options);
 
     if (this.isRequired(options) && _.isNil(value)) {
-      this.errorMessage = `Required but is ${value}.`;
-      return false;
+      throw `Required but is ${value}.`;
     }
 
     if (!_.isPlainObject(value)) {
-      this.errorMessage = `Must be object.`;
-      return false;
+      throw `Must be object.`;
     }
 
     if (options.noEmptyObjects && _.keys(value).length === 0) {
-      this.errorMessage = `Object is empty.`;
-      return false;
+      throw `Object is empty.`;
     }
 
     const errors = {}
     for (const key in this[_object]) {
-      const valid = await this[_object][key].isValid(value[key], options);
-      if (!valid) {
-        errors[key] = this[_object][key].errorMessage;
+      try {
+        value[key] = await this[_object][key].validate(value[key], options);
+      } catch (err) {
+        errors[key] = err;
       }
     }
 
     if (_.keys(errors).length > 0) {
-      this.errorMessage = errors;
-      return false;
+      throw errors;
     } else {
-      delete this.errorMessage;
-      return true;
+      return value;
     }
   }
 }

@@ -5,45 +5,81 @@ const INTEGER = require('../../src/types/integer');
 
 describe('INTEGER()', function () {
   it('required but null should fail', helper.mochaAsync(async() => {
-    const integer = INTEGER()
-    const result = await integer.isValid(null, helper.DEFAULT_OPTIONS);
-    result.should.be.false();
-    integer.errorMessage.should.equal(`Required but is null.`, 'Wrong error message');
+    try {
+      await INTEGER().validate(null, helper.DEFAULT_OPTIONS);
+      should.equal(true, false, 'Should throw');
+    } catch (err) {
+      err.should.equal(`Required but is null.`);
+    }
   }));
 
   it('invalid type should fail', helper.mochaAsync(async() => {
     for (const value of ['10', null, 10.5]) {
-      const integer = INTEGER()
-      const result = await integer.isValid(value);
-      result.should.be.false();
-      integer.errorMessage.should.equal(`Must be integer but is ${typeof value}.`, 'Wrong error message');
+      try {
+        await INTEGER().validate(value);
+        should.equal(true, false, 'Should throw');
+      } catch (err) {
+        err.should.equal(`Must be integer but is ${typeof value}.`);
+      }
     }
   }));
 
   it('valid type should verify', helper.mochaAsync(async() => {
     for (const value of [10, -20, 0, 1238412]) {
-      const result = await INTEGER().isValid(value);
-      result.should.be.ok();
+      const result = await INTEGER().validate(value);
+      result.should.equal(value);
     }
   }));
 
-  it('invalid length should fail', helper.mochaAsync(async() => {
-    let integer = INTEGER().min(10);
-    result = await integer.isValid(5);
-    result.should.be.false();
-    integer.errorMessage.should.equal('Must be at minimum 10.', 'Wrong error message')
+  it('invalid value should fail', helper.mochaAsync(async() => {
+    try {
+      await INTEGER().min(10).validate(5);
+      should.equal(true, false, 'Should throw');
+    } catch (err) {
+      err.should.equal('Must be at minimum 10.');
+    }
 
-    integer = INTEGER().max(20);
-    result = await integer.isValid(25);
-    result.should.be.false();
-    integer.errorMessage.should.equal('Must be at maximum 20.', 'Wrong error message')
+    try {
+      await INTEGER().max(10).validate(15);
+      should.equal(true, false, 'Should throw');
+    } catch (err) {
+      err.should.equal('Must be at maximum 10.');
+    }
   }));
 
-  it('valid length should verify', helper.mochaAsync(async() => {
-    let result = await INTEGER().min(10).isValid(15);
-    result.should.be.ok();
+  it('valid value should verify', helper.mochaAsync(async() => {
+    let value = await INTEGER().min(10).validate(15);
+    value.should.equal(15);
 
-    result = await INTEGER().max(20).isValid(15);
-    result.should.be.ok();
+    value = await INTEGER().max(20).validate(15);
+    value.should.equal(15);
   }));
+
+  it('parsed values should fail', helper.mochaAsync(async() => {
+    const integer = INTEGER({
+      parseToType: true
+    });
+    for (const value of ['10.0', true, '-0.9']) {
+      try {
+        await integer.validate(value);
+      } catch (err) {
+        err.should.equal(`Must be integer but is ${typeof value}.`);
+      }
+    }
+  }));
+
+  it('parsed values should verify', helper.mochaAsync(async() => {
+    const integer = INTEGER({
+      parseToType: true
+    });
+
+    const values = ['10', '-10', '0', '+20'];
+    const parsed = [10, -10, 0, 20];
+
+    for (const index in values) {
+      let value = await integer.validate(values[index]);
+      value.should.equal(parsed[index]);
+    }
+  }));
+
 });
