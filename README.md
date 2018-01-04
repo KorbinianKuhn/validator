@@ -2,6 +2,20 @@
 
 This package validates variable input parameters for express REST APIs. The validation parameters are described by objects as schemas. The goal of this package is easy readability and flexible customization. The validator provides detailed information about invalid input values that can be automatically sent as an error response to the user.
 
+## Installation
+
+For installation use the [Node Package Manager](https://github.com/npm/npm):
+
+```
+$ npm install --save @korbiniankuhn/express-input-validator
+```
+
+or clone the repository:
+
+```
+$ git clone https://github.com/KorbinianKuhn/express-input-validator
+```
+
 ## Getting started
 
 Initialize a new Validator:
