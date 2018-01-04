@@ -1,0 +1,24 @@
+{
+  "name": "@korbiniankuhn/express-input-validator",
+  "version": "0.0.0",
+  "description": "Express input data validation.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha \"./test/**/*.spec.js\"",
+    "coverage": "nyc --reporter=html mocha \"./test/**/*.spec.js\""
+  },
+  "author": "Korbinian Kuhn",
+  "license": "MIT",
+  "devDependencies": {
+    "express": "^4.16.2",
+    "mocha": "^4.1.0",
+    "nyc": "^11.4.1",
+    "should": "^13.2.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4"
+  }
+}
