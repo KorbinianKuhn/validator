@@ -18,25 +18,29 @@ describe('OBJECT()', function () {
   });
 
   it('required but null should fail', helper.mochaAsync(async() => {
-    try {
-      await OBJECT({
-        name: STRING()
-      }).validate(null, helper.DEFAULT_OPTIONS);
-      should.equal(true, false, 'Should throw');
-    } catch (err) {
-      err.should.equal(`Required but is null.`);
-    }
+    const message = await helper.shouldThrow(async() => OBJECT({
+      name: STRING()
+    }).validate(null, helper.DEFAULT_OPTIONS));
+    message.should.equal(`Required but is null.`);
+  }));
+
+  it('null and undefined should verify', helper.mochaAsync(async() => {
+    let result = await OBJECT({
+      name: STRING()
+    }).validate(null);
+    should.equal(result, null);
+
+    result = await OBJECT({
+      name: STRING()
+    }).validate(undefined);
+    should.equal(result, undefined);
   }));
 
   it('invalid data type should fail', helper.mochaAsync(async() => {
-    try {
-      await OBJECT({
-        name: STRING()
-      }).validate(['test'], helper.DEFAULT_OPTIONS);
-      should.equal(true, false, 'Should throw');
-    } catch (err) {
-      err.should.equal(`Must be object.`);
-    }
+    const message = await helper.shouldThrow(async() => OBJECT({
+      name: STRING()
+    }).validate(['test'], helper.DEFAULT_OPTIONS));
+    message.should.equal(`Must be object.`);
   }));
 
   it('invalid data should fail', helper.mochaAsync(async() => {
@@ -44,19 +48,15 @@ describe('OBJECT()', function () {
       name: STRING()
     });
 
-    try {
-      await object.validate({}, helper.DEFAULT_OPTIONS);
-    } catch (err) {
-      err.should.equal('Object is empty.');
-    }
+    let message = await helper.shouldThrow(async() => object.validate({}, helper.DEFAULT_OPTIONS));
+    message.should.equal('Object is empty.');
 
-    try {
-      await object.validate({
-        name: 10
-      }, helper.DEFAULT_OPTIONS);
-    } catch (err) {
-      err.should.have.property('name', 'Must be string but is number.');
-    }
+    message = await helper.shouldThrow(async() => object.validate({
+      name: 10
+    }, helper.DEFAULT_OPTIONS));
+    message.should.deepEqual({
+      name: 'Must be string but is number.'
+    });
 
   }));
 
@@ -78,6 +78,69 @@ describe('OBJECT()', function () {
     result.should.deepEqual({
       name: 'John Doe'
     });
+  }));
 
+  it('parsed string should fail', helper.mochaAsync(async() => {
+    const message = await helper.shouldThrow(async() => OBJECT({
+      name: STRING()
+    }).validate('invalid', {
+      parseToType: true
+    }));
+    message.should.equal('Must be object.');
+  }));
+
+  it('parsed string should verify', helper.mochaAsync(async() => {
+    const result = await OBJECT({
+      name: STRING()
+    }).validate('{"name":"Jane Doe"}', {
+      parseToType: true
+    });
+
+    result.should.deepEqual({
+      name: 'Jane Doe'
+    });
+  }));
+
+  it('invalid default value should throw', helper.mochaAsync(async() => {
+    const object = OBJECT({
+      name: STRING()
+    });
+    const result = await helper.shouldThrow(async() => object.defaultValue('invalid'));
+    result.message.should.equal('Must be object.');
+  }));
+
+  it('valid default value should verify', helper.mochaAsync(async() => {
+    const object = OBJECT({
+      name: STRING()
+    });
+    let result = await object.defaultValue({
+      name: 'John Doe'
+    }).validate();
+    result.should.deepEqual({
+      name: 'John Doe'
+    });
+
+    result = await object.defaultValue({
+      name: 'John Doe'
+    }).validate({
+      name: 'Jane Doe'
+    });
+    result.should.deepEqual({
+      name: 'Jane Doe'
+    });
+  }));
+
+  it('empty should verify', helper.mochaAsync(async() => {
+    const object = OBJECT({
+      name: STRING()
+    }, {
+      noEmptyArrays: true
+    });
+
+    let result = await helper.shouldThrow(async() => await object.empty(false).validate({}));
+    result.should.equal('Object is empty.');
+
+    result = await object.empty(true).validate({});
+    result.should.deepEqual({});
   }));
 });

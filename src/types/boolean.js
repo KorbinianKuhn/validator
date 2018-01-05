@@ -2,6 +2,7 @@ const _ = require('lodash');
 const BASE = require('./base');
 
 var _options = Symbol();
+var _default = Symbol();
 
 class BOOLEAN extends BASE {
   constructor(options) {
@@ -12,8 +13,10 @@ class BOOLEAN extends BASE {
   async validate(value, options = {}) {
     options = _.defaults(this[_options], options);
 
-    if (this.isRequired(options) && _.isNil(value)) {
-      throw `Required but is ${value}.`;
+    if (_.isNil(value)) {
+      if (this[_default]) return this[_default];
+      if (this.isRequired(options)) throw `Required but is ${value}.`;
+      return value;
     }
 
     if (options.parseToType) {
@@ -26,6 +29,14 @@ class BOOLEAN extends BASE {
     }
 
     return value;
+  }
+
+  defaultValue(value) {
+    if (!_.isBoolean(value)) {
+      throw new Error('Must be boolean.');
+    }
+    this[_default] = value;
+    return this;
   }
 }
 

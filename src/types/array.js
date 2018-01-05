@@ -6,6 +6,8 @@ var _options = Symbol();
 var _minLength = Symbol();
 var _maxLength = Symbol();
 var _exactLength = Symbol();
+var _empty = Symbol();
+var _default = Symbol();
 
 class ARRAY extends BASE {
   constructor(type, options) {
@@ -17,15 +19,25 @@ class ARRAY extends BASE {
   async validate(value, options = {}) {
     options = _.defaults(this[_options], options);
 
-    if (this.isRequired(options) && _.isNil(value)) {
-      throw `Required but is ${value}.`;
+    if (_.isNil(value)) {
+      if (this[_default]) return this[_default];
+      if (this.isRequired(options)) throw `Required but is ${value}.`;
+      return value;
+    }
+
+    if (options.parseToType && _.isString(value)) {
+      try {
+        value = JSON.parse(value);
+      } catch (err) {
+        value = value.split(',');
+      }
     }
 
     if (!_.isArray(value)) {
       throw `Must be array but is ${typeof value}.`;
     }
 
-    if (options.noEmptyArrays && value.length === 0) {
+    if (value.length === 0 && (this[_empty] === false || (this[_empty] === undefined && options.noEmptyArrays))) {
       throw `Array is empty.`;
     }
 
@@ -76,9 +88,22 @@ class ARRAY extends BASE {
     this[_exactLength] = length;
     return this;
   }
+
+  empty(boolean) {
+    this[_empty] = boolean;
+    return this;
+  }
+
+  defaultValue(value) {
+    if (!_.isArray(value)) {
+      throw new Error('Must be array.');
+    }
+    this[_default] = value;
+    return this;
+  }
 }
 
-function NewArray(regex) {
-  return new ARRAY(regex);
+function NewArray(type, options) {
+  return new ARRAY(type, options);
 }
 module.exports = NewArray;

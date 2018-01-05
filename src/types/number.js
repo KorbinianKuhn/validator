@@ -4,6 +4,7 @@ const BASE = require('./base');
 var _options = Symbol();
 var _min = Symbol();
 var _max = Symbol();
+var _default = Symbol();
 
 class NUMBER extends BASE {
   constructor(options) {
@@ -14,8 +15,10 @@ class NUMBER extends BASE {
   async validate(value, options = {}) {
     options = _.defaults(this[_options], options);
 
-    if (this.isRequired(options) && _.isNil(value)) {
-      throw `Required but is ${value}.`;
+    if (_.isNil(value)) {
+      if (this[_default]) return this[_default];
+      if (this.isRequired(options)) throw `Required but is ${value}.`;
+      return value;
     }
 
     if (options.parseToType && _.isString(value)) {
@@ -44,6 +47,14 @@ class NUMBER extends BASE {
 
   max(value) {
     this[_max] = value;
+    return this;
+  }
+
+  defaultValue(value) {
+    if (!_.isNumber(value)) {
+      throw new Error('Must be number.');
+    }
+    this[_default] = value;
     return this;
   }
 

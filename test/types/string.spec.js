@@ -5,22 +5,22 @@ const STRING = require('../../src/types/string');
 
 describe('STRING()', function () {
   it('required but null should fail', helper.mochaAsync(async() => {
-    try {
-      await STRING().validate(null, helper.DEFAULT_OPTIONS);
-      should.equal(true, false, 'Should throw');
-    } catch (err) {
-      err.should.equal(`Required but is null.`);
-    }
+    const message = await helper.shouldThrow(async() => STRING().validate(null, helper.DEFAULT_OPTIONS));
+    message.should.equal(`Required but is null.`);
+  }));
+
+  it('null and undefined should verify', helper.mochaAsync(async() => {
+    let result = await STRING().validate(null);
+    should.equal(result, null);
+
+    result = await STRING().validate(undefined);
+    should.equal(result, undefined);
   }));
 
   it('invalid type should fail', helper.mochaAsync(async() => {
-    for (const value of [null, 0, [], {}]) {
-      try {
-        await STRING().validate(value);
-        should.equal(true, false, 'Should throw');
-      } catch (err) {
-        err.should.equal(`Must be string but is ${typeof value}.`);
-      }
+    for (const value of [0, [], {}]) {
+      const message = await helper.shouldThrow(async() => STRING().validate(value));
+      message.should.equal(`Must be string but is ${typeof value}.`);
     }
   }));
 
@@ -32,26 +32,14 @@ describe('STRING()', function () {
   }));
 
   it('invalid length should fail', helper.mochaAsync(async() => {
-    try {
-      await STRING().minLength(5).validate('test', helper.DEFAULT_OPTIONS);
-      should.equal(true, false, 'Should throw');
-    } catch (err) {
-      err.should.equal(`Must have at least 5 characters.`);
-    }
+    let message = await helper.shouldThrow(async() => STRING().minLength(5).validate('test', helper.DEFAULT_OPTIONS));
+    message.should.equal(`Must have at least 5 characters.`);
 
-    try {
-      await STRING().maxLength(3).validate('test', helper.DEFAULT_OPTIONS);
-      should.equal(true, false, 'Should throw');
-    } catch (err) {
-      err.should.equal('Must have at most 3 characters.');
-    }
+    message = await helper.shouldThrow(async() => STRING().maxLength(3).validate('test', helper.DEFAULT_OPTIONS));
+    message.should.equal('Must have at most 3 characters.');
 
-    try {
-      await STRING().exactLength(3).validate('test', helper.DEFAULT_OPTIONS);
-      should.equal(true, false, 'Should throw');
-    } catch (err) {
-      err.should.equal('Must have exactly 3 characters.');
-    }
+    message = await helper.shouldThrow(async() => STRING().exactLength(3).validate('test', helper.DEFAULT_OPTIONS));
+    message.should.equal('Must have exactly 3 characters.');
   }));
 
   it('valid length should verify', helper.mochaAsync(async() => {
@@ -67,12 +55,8 @@ describe('STRING()', function () {
 
 
   it('empty string should fail', helper.mochaAsync(async() => {
-    try {
-      await STRING().validate('', helper.DEFAULT_OPTIONS);
-      should.equal(true, false, 'Should throw');
-    } catch (err) {
-      err.should.equal('String is empty.');
-    }
+    const message = await helper.shouldThrow(async() => STRING().validate('', helper.DEFAULT_OPTIONS));
+    message.should.equal('String is empty.');
   }));
 
   it('empty string allowed should verify', helper.mochaAsync(async() => {
@@ -80,6 +64,33 @@ describe('STRING()', function () {
     const result = await string.validate('', {
       noEmptyStrings: false
     });
+    result.should.equal('');
+  }));
+
+  it('invalid default value should throw', helper.mochaAsync(async() => {
+    const result = await helper.shouldThrow(async() => STRING().defaultValue(1234));
+    result.message.should.equal('Must be string.');
+  }));
+
+  it('valid default value should verify', helper.mochaAsync(async() => {
+    let result = await STRING().defaultValue('default').validate();
+    result.should.equal('default');
+
+    result = await STRING().defaultValue('default').validate('test');
+    result.should.equal('test');
+  }));
+
+  it('empty should verify', helper.mochaAsync(async() => {
+    let result = await helper.shouldThrow(
+      async() => await STRING({
+        noEmptyStrings: true
+      }).empty(false).validate('')
+    );
+    result.should.equal('String is empty.');
+
+    result = await STRING({
+      noEmptyStrings: true
+    }).empty(true).validate('');
     result.should.equal('');
   }));
 });

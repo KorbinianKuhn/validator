@@ -1,3 +1,5 @@
+const defaults = require('../../src/defaults');
+
 exports.mochaAsync = (fn) => {
   return (done) => {
     fn.call().then(done, (err) => {
@@ -6,10 +8,14 @@ exports.mochaAsync = (fn) => {
   };
 };
 
-exports.DEFAULT_OPTIONS = {
-  requiredAsDefault: true,
-  throwValidationErrors: true,
-  noEmptyStrings: true,
-  noEmptyArrays: true,
-  noEmptyObjects: true
+exports.shouldThrow = async(fn) => {
+  try {
+    await fn();
+  } catch (err) {
+    return err;
+  }
+
+  throw new Error("Did not throw");
 }
+
+exports.DEFAULT_OPTIONS = defaults.VALIDATOR_OPTIONS;

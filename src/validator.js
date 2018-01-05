@@ -68,6 +68,10 @@ class Validator {
     return TYPES.Regex(regex, options);
   }
 
+  Request(options) {
+    return TYPES.Request(options);
+  }
+
   String(options) {
     return TYPES.String(options);
   }

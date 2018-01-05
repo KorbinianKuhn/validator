@@ -19,8 +19,16 @@ describe('REGEX()', function () {
     }
   }));
 
+  it('null and undefined should verify', helper.mochaAsync(async() => {
+    let result = await REGEX(/[A-Z]/).validate(null);
+    should.equal(result, null);
+
+    result = await REGEX(/[A-Z]/).validate(undefined);
+    should.equal(result, undefined);
+  }));
+
   it('invalid type should fail', helper.mochaAsync(async() => {
-    for (const value of [null, 1, 0]) {
+    for (const value of [1, true]) {
       try {
         await REGEX(/[A-Z]/).validate(value);
         should.equal(true, false, 'Should throw');
@@ -76,6 +84,29 @@ describe('REGEX()', function () {
 
     value = await REGEX(/[A-Z]/).exactLength(3).validate('ABC', helper.DEFAULT_OPTIONS);
     value.should.equal('ABC');
+  }));
+
+  it('invalid default value should throw', helper.mochaAsync(async() => {
+    const result = await helper.shouldThrow(async() => REGEX(/[A-Z]/).defaultValue(1234));
+    result.message.should.equal('Must be string.');
+  }));
+
+  it('valid default value should verify', helper.mochaAsync(async() => {
+    let result = await REGEX(/[A-Z]/).defaultValue('ABC').validate();
+    result.should.equal('ABC');
+
+    result = await REGEX(/[A-Z]/).defaultValue('ABC').validate('DEF');
+    result.should.equal('DEF');
+  }));
+
+  it('empty should verify', helper.mochaAsync(async() => {
+    let result = await helper.shouldThrow(
+      async() => await REGEX(/[A-Z]/).empty(false).validate('')
+    );
+    result.should.equal('Value does not match regular expression.');
+
+    result = await REGEX(/[A-Z]/).empty(true).validate('');
+    result.should.equal('');
   }));
 
 });

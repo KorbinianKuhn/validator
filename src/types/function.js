@@ -3,6 +3,7 @@ const BASE = require('./base');
 
 var _func = Symbol();
 var _options = Symbol();
+var _default = Symbol();
 
 class FUNCTION extends BASE {
   constructor(func, options) {
@@ -22,8 +23,10 @@ class FUNCTION extends BASE {
   async validate(value, options = {}) {
     options = _.defaults(this[_options], options);
 
-    if (this.isRequired(options) && _.isNil(value)) {
-      throw `Required but is ${value}.`;
+    if (_.isNil(value)) {
+      if (this[_default]) return this[_default];
+      if (this.isRequired(options)) throw `Required but is ${value}.`;
+      return value;
     }
 
     try {
@@ -31,6 +34,11 @@ class FUNCTION extends BASE {
     } catch (err) {
       throw err.message;
     }
+  }
+
+  defaultValue(value) {
+    this[_default] = value;
+    return this;
   }
 }
 

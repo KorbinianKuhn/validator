@@ -6,6 +6,8 @@ var _options = Symbol();
 var _minLength = Symbol();
 var _maxLength = Symbol();
 var _exactLength = Symbol();
+var _default = Symbol();
+var _empty = Symbol();
 
 class REGEX extends BASE {
   constructor(regex, options) {
@@ -18,12 +20,18 @@ class REGEX extends BASE {
   async validate(value, options = {}) {
     options = _.defaults(this[_options], options);
 
-    if (this.isRequired(options) && _.isNil(value)) {
-      throw `Required but is ${value}.`;
+    if (_.isNil(value)) {
+      if (this[_default]) return this[_default];
+      if (this.isRequired(options)) throw `Required but is ${value}.`;
+      return value;
     }
 
     if (!_.isString(value)) {
       throw `Must be string but is ${typeof value}.`;
+    }
+
+    if (value === '' && this[_empty]) {
+      return value;
     }
 
     if (!value.match(this[_regex])) {
@@ -57,6 +65,19 @@ class REGEX extends BASE {
 
   exactLength(length) {
     this[_exactLength] = length;
+    return this;
+  }
+
+  empty(boolean) {
+    this[_empty] = boolean;
+    return this;
+  }
+
+  defaultValue(value) {
+    if (!_.isString(value)) {
+      throw new Error('Must be string.');
+    }
+    this[_default] = value;
     return this;
   }
 }

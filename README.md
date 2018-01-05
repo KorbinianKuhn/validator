@@ -2,7 +2,7 @@
 
 This package validates variable input parameters for express REST APIs. The validation parameters are described by objects as schemas. The goal of this package is easy readability and flexible customization. The validator provides detailed information about invalid input values that can be automatically sent as an error response to the user.
 
-It can also parse input value to target types (e.g. strings to boolean, integer or number).
+It can also parse input string values to target types (e.g. boolean, integer, number, array or object).
 
 ## Installation
 
@@ -62,6 +62,9 @@ Validator.Object({
 
 // Custom functions
 Validator.Function((value, options) => { return true});
+
+// Request to validate express req
+Validator.Request(options);
 ```
 
 Extend the validator with custom schemas and types to reuse them later:
@@ -116,9 +119,11 @@ Validator.validate(schema, data);
 All types share these functions:
 
 - `required(boolean)`: Is the parameter required.
+- `defaultValue(value)`: Default value if input is undefined/null. Overwrites `required` and `empty` settings.
 
 ``` javascript
 Validator.Boolean().required(false);
+Validator.Boolean().defaultValue(false);
 ```
 
 ### Array
@@ -126,11 +131,13 @@ Validator.Boolean().required(false);
 - `minLength(integer)`: Minimum length of the array.
 - `maxLength(integer)`: Maximum length of the array.
 - `exactLength(integer)`: Exact length of the array.
+- `empty(boolean)`: If array can be empty. Overwrites options.
 
 ```javascript
 Validator.Array(Validator.String(), options);
 Validator.Array(Validator.String(), options).minLength(5).maxLength(10);
 Validator.Array(Validator.String(), options).exactLength(5);
+Validator.Array(Validator.String(), options).empty(true);
 ```
 
 ### Boolean
@@ -167,10 +174,16 @@ Validator.Number(options).min(0.0).max(5.0);
 
 ### Object
 
+- `minLength(integer)`: Minimum number of object properties.
+- `maxLength(integer)`: Maximum number of object properties.
+- `exactLength(integer)`: Exact number of object properties.
+- `empty(boolean)`: If object can be empty. Overwrites options.
+
 ```javascript
-Validator.Object({
-  name: Validator.String()
-}, options);
+Validator.Object({name: Validator.String()}, options);
+Validator.Object({name: Validator.String()}, options).minLength(5).maxLength(10);
+Validator.Object({name: Validator.String()}, options).exactLength(5);
+Validator.Object({name: Validator.String()}, options).empty(true);
 ```
 
 ### Regex
@@ -178,11 +191,59 @@ Validator.Object({
 - `minLength(integer)`: Minimum length of the regex.
 - `maxLength(integer)`: Maximum length of the regex.
 - `exactLength(integer)`: Exact length of the regex.
+- `empty(boolean)`: If string can be empty. Overwrites options.
 
 ```javascript
 Validator.Regex(/A-Z/, options);
 Validator.Regex(/A-Z/, options).minLength(5).maxLength(20);
 Validator.Regex(/A-Z/, options).exactLength(15);
+Validator.Regex(/A-Z/, options).empty(true);
+```
+
+## Request
+
+This is a special object to validate the express req object. It validates uri, query and body parameters, with different default settings:
+
+- `uri(schema, options)`: Default: Parameters will get parsed to type and are required.
+- `query(schema, options)`: Default: Parameters will get parsed to type and are optional.
+- `body(schema, options)`: Default: Parameters will not get parsed to type and are required.
+
+You can pass a Object or Array schema to each function or and just an object.
+
+```javascript
+const schema = Validator.Request()
+  .uri({
+    id: INTEGER()
+  })
+  .body({
+    name: STRING()
+  })
+  .query(Validator.Object({
+    deleted: BOOLEAN()
+  }))
+
+const req = {
+  params: {
+    id: '20'
+  },
+  query: {},
+  body: {
+    name: 'Jane Doe'
+  }
+}
+
+Validator.validate(schema, req);
+/*
+{
+  params: {
+    id: 20
+  },
+  query: {},
+  body: {
+    name: 'Jane Doe'
+  }
+}
+*/
 ```
 
 ### String
@@ -190,11 +251,13 @@ Validator.Regex(/A-Z/, options).exactLength(15);
 - `minLength(integer)`: Minimum length of the string.
 - `maxLength(integer)`: Maximum length of the string.
 - `exactLength(integer)`: Exact length of the string.
+- `empty(boolean)`: If string can be empty. Overwrites options.
 
 ```javascript
 Validator.String(options);
 Validator.String(options).minLength(5).maxLength(20);
 Validator.String(options).exactLength(15);
+Validator.String(options).empty(true);
 ```
 
 ## Express middleware

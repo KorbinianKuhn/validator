@@ -24,6 +24,7 @@ describe('Validator()', function () {
     VALIDATOR.Number().constructor.name.should.equal('NUMBER');
     VALIDATOR.Object({}).constructor.name.should.equal('OBJECT');
     VALIDATOR.Regex(/A-Z/).constructor.name.should.equal('REGEX');
+    VALIDATOR.Request().constructor.name.should.equal('REQUEST');
     VALIDATOR.String().constructor.name.should.equal('STRING');
   });
 
