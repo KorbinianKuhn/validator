@@ -2,6 +2,7 @@ const assert = require('assert');
 const should = require('should');
 const helper = require('./helper');
 const ARRAY = require('../../src/types/array');
+const OBJECT = require('../../src/types/object');
 const INTEGER = require('../../src/types/integer');
 
 describe('ARRAY()', function () {
@@ -116,5 +117,42 @@ describe('ARRAY()', function () {
       noEmptyArrays: true
     }).empty(true).validate([]);
     result.should.deepEqual([]);
+  }));
+
+  it('duplicate items should fail', helper.mochaAsync(async() => {
+    let result = await helper.shouldThrow(
+      async() => await ARRAY().unique(true).validate(['a', 'b', 'a'])
+    );
+    result.should.equal('Values must be unique.');
+
+    result = await helper.shouldThrow(
+      async() => await ARRAY(OBJECT({
+        id: INTEGER()
+      })).unique(true).validate([{
+        id: 1
+      }, {
+        id: 2
+      }, {
+        id: 1
+      }])
+    );
+    result.should.equal('Values must be unique.');
+  }));
+
+  it('duplicate items should verify', helper.mochaAsync(async() => {
+    let result = await await ARRAY().validate(['a', 'b', 'a']);
+    result.should.deepEqual(['a', 'b', 'a']);
+
+    const array = [{
+      id: 1
+    }, {
+      id: 2
+    }, {
+      id: 1
+    }];
+    result = await ARRAY(OBJECT({
+      id: INTEGER()
+    })).validate(array);
+    result.should.deepEqual(array);
   }));
 });

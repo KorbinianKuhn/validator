@@ -132,6 +132,7 @@ Validator.Boolean().defaultValue(false);
 - `maxLength(integer)`: Maximum length of the array.
 - `exactLength(integer)`: Exact length of the array.
 - `empty(boolean)`: If array can be empty. Overwrites options.
+- `unique(boolean)`: Only allow unique items (including objects and arrays).
 
 ```javascript
 Validator.Array(Validator.String(), options);
@@ -178,12 +179,34 @@ Validator.Number(options).min(0.0).max(5.0);
 - `maxLength(integer)`: Maximum number of object properties.
 - `exactLength(integer)`: Exact number of object properties.
 - `empty(boolean)`: If object can be empty. Overwrites options.
+- `conditions(object)`: Add conditions to compare different values of a schema.
+- `gt(string, string)`: Add condition that key a must be greater then key b.
+- `gte(string, string)`: Add condition that key a must be greater or equal then key b.
+- `lt(string, string)`: Add condition that key a must be less then key b.
+- `lte(string, string)`: Add condition that key a must be less or equal then key b.
+- `equals(string, string)`: Add condition that key a must equal key b.
 
 ```javascript
 Validator.Object({name: Validator.String()}, options);
 Validator.Object({name: Validator.String()}, options).minLength(5).maxLength(10);
 Validator.Object({name: Validator.String()}, options).exactLength(5);
 Validator.Object({name: Validator.String()}, options).empty(true);
+Validator.Object({bigger: Validator.Integer(), smaller: Validator.Integer()}, options).equals('a', 'b');
+Validator.Object({
+  bigger: Validator.Integer(),
+  smaller: Validator.Integer(),
+  child: Validator.Object({
+    smaller: Validator.Integer()
+  })
+}, options)
+  .conditions({
+    bigger: {
+      gte: smaller
+    },
+    smaller: {
+      equals: 'child.smaller'
+    }
+  });
 ```
 
 ### Regex

@@ -8,6 +8,7 @@ var _maxLength = Symbol();
 var _exactLength = Symbol();
 var _empty = Symbol();
 var _default = Symbol();
+var _unique = Symbol();
 
 class ARRAY extends BASE {
   constructor(type, options) {
@@ -51,6 +52,10 @@ class ARRAY extends BASE {
 
     if (this[_exactLength] && value.length !== this[_exactLength]) {
       throw `Must have exactly ${this[_exactLength]} items.`;
+    }
+
+    if (this[_unique] && _.uniqWith(value, _.isEqual).length !== value.length) {
+      throw 'Values must be unique.';
     }
 
     if (this[_type] !== undefined) {
@@ -99,6 +104,11 @@ class ARRAY extends BASE {
       throw new Error('Must be array.');
     }
     this[_default] = value;
+    return this;
+  }
+
+  unique(boolean) {
+    this[_unique] = boolean;
     return this;
   }
 }

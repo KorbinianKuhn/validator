@@ -1,10 +1,45 @@
 const _ = require('lodash');
 const BASE = require('./base');
 
+const ALLOWED_CONDITIONS = ['gt', 'equals', 'lt', 'gte', 'lte'];
+
 var _object = Symbol();
 var _options = Symbol();
 var _default = Symbol();
 var _empty = Symbol();
+var _conditions = Symbol();
+
+const compare = (value, key, conditions) => {
+  const errors = [];
+  for (const method in conditions) {
+    const a = _.at(value, key)[0];
+    const b = _.at(value, conditions[method])[0];
+    if (_.isObject(a) || _.isObject(b)) {
+      continue;
+    }
+    switch (method) {
+      case 'gt':
+        if (!(a > b)) errors.push(`must be greater then '${conditions[method]}'`);
+        break;
+      case 'gte':
+        if (!(a >= b)) errors.push(`must be greater or equal then '${conditions[method]}'`);
+        break;
+      case 'lt':
+        if (!(a < b)) errors.push(`must be less then '${conditions[method]}'`);
+        break;
+      case 'lte':
+        if (!(a <= b)) errors.push(`must be less or equal then '${conditions[method]}'`);
+        break;
+      case 'equals':
+        if (!_.isEqual(a, b)) errors.push(`must equal '${conditions[method]}'`);
+        break;
+    }
+  }
+
+  if (errors.length > 0) {
+    throw errors.join(', ');
+  }
+}
 
 class OBJECT extends BASE {
   constructor(object, options) {
@@ -55,6 +90,16 @@ class OBJECT extends BASE {
       }
     }
 
+    if (this[_conditions] && _.keys(errors).length === 0) {
+      for (const key in this[_conditions]) {
+        try {
+          compare(value, key, this[_conditions][key]);
+        } catch (err) {
+          errors[key] = err;
+        }
+      }
+    }
+
     if (_.keys(errors).length > 0) {
       throw errors;
     } else {
@@ -73,6 +118,47 @@ class OBJECT extends BASE {
     }
     this[_default] = value;
     return this;
+  }
+
+  conditions(options) {
+    let conditions = {}
+    if (this[_conditions]) {
+      conditions = this[_conditions];
+    }
+    for (const key in options) {
+      if (!_.has(this[_object], key)) throw `Object has no key '${key}'.`;
+      for (const method in options[key]) {
+        if (ALLOWED_CONDITIONS.indexOf(method) === -1) throw `Object has no condition method '${method}'.`;
+        if (!_.has(this[_object], options[key][method])) throw `Object has no key '${options[key][method]}'.`;
+        if (_.has(conditions, key)) {
+          _.merge(conditions[key], options[key]);
+        } else {
+          conditions[key] = options[key];
+        }
+      }
+    }
+    this[_conditions] = conditions;
+    return this;
+  }
+
+  gt(a, b) {
+    return this.conditions(_.set({}, `${a}.gt`, b));
+  }
+
+  gte(a, b) {
+    return this.conditions(_.set({}, `${a}.gte`, b));
+  }
+
+  lt(a, b) {
+    return this.conditions(_.set({}, `${a}.lt`, b));
+  }
+
+  lte(a, b) {
+    return this.conditions(_.set({}, `${a}.lte`, b));
+  }
+
+  equals(a, b) {
+    return this.conditions(_.set({}, `${a}.equals`, b));
   }
 }
 
