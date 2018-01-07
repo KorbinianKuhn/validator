@@ -93,4 +93,16 @@ describe('STRING()', function () {
     }).empty(true).validate('');
     result.should.equal('');
   }));
+
+  it('trim should verify', helper.mochaAsync(async() => {
+    const result = await STRING().trim(true).validate(' test ');
+    result.should.equal('test');
+  }));
+
+  it('trim should result in empty string', helper.mochaAsync(async() => {
+    const result = await helper.shouldThrow(
+      async() => await STRING(helper.DEFAULT_OPTIONS).validate(' ')
+    );
+    result.should.equal('String is empty.');
+  }));
 });

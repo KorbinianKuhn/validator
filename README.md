@@ -93,6 +93,7 @@ If a schema gets checked by a validator it will get the validators options.
 - `throwValidationError (boolean)`: Throw an error if validation fails. Default true.
 - `parseToType (boolean)`: Parses input data to type (e.g. 'true' -> true, '1.2' -> 1.2). Default false.
 - `noEmptyStrings (boolean)`: Disallow empty strings. Default true.
+- `trimStrings (boolean)`: Remove whitespaces from string. Default true.
 - `noEmptyArrays (boolean)`: Disallow empty arrays. Default true.
 - `noEmptyObjects (boolean)`: Disallow empty objects. Default true.
 
@@ -275,6 +276,7 @@ Validator.validate(schema, req);
 - `maxLength(integer)`: Maximum length of the string.
 - `exactLength(integer)`: Exact length of the string.
 - `empty(boolean)`: If string can be empty. Overwrites options.
+- `trim(boolean)`: Trim whitespaces from string. Overwrites options.
 
 ```javascript
 Validator.String(options);
@@ -298,6 +300,54 @@ app.use(eiv.middleware());
 app.use(eiv.middleware({
   sendDetails: false
 }));
+```
+
+## Example
+
+This example shows how easy input validation gets. Due to the async middleware no try/catch block is required and only a single line of code at the beginning of the routes controller is necessary. The application is very resilient as every exception will be handled by the error middlewares that even internal server errors will result in an obscured response.
+
+```javascript
+const express = require('express');
+const eiv = require('@korbiniankuhn/express-input-validator');
+const app = express();
+
+// Middleware to next all exception
+const asyncMiddleware = fn => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
+
+// Initialize the validator object
+const validator = eiv.Validator();
+
+// Define a schema for login data
+const loginSchema = validator.Request()
+  .body({
+    email: validator.String(),
+    password: validator.String()
+  })
+
+// Login route controller
+app.post('/login', asyncMiddleware((req, res, next) => {
+  validator.validate(loginSchema, req);
+  if (email === 'jan.doe@example.com' && password === 'secret') {
+    res.send('success');
+  } else {
+    res.send('invalid credentials');
+  }
+}));
+
+// Sent response on validation errors
+app.use(eiv.middleware());
+
+// Error handler
+app.use((err, req, res) => {
+  if (!res.headerSent) {
+    res.send('Something went wrong');
+  }
+  // Do logging here
+  console.log(err);
+})
+
 ```
 
 ## Testing

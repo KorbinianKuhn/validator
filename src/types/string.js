@@ -7,6 +7,7 @@ var _maxLength = Symbol();
 var _exactLength = Symbol();
 var _default = Symbol();
 var _empty = Symbol();
+var _trim = Symbol();
 
 class STRING extends BASE {
   constructor(options) {
@@ -25,6 +26,10 @@ class STRING extends BASE {
 
     if (!_.isString(value)) {
       throw `Must be string but is ${typeof value}.`;
+    }
+
+    if (this[_trim] || (this[_trim] === undefined && options.trimStrings)) {
+      value = value.trim();
     }
 
     if (value === '' && (this[_empty] === false || (this[_empty] === undefined && options.noEmptyStrings))) {
@@ -71,6 +76,11 @@ class STRING extends BASE {
       throw new Error('Must be string.');
     }
     this[_default] = value;
+    return this;
+  }
+
+  trim(boolean) {
+    this[_trim] = boolean;
     return this;
   }
 }

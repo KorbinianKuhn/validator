@@ -9,6 +9,7 @@ const OVERWRITE_OPTIONS = {
   throwValidationErrors: false,
   parseToType: true,
   noEmptyStrings: false,
+  trimStrings: false,
   noEmptyArrays: false,
   noEmptyObjects: false
 }
@@ -42,6 +43,7 @@ describe('Validator()', function () {
       throwValidationErrors: true,
       parseToType: false,
       noEmptyStrings: true,
+      trimStrings: true,
       noEmptyArrays: true,
       noEmptyObjects: true
     });
