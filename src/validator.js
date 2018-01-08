@@ -44,6 +44,10 @@ class Validator {
     return TYPES.Boolean(options);
   }
 
+  Date(options) {
+    return TYPES.Date(options);
+  }
+
   Enum(values, options) {
     return TYPES.Enum(values, options);
   }

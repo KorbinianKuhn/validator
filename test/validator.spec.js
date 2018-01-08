@@ -11,7 +11,8 @@ const OVERWRITE_OPTIONS = {
   noEmptyStrings: false,
   trimStrings: false,
   noEmptyArrays: false,
-  noEmptyObjects: false
+  noEmptyObjects: false,
+  dateFormat: 'YYYY-MM-DD'
 }
 
 describe('Validator()', function () {
@@ -19,6 +20,7 @@ describe('Validator()', function () {
     const VALIDATOR = Validator();
     VALIDATOR.Array().constructor.name.should.equal('ARRAY');
     VALIDATOR.Boolean().constructor.name.should.equal('BOOLEAN');
+    VALIDATOR.Date().constructor.name.should.equal('DATE');
     VALIDATOR.Enum([]).constructor.name.should.equal('ENUM');
     VALIDATOR.Function(function () {}).constructor.name.should.equal('FUNCTION');
     VALIDATOR.Integer().constructor.name.should.equal('INTEGER');
@@ -45,7 +47,8 @@ describe('Validator()', function () {
       noEmptyStrings: true,
       trimStrings: true,
       noEmptyArrays: true,
-      noEmptyObjects: true
+      noEmptyObjects: true,
+      dateFormat: defaults.DATE_FORMAT
     });
   });
 

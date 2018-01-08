@@ -1,5 +1,6 @@
 const ARRAY = require('./array');
 const BOOLEAN = require('./boolean');
+const DATE = require('./date');
 const ENUM = require('./enum');
 const FUNCTION = require('./function');
 const INTEGER = require('./integer');
@@ -12,6 +13,7 @@ const STRING = require('./string');
 const TYPES = {
   Array: ARRAY,
   Boolean: BOOLEAN,
+  Date: DATE,
   Enum: ENUM,
   Function: FUNCTION,
   Integer: INTEGER,
@@ -19,7 +21,7 @@ const TYPES = {
   Object: OBJECT,
   Regex: REGEX,
   Request: REQUEST,
-  String: STRING,
+  String: STRING
 }
 
 module.exports = TYPES;

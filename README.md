@@ -24,7 +24,7 @@ Initialize a new Validator:
 
 ``` javascript
 const eiv = require('@korbiniankuhn/express-input-validator');
-const Validator = new eiv.Validator();
+const Validator = eiv.Validator();
 ```
 
 Create a new Schema:
@@ -43,6 +43,7 @@ The different Schema types:
 ``` javascript
 // Simple types
 Validator.Boolean();
+Validator.Date();
 Validator.Integer();
 Validator.Number();
 Validator.Regex(\[A-Z]\);
@@ -146,6 +147,16 @@ Validator.Array(Validator.String(), options).empty(true);
 
 ```javascript
 Validator.Boolean(options);
+```
+
+### Date
+
+- `format(string | array)`: Format will get validated with [moment](https://github.com/moment/moment) in strict mode. Default format is the ISO6801 standard 'YYYY-MM-DD[T]HH:mm:ss'.
+
+
+```javascript
+Validator.Date(format, options);
+Validator.Date(null, options).format('YYYY-MM-DD');
 ```
 
 ### Enum

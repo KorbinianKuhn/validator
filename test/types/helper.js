@@ -19,3 +19,4 @@ exports.shouldThrow = async(fn) => {
 }
 
 exports.DEFAULT_OPTIONS = defaults.VALIDATOR_OPTIONS;
+exports.DATE_FORMAT = defaults.DATE_FORMAT;
