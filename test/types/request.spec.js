@@ -77,16 +77,12 @@ describe('REQUEST()', function () {
       body: {}
     }
 
-    const expected = {
-      name: 'Required but is undefined.'
-    };
-
     try {
       await REQUEST().uri(schema).validate(req);
       should.equal(true, false, 'Should throw');
     } catch (err) {
       err.should.deepEqual({
-        uri: expected
+        uri: 'Object is empty.'
       });
     }
 
@@ -95,7 +91,7 @@ describe('REQUEST()', function () {
       should.equal(true, false, 'Should throw');
     } catch (err) {
       err.should.deepEqual({
-        query: expected
+        query: 'Object is empty.'
       });
     }
 

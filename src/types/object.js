@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const BASE = require('./base');
 
-const ALLOWED_CONDITIONS = ['gt', 'equals', 'lt', 'gte', 'lte'];
+const ALLOWED_CONDITIONS = ['gt', 'equals', 'lt', 'gte', 'lte', 'notEquals', 'dependsOn', 'xor', 'func'];
 
 var _object = Symbol();
 var _options = Symbol();
@@ -14,9 +14,13 @@ const compare = (value, key, conditions) => {
   for (const method in conditions) {
     const a = _.at(value, key)[0];
     const b = _.at(value, conditions[method])[0];
-    if (_.isObject(a) || _.isObject(b)) {
-      continue;
+
+    if (['gt', 'lt', 'gte', 'lte'].indexOf(method) !== -1) {
+      if (_.isObject(a) || _.isObject(b)) {
+        continue;
+      }
     }
+
     switch (method) {
       case 'gt':
         if (!(a > b)) errors.push(`must be greater then '${conditions[method]}'`);
@@ -32,6 +36,9 @@ const compare = (value, key, conditions) => {
         break;
       case 'equals':
         if (!_.isEqual(a, b)) errors.push(`must equal '${conditions[method]}'`);
+        break;
+      case 'notEquals':
+        if (_.isEqual(a, b)) errors.push(`must not equal '${conditions[method]}'`);
         break;
     }
   }
@@ -159,6 +166,10 @@ class OBJECT extends BASE {
 
   equals(a, b) {
     return this.conditions(_.set({}, `${a}.equals`, b));
+  }
+
+  notEquals(a, b) {
+    return this.conditions(_.set({}, `${a}.notEquals`, b));
   }
 }
 

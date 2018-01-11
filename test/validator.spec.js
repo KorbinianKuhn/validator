@@ -81,7 +81,7 @@ describe('Validator()', function () {
 
     VALIDATOR.addType('test', type);
 
-    VALIDATOR.Custom('test').should.equal(type);
+    VALIDATOR.Custom('test').should.deepEqual(type);
   });
 
   it('unknown schema should throw', helper.mochaAsync(async() => {

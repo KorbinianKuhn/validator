@@ -191,18 +191,27 @@ Validator.Number(options).min(0.0).max(5.0);
 - `maxLength(integer)`: Maximum number of object properties.
 - `exactLength(integer)`: Exact number of object properties.
 - `empty(boolean)`: If object can be empty. Overwrites options.
-- `conditions(object)`: Add conditions to compare different values of a schema.
-- `gt(string, string)`: Add condition that key a must be greater then key b.
-- `gte(string, string)`: Add condition that key a must be greater or equal then key b.
-- `lt(string, string)`: Add condition that key a must be less then key b.
-- `lte(string, string)`: Add condition that key a must be less or equal then key b.
-- `equals(string, string)`: Add condition that key a must equal key b.
+- `func(fn, ...string)`: Call an async function with values of the given keys.
+
+Add conditions to check multiple values against each other. Navigate to nested keys with a point separated path (e.g. 'nested.child.value').
+
+- `conditions(object)`: Multiple conditions in a json structure.
+- `gt(string, string)`: Key a must be greater then key b.
+- `gte(string, string)`: Key a must be greater or equal then key b.
+- `lt(string, string)`: Key a must be less then key b.
+- `lte(string, string)`: Key a must be less or equal then key b.
+- `equals(string, string)`: Key a must equal key b.
+- `notEquals(string, string)`: Key a must not equal key b.
+- `requires(string, string)`: Key a requires key b. Useful for optional parameters.
+- `xor(string, string)`: Only one of theses key should be set. Useful for optional parameters.
 
 ```javascript
 Validator.Object({name: Validator.String()}, options);
 Validator.Object({name: Validator.String()}, options).minLength(5).maxLength(10);
 Validator.Object({name: Validator.String()}, options).exactLength(5);
 Validator.Object({name: Validator.String()}, options).empty(true);
+Validator.Object({name: Validator.String(), age: Validator.Integer()}, options).func(fn, 'name', 'age');
+
 Validator.Object({bigger: Validator.Integer(), smaller: Validator.Integer()}, options).equals('a', 'b');
 Validator.Object({
   bigger: Validator.Integer(),
@@ -302,14 +311,21 @@ By default the Validator throws an error if the validation fails. It's recommend
 
 The error middleware responds with a status code 400 and a json if the nexted error is an ValidationError object. Otherwise it will next the error.
 
+options:
+
+- `message (string)`: Define the error message.
+- `details (boolean)`: Send details about validation failures. Default true.
+- `next (boolean)`: Next the error after sending the response. Default false.
+
 ``` javascript
 const eiv = require('@korbiniankuhn/express-input-validator');
 
 app.use(eiv.middleware());
 
-// Do not send detailed information about the validation errors.
 app.use(eiv.middleware({
-  sendDetails: false
+  message: 'The input validation failed.',
+  details: false,
+  next: true
 }));
 ```
 

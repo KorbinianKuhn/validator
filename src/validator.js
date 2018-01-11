@@ -25,14 +25,14 @@ class Validator {
       throw new Error('Unknown type.');
     }
 
-    this[_customs][name] = type;
+    this[_customs][name] = _.cloneDeep(type);
   }
 
   Custom(name) {
     if (!_.has(this[_customs], name)) {
       throw new Error('Unknown custom type.');
     } else {
-      return this[_customs][name];
+      return _.cloneDeep(this[_customs][name]);
     }
   }
 

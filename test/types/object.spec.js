@@ -5,7 +5,7 @@ const OBJECT = require('../../src/types/object');
 const STRING = require('../../src/types/string');
 const INTEGER = require('../../src/types/integer');
 
-describe('OBJECT()', function () {
+describe.only('OBJECT()', function () {
   it('no object should throw', () => {
     (() => {
       OBJECT()
@@ -449,5 +449,46 @@ describe('OBJECT()', function () {
     }
     result = await object.validate(valid);
     result.should.equal(valid);
+  }));
+
+  it('test notEquals then condition', helper.mochaAsync(async() => {
+    const object = OBJECT({
+      bigger: INTEGER(),
+      smaller: INTEGER()
+    }).conditions({
+      smaller: {
+        'notEquals': 'bigger'
+      }
+    });
+
+    const invalid = {
+      bigger: 10,
+      smaller: 10
+    }
+    let result = await helper.shouldThrow(async() => object.validate(invalid));
+    result.should.deepEqual({
+      smaller: `must not equal 'bigger'`
+    });
+
+    const valid = {
+      bigger: 10,
+      smaller: 5
+    }
+    result = await object.validate(valid);
+    result.should.deepEqual(valid);
+
+    result = await helper.shouldThrow(async() => OBJECT({
+      bigger: INTEGER(),
+      smaller: INTEGER()
+    }).notEquals('smaller', 'bigger').validate(invalid));
+    result.should.deepEqual({
+      smaller: `must not equal 'bigger'`
+    });
+
+    result = await OBJECT({
+      bigger: INTEGER(),
+      smaller: INTEGER()
+    }).notEquals('smaller', 'bigger').validate(valid);
+    result.should.deepEqual(valid);
   }));
 });

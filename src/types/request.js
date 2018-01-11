@@ -32,7 +32,7 @@ class REQUEST extends BASE {
 
   async validate(req, options = {}) {
 
-    if (!_.isPlainObject(req) || !['params', 'query', 'body'].every(k => k in req)) {
+    if (!_.every(['params', 'query', 'body'], _.partial(_.has, req))) {
       throw new Error('Invalid express req object.');
     }
 
