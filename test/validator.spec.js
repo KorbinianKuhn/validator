@@ -48,7 +48,8 @@ describe('Validator()', function () {
       trimStrings: true,
       noEmptyArrays: true,
       noEmptyObjects: true,
-      dateFormat: defaults.DATE_FORMAT
+      dateFormat: defaults.DATE_FORMAT,
+      parseDates: true
     });
   });
 

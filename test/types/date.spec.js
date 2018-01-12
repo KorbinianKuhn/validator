@@ -47,4 +47,13 @@ describe('DATE()', function () {
     let result = await DATE().format('YYYY-MM-DD').validate('2018-01-01');
     result.should.equal('2018-01-01');
   }));
+
+  it('should return parsed date', helper.mochaAsync(async() => {
+    let result = await DATE().parse(false).format('YYYY-MM-DD').validate('2018-01-01');
+    result.should.equal('2018-01-01');
+
+    const date = moment(moment().format('YYYY-MM-DD'));
+    result = await DATE().parse(true).format('YYYY-MM-DD').validate(date.format('YYYY-MM-DD'));
+    result.should.deepEqual(date.toDate());
+  }));
 });

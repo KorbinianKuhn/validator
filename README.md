@@ -92,11 +92,12 @@ If a schema gets checked by a validator it will get the validators options.
 
 - `requiredAsDefault (boolean)`: Sets all parameters of a schema as required if not specified otherwise. Default true.
 - `throwValidationError (boolean)`: Throw an error if validation fails. Default true.
-- `parseToType (boolean)`: Parses input data to type (e.g. 'true' -> true, '1.2' -> 1.2). Default false.
+- `parseToType (boolean)`: Parse input data to type (e.g. 'true' -> true, '1.2' -> 1.2). Default false.
 - `noEmptyStrings (boolean)`: Disallow empty strings. Default true.
 - `trimStrings (boolean)`: Remove whitespaces from string. Default true.
 - `noEmptyArrays (boolean)`: Disallow empty arrays. Default true.
 - `noEmptyObjects (boolean)`: Disallow empty objects. Default true.
+- `parseDates (boolean)`: Parse date string to Date objects. Default true.
 
 Every schema and type can get own options which will override the ones of its parent.
 
@@ -152,11 +153,12 @@ Validator.Boolean(options);
 ### Date
 
 - `format(string | array)`: Format will get validated with [moment](https://github.com/moment/moment) in strict mode. Default format is the ISO6801 standard 'YYYY-MM-DD[T]HH:mm:ss'.
-
+- `parse(boolean)`: Parse date string to Date object.
 
 ```javascript
 Validator.Date(format, options);
 Validator.Date(null, options).format('YYYY-MM-DD');
+Validator.Date('YYYY-MM-DD').parse(true);
 ```
 
 ### Enum
@@ -191,7 +193,7 @@ Validator.Number(options).min(0.0).max(5.0);
 - `maxLength(integer)`: Maximum number of object properties.
 - `exactLength(integer)`: Exact number of object properties.
 - `empty(boolean)`: If object can be empty. Overwrites options.
-- `func(fn, ...string)`: Call an async function with values of the given keys.
+- `func(function, ...string)`: Call an async function with values of the given keys.
 
 Add conditions to check multiple values against each other. Navigate to nested keys with a point separated path (e.g. 'nested.child.value').
 
@@ -202,7 +204,7 @@ Add conditions to check multiple values against each other. Navigate to nested k
 - `lte(string, string)`: Key a must be less or equal then key b.
 - `equals(string, string)`: Key a must equal key b.
 - `notEquals(string, string)`: Key a must not equal key b.
-- `requires(string, string)`: Key a requires key b. Useful for optional parameters.
+- `dependsOn(string, string)`: Key a dependsOn key b. Useful for optional parameters.
 - `xor(string, string)`: Only one of theses key should be set. Useful for optional parameters.
 
 ```javascript
