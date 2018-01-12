@@ -257,7 +257,9 @@ This is a special object to validate the express req object. It validates uri, q
 You can pass a Object or Array schema to each function or and just an object.
 
 ```javascript
-const schema = Validator.Request()
+const schema = Validator.Request({
+  requireBody: false
+})
   .uri({
     id: INTEGER()
   })

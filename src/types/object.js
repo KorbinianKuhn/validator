@@ -17,8 +17,12 @@ const compare = (value, keyA, conditions) => {
     const a = _.at(value, keyA)[0];
     const b = _.at(value, conditions[method])[0];
 
+    if (method !== 'dependsOn' && (!a || !b)) {
+      continue;
+    }
+
     if (['gt', 'lt', 'gte', 'lte'].indexOf(method) !== -1) {
-      if (_.isObject(a) || _.isObject(b)) {
+      if (_.isPlainObject(a) || _.isPlainObject(b)) {
         continue;
       } else {
         switch (method) {

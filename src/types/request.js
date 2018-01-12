@@ -60,10 +60,12 @@ class REQUEST extends BASE {
 
     if (this[_body]) {
       const opt = _.defaults(this[_body].options, options);
-      try {
-        req.body = await this[_body].schema.validate(req.body, opt);
-      } catch (err) {
-        errors.body = err;
+      if (!(opt.requireBody === false && _.keys(req.body).length === 0)) {
+        try {
+          req.body = await this[_body].schema.validate(req.body, opt);
+        } catch (err) {
+          errors.body = err;
+        }
       }
     }
 

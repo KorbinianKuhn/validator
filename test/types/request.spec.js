@@ -6,6 +6,7 @@ const STRING = require('../../src/types/string');
 const INTEGER = require('../../src/types/integer');
 const BOOLEAN = require('../../src/types/boolean');
 const OBJECT = require('../../src/types/object');
+const ARRAY = require('../../src/types/array');
 
 describe('REQUEST()', function () {
   it('invalid schema should throw', helper.mochaAsync(async() => {
@@ -140,4 +141,20 @@ describe('REQUEST()', function () {
 
   }));
 
+  it('optional body should verify', helper.mochaAsync(async() => {
+    const schema = REQUEST({
+        requireBody: false
+      })
+      .body({
+        meters: ARRAY(OBJECT({}))
+      })
+
+    const req = {
+      params: {},
+      query: {},
+      body: {},
+    }
+
+    const result = await schema.validate(req, helper.DEFAULT_OPTIONS);
+  }));
 });
