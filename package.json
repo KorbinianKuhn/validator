@@ -1,6 +1,6 @@
 {
   "name": "@korbiniankuhn/express-input-validator",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Validate input parameters for express REST APIs.",
   "main": "index.js",
   "scripts": {
