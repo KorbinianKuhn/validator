@@ -114,7 +114,7 @@ describe('Validator()', function () {
       await VALIDATOR.validate(VALIDATOR.Boolean(), 'true');
       should.equal(true, false, 'Did not throw error.');
     } catch (err) {
-      err.name.should.equal('ValidationError');
+      err.name.should.equal('ExpressInputValidationError');
       err.message.should.equal('Bad Request. Input parameters and/or values are wrong.');
       err.details.should.equal('Must be boolean but is string.');
     }

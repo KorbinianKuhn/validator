@@ -11,7 +11,7 @@ module.exports = function (options) {
   const nextError = _.has(options, 'next') ? options.next : DEFAULTS.next;
 
   const middleware = function (err, req, res, next) {
-    if (err.name === 'ValidationError') {
+    if (err.name === 'ExpressInputValidationError') {
       const response = {
         error: message
       };
