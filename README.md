@@ -152,7 +152,7 @@ Validator.Boolean(options);
 
 ### Date
 
-- `format(string | array)`: Format will get validated with [moment](https://github.com/moment/moment) in strict mode. Default format is the ISO6801 standard 'YYYY-MM-DD[T]HH:mm:ss'.
+- `format(string | array)`: Format will get validated with [moment](https://github.com/moment/moment) as utc time in strict mode. Default format is the ISO6801 standard 'YYYY-MM-DD[T]HH:mm:ss.SSSZ'.
 - `parse(boolean)`: Parse date string to Date object.
 
 ```javascript

@@ -26,7 +26,7 @@ class DATE extends BASE {
 
     const format = this[_format] || options.dateFormat || defaults.DATE_FORMAT;
 
-    const date = moment(value, format, true);
+    const date = moment.utc(value, format, true);
 
     if (!date.isValid()) {
       throw `Not a valid date. Must match format '${format}'`;

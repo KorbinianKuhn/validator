@@ -26,8 +26,8 @@ describe('DATE()', function () {
   }));
 
   it('valid type should verify', helper.mochaAsync(async() => {
-    const result = await DATE().validate('2018-10-20T00:00:00');
-    result.should.equal('2018-10-20T00:00:00');
+    const result = await DATE().validate('2018-10-20T00:00:00.000Z');
+    result.should.equal('2018-10-20T00:00:00.000Z');
   }));
 
   it('invalid default value should throw', helper.mochaAsync(async() => {
@@ -36,11 +36,11 @@ describe('DATE()', function () {
   }));
 
   it('valid default value should verify', helper.mochaAsync(async() => {
-    let result = await DATE().defaultValue('2018-01-01T00:00:00').validate();
-    result.should.equal('2018-01-01T00:00:00');
+    let result = await DATE().defaultValue('2018-01-01T00:00:00.000Z').validate();
+    result.should.equal('2018-01-01T00:00:00.000Z');
 
-    result = await DATE().defaultValue('2018-01-01T00:00:00').validate('2019-01-01T00:00:00');
-    result.should.equal('2019-01-01T00:00:00');
+    result = await DATE().defaultValue('2018-01-01T00:00:00.000Z').validate('2019-01-01T00:00:00.000Z');
+    result.should.equal('2019-01-01T00:00:00.000Z');
   }));
 
   it('valid format and value should verify', helper.mochaAsync(async() => {
@@ -49,11 +49,11 @@ describe('DATE()', function () {
   }));
 
   it('should return parsed date', helper.mochaAsync(async() => {
-    let result = await DATE().parse(false).format('YYYY-MM-DD').validate('2018-01-01');
-    result.should.equal('2018-01-01');
+    let result = await DATE().parse(false).validate('2018-01-01T00:00:00.000Z');
+    result.should.equal('2018-01-01T00:00:00.000Z');
 
-    const date = moment(moment().format('YYYY-MM-DD'));
-    result = await DATE().parse(true).format('YYYY-MM-DD').validate(date.format('YYYY-MM-DD'));
+    const date = moment(moment.utc());
+    result = await DATE().parse(true).validate(date.format('YYYY-MM-DD[T]HH:mm:ss.SSSZ'));
     result.should.deepEqual(date.toDate());
   }));
 });
