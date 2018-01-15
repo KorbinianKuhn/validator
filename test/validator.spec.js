@@ -12,6 +12,7 @@ const OVERWRITE_OPTIONS = {
   trimStrings: false,
   noEmptyArrays: false,
   noEmptyObjects: false,
+  noUndefinedKeys: false,
   dateFormat: 'YYYY-MM-DD'
 }
 
@@ -48,6 +49,7 @@ describe('Validator()', function () {
       trimStrings: true,
       noEmptyArrays: true,
       noEmptyObjects: true,
+      noUndefinedKeys: true,
       dateFormat: defaults.DATE_FORMAT,
       parseDates: true
     });

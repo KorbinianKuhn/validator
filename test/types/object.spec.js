@@ -177,4 +177,30 @@ describe('OBJECT()', function () {
     result = await object.validate(valid);
     result.should.deepEqual(valid);
   }));
+
+  it('undefined key should throw', async() => {
+    const object = OBJECT({
+      name: STRING()
+    }, helper.DEFAULT_OPTIONS);
+    let error;
+    await object.validate({
+      name: 'test',
+      invalid: 'invalid'
+    }).catch(err => error = err);
+    error.should.deepEqual({
+      invalid: 'Invalid key.'
+    });
+  });
+
+  it('undefined key should not throw', async() => {
+    const object = OBJECT({
+      name: STRING()
+    });
+    const data = {
+      name: 'test',
+      invalid: 'invalid'
+    }
+    const result = await object.validate(data).catch(err => error = err);
+    result.should.deepEqual(data);
+  });
 });

@@ -115,6 +115,14 @@ class OBJECT extends BASE {
       }
     }
 
+    if (options.noUndefinedKeys) {
+      for (const key in value) {
+        if (!_.has(this[_object], key)) {
+          errors[key] = 'Invalid key.'
+        }
+      }
+    }
+
     if (this[_conditions] && _.keys(errors).length === 0) {
       for (const key in this[_conditions]) {
         try {

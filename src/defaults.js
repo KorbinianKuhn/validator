@@ -12,6 +12,7 @@ exports.VALIDATOR_OPTIONS = {
   trimStrings: true,
   noEmptyArrays: true,
   noEmptyObjects: true,
+  noUndefinedKeys: true,
   dateFormat: DATE_FORMAT,
   parseDates: true
 }
@@ -23,6 +24,7 @@ exports.URI_OPTIONS = {
   trimStrings: true,
   noEmptyArrays: true,
   noEmptyObjects: true,
+  noUndefinedKeys: true,
   dateFormat: DATE_FORMAT,
   parseDates: true
 }
@@ -34,6 +36,7 @@ exports.QUERY_OPTIONS = {
   trimStrings: true,
   noEmptyArrays: true,
   noEmptyObjects: false,
+  noUndefinedKeys: true,
   dateFormat: DATE_FORMAT,
   parseDates: true
 }
@@ -45,6 +48,7 @@ exports.BODY_OPTIONS = {
   trimStrings: true,
   noEmptyArrays: true,
   noEmptyObjects: true,
+  noUndefinedKeys: true,
   dateFormat: DATE_FORMAT,
   parseDates: true
 }

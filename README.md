@@ -97,6 +97,7 @@ If a schema gets checked by a validator it will get the validators options.
 - `trimStrings (boolean)`: Remove whitespaces from string. Default true.
 - `noEmptyArrays (boolean)`: Disallow empty arrays. Default true.
 - `noEmptyObjects (boolean)`: Disallow empty objects. Default true.
+- `noUndefinedKeys (boolean)`: Disallow keys that are not defined by the schema. Default true.
 - `parseDates (boolean)`: Parse date string to Date objects. Default true.
 
 Every schema and type can get own options which will override the ones of its parent.
@@ -379,6 +380,35 @@ app.use((err, req, res) => {
   console.log(err);
 })
 
+```
+
+## Mongoose schema validation
+
+The validator can also be used for the validation of mongoose schemas.
+
+``` javascript
+const schema = new Schema({
+  name: {
+    type: String,
+    index: true,
+    required: true
+  },
+  age: {
+    type: Integer
+  },
+});
+
+const validationSchema = validator.Object({
+  name: validator.String().minLength(10).maxLength(50),
+  age: validator.Integer().required(false),
+});
+
+schema.pre('save', async function (next) {
+  await validator.validate(validationSchema, this.toObject()).catch(err => {
+    next(err);
+  });
+  next();
+});
 ```
 
 ## Testing
