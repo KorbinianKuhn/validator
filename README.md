@@ -239,12 +239,14 @@ Validator.Object({
 - `maxLength(integer)`: Maximum length of the regex.
 - `exactLength(integer)`: Exact length of the regex.
 - `empty(boolean)`: If string can be empty. Overwrites options.
+- `message(string)`: Use a custom message if value does not match regular expression. The default message is 'Value does not match regular expression.'.
 
 ```javascript
 Validator.Regex(/A-Z/, options);
 Validator.Regex(/A-Z/, options).minLength(5).maxLength(20);
 Validator.Regex(/A-Z/, options).exactLength(15);
 Validator.Regex(/A-Z/, options).empty(true);
+Validator.Regex(/A-Z/, options).message('Only uppercase letters.');
 ```
 
 ## Request

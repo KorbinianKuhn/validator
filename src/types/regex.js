@@ -8,6 +8,7 @@ var _maxLength = Symbol();
 var _exactLength = Symbol();
 var _default = Symbol();
 var _empty = Symbol();
+var _message = Symbol();
 
 class REGEX extends BASE {
   constructor(regex, options) {
@@ -15,6 +16,7 @@ class REGEX extends BASE {
     if (!_.isRegExp(regex)) throw new Error('Invalid regular expression')
     this[_regex] = regex;
     this[_options] = options || {};
+    this[_message] = `Value does not match regular expression.`;
   }
 
   async validate(value, options = {}) {
@@ -35,7 +37,7 @@ class REGEX extends BASE {
     }
 
     if (!value.match(this[_regex])) {
-      throw `Value does not match regular expression.`;
+      throw this[_message];
     }
 
     if (this[_minLength] && value.length < this[_minLength]) {
@@ -78,6 +80,11 @@ class REGEX extends BASE {
       throw new Error('Must be string.');
     }
     this[_default] = value;
+    return this;
+  }
+
+  message(message) {
+    this[_message] = message;
     return this;
   }
 }

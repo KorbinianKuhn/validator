@@ -109,4 +109,11 @@ describe('REGEX()', function () {
     result.should.equal('');
   }));
 
+  it('should return custom message', helper.mochaAsync(async() => {
+    let result = await helper.shouldThrow(
+      async() => await REGEX(/[A-Z]/).empty(false).message('Must have only uppercase letters.').validate('')
+    );
+    result.should.equal('Must have only uppercase letters.');
+  }));
+
 });
