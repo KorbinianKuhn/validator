@@ -51,7 +51,7 @@ const compare = (value, keyA, conditions) => {
         if (_.isEqual(a, b)) errors.push(`must not equal '${conditions[method]}'`);
         break;
       case 'xor':
-        if (a && b) errors.push(`only '${keyA}' or '${keyB}' can be set`);
+        errors.push(`only '${keyA}' or '${keyB}' can be set`);
         break;
       case 'dependsOn':
         if (a && !b) errors.push(`depends on '${keyB}'`);

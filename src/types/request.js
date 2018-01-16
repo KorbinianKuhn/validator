@@ -47,6 +47,10 @@ class REQUEST extends BASE {
       } catch (err) {
         errors.uri = err;
       }
+    } else if (options.noUndefinedKeys) {
+      if (_.keys(req.params).length > 0) {
+        errors.uri = 'No uri parameters allowed.';
+      }
     }
 
     if (this[_query]) {
@@ -56,16 +60,24 @@ class REQUEST extends BASE {
       } catch (err) {
         errors.query = err;
       }
+    } else if (options.noUndefinedKeys) {
+      if (_.keys(req.query).length > 0) {
+        errors.query = 'No query parameters allowed.';
+      }
     }
 
     if (this[_body]) {
-      const opt = _.defaults(this[_body].options, options);
-      if (!(opt.requireBody === false && _.keys(req.body).length === 0)) {
+      if (this[_body].schema.isRequired() || _.keys(req.body).length !== 0) {
+        const opt = _.defaults(this[_body].options, options);
         try {
           req.body = await this[_body].schema.validate(req.body, opt);
         } catch (err) {
           errors.body = err;
         }
+      }
+    } else if (options.noUndefinedKeys) {
+      if (_.keys(req.body).length > 0) {
+        errors.body = 'No body parameters allowed.';
       }
     }
 

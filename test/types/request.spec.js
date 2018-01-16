@@ -70,7 +70,7 @@ describe('REQUEST()', function () {
   it('invalid data should throw', helper.mochaAsync(async() => {
     const schema = OBJECT({
       name: STRING()
-    });
+    }).required(true);
 
     const req = {
       params: {},
@@ -142,12 +142,10 @@ describe('REQUEST()', function () {
   }));
 
   it('optional body should verify', helper.mochaAsync(async() => {
-    const schema = REQUEST({
-        requireBody: false
-      })
-      .body({
+    const schema = REQUEST()
+      .body(OBJECT({
         meters: ARRAY(OBJECT({}))
-      })
+      }).required(false))
 
     const req = {
       params: {},
@@ -157,4 +155,49 @@ describe('REQUEST()', function () {
 
     const result = await schema.validate(req, helper.DEFAULT_OPTIONS);
   }));
+
+  it('uri data without schema definition should fail', async() => {
+    const req = {
+      params: {
+        name: 'test'
+      },
+      query: {},
+      body: {}
+    }
+    let error;
+    const result = await REQUEST().validate(req, helper.DEFAULT_OPTIONS).catch((err) => {
+      error = err;
+    });
+    error.should.have.property('uri', 'No uri parameters allowed.');
+  });
+
+  it('query data without schema definition should fail', async() => {
+    const req = {
+      params: {},
+      query: {
+        name: 'test'
+      },
+      body: {}
+    }
+    let error;
+    const result = await REQUEST().validate(req, helper.DEFAULT_OPTIONS).catch((err) => {
+      error = err;
+    });
+    error.should.have.property('query', 'No query parameters allowed.');
+  });
+
+  it('body data without schema definition should fail', async() => {
+    const req = {
+      params: {},
+      query: {},
+      body: {
+        name: 'test'
+      },
+    }
+    let error;
+    const result = await REQUEST().validate(req, helper.DEFAULT_OPTIONS).catch((err) => {
+      error = err;
+    });
+    error.should.have.property('body', 'No body parameters allowed.');
+  });
 });
