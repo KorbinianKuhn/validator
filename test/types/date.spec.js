@@ -56,4 +56,10 @@ describe('DATE()', function () {
     result = await DATE().parse(true).validate(date.format('YYYY-MM-DD[T]HH:mm:ss.SSSZ'));
     result.should.deepEqual(date.toDate());
   }));
+
+  it('deprecated function defaultValue should verify', async() => {
+    const date = moment.utc().toDate();
+    let result = await DATE().defaultValue(date).validate();
+    result.should.deepEqual(date);
+  });
 });

@@ -43,11 +43,11 @@ class NUMBER extends BASE {
       throw `Must be greater than ${this[_private].greater}.`;
     }
 
-    if (this[_private].positive && value < 0) {
+    if (this[_private].positive && value <= 0) {
       throw `Must be positive.`;
     }
 
-    if (this[_private].positive && value >= 0) {
+    if (this[_private].negative && value >= 0) {
       throw `Must be negative.`;
     }
 
@@ -74,13 +74,13 @@ class NUMBER extends BASE {
     return this;
   }
 
-  positive(boolean) {
-    this[_private].positive = boolean;
+  positive() {
+    this[_private].positive = true;
     return this;
   }
 
-  negative(boolean) {
-    this[_private].negative = boolean;
+  negative() {
+    this[_private].negative = true;
     return this;
   }
 

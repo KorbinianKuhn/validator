@@ -174,8 +174,8 @@ validator.Enum([1,2,3], options);
 - `max(integer)`: Maximum value.
 - `greater(integer)`: Must be greater.
 - `less(integer)`: Must be less.
-- `positive(integer)`: Must be positive.
-- `negative(integer)`: Must be negative.
+- `positive()`: Must be positive.
+- `negative()`: Must be negative.
 
 ```javascript
 validator.Integer(options);
@@ -188,8 +188,8 @@ validator.Integer(options).min(5).max(20);
 - `max(number)`: Maximum number.
 - `greater(number)`: Must be greater.
 - `less(number)`: Must be less.
-- `positive(number)`: Must be positive.
-- `negative(number)`: Must be negative.
+- `positive()`: Must be positive.
+- `negative()`: Must be negative.
 
 ```javascript
 validator.Number(options);

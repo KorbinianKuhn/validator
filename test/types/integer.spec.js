@@ -83,4 +83,65 @@ describe('INTEGER()', function () {
     result = await INTEGER().default(1).validate(2);
     result.should.equal(2);
   }));
+
+  it('deprecated: defaultValue() should verify', helper.mochaAsync(async() => {
+    let result = await INTEGER().defaultValue(1).validate();
+    result.should.equal(1);
+  }));
+
+  it('test less function', helper.mochaAsync(async() => {
+    let error;
+    await INTEGER().less(1).validate(2).catch((err) => {
+      error = err;
+    });
+    error.should.equal('Must be less than 1.');
+
+    const result = await INTEGER().less(1).validate(0);
+    result.should.equal(0);
+  }));
+
+  it('test greater function', helper.mochaAsync(async() => {
+    let error;
+    await INTEGER().greater(2).validate(1).catch((err) => {
+      error = err;
+    });
+    error.should.equal('Must be greater than 2.');
+
+    const result = await INTEGER().greater(2).validate(3);
+    result.should.equal(3);
+  }));
+
+  it('test positive function', helper.mochaAsync(async() => {
+    let error;
+    await INTEGER().positive().validate(0).catch((err) => {
+      error = err;
+    });
+    error.should.equal('Must be positive.');
+
+    error = undefined;
+    await INTEGER().positive().validate(-1).catch((err) => {
+      error = err;
+    });
+    error.should.equal('Must be positive.');
+
+    const result = await INTEGER().positive().validate(3);
+    result.should.equal(3);
+  }));
+
+  it('test negative function', helper.mochaAsync(async() => {
+    let error;
+    await INTEGER().negative().validate(0).catch((err) => {
+      error = err;
+    });
+    error.should.equal('Must be negative.');
+
+    error = undefined;
+    await INTEGER().negative().validate(1).catch((err) => {
+      error = err;
+    });
+    error.should.equal('Must be negative.');
+
+    const result = await INTEGER().negative().validate(-3);
+    result.should.equal(-3);
+  }));
 });

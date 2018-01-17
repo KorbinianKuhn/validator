@@ -155,4 +155,18 @@ describe('ARRAY()', function () {
     })).validate(array);
     result.should.deepEqual(array);
   }));
+
+  it('deprecated functions minLength, maxLength, exactLength, defaultValue should verify', async() => {
+    let result = await ARRAY().defaultValue([1, 2, 3]).validate();
+    result.should.deepEqual([1, 2, 3]);
+
+    result = await ARRAY().minLength(3).validate([1, 2, 3]);
+    result.should.deepEqual([1, 2, 3]);
+
+    result = await ARRAY().maxLength(3).validate([1, 2, 3]);
+    result.should.deepEqual([1, 2, 3]);
+
+    result = await ARRAY().exactLength(3).validate([1, 2, 3]);
+    result.should.deepEqual([1, 2, 3]);
+  });
 });

@@ -51,7 +51,7 @@ describe('NUMBER()', function () {
   }));
 
   it('parsed values should verify', helper.mochaAsync(async() => {
-    const integer = NUMBER({
+    const number = NUMBER({
       parseToType: true
     });
 
@@ -59,7 +59,7 @@ describe('NUMBER()', function () {
     const parsed = [10, -10, 0, 20, 3.21312, 48120.2912];
 
     for (const index in values) {
-      let value = await integer.validate(values[index]);
+      let value = await number.validate(values[index]);
       value.should.equal(parsed[index]);
     }
   }));
@@ -75,5 +75,66 @@ describe('NUMBER()', function () {
 
     result = await NUMBER().default(1.3).validate(2);
     result.should.equal(2);
+  }));
+
+  it('deprecated: defaultValue() should verify', helper.mochaAsync(async() => {
+    let result = await NUMBER().defaultValue(1.3).validate();
+    result.should.equal(1.3);
+  }));
+
+  it('test less function', helper.mochaAsync(async() => {
+    let error;
+    await NUMBER().less(1.3).validate(2.3).catch((err) => {
+      error = err;
+    });
+    error.should.equal('Must be less than 1.3.');
+
+    const result = await NUMBER().less(1.3).validate(0);
+    result.should.equal(0);
+  }));
+
+  it('test greater function', helper.mochaAsync(async() => {
+    let error;
+    await NUMBER().greater(2.3).validate(1.3).catch((err) => {
+      error = err;
+    });
+    error.should.equal('Must be greater than 2.3.');
+
+    const result = await NUMBER().greater(2.3).validate(3.3);
+    result.should.equal(3.3);
+  }));
+
+  it('test positive function', helper.mochaAsync(async() => {
+    let error;
+    await NUMBER().positive().validate(0).catch((err) => {
+      error = err;
+    });
+    error.should.equal('Must be positive.');
+
+    error = undefined;
+    await NUMBER().positive().validate(-1.3).catch((err) => {
+      error = err;
+    });
+    error.should.equal('Must be positive.');
+
+    const result = await NUMBER().positive().validate(3.3);
+    result.should.equal(3.3);
+  }));
+
+  it('test negative function', helper.mochaAsync(async() => {
+    let error;
+    await NUMBER().negative().validate(0).catch((err) => {
+      error = err;
+    });
+    error.should.equal('Must be negative.');
+
+    error = undefined;
+    await NUMBER().negative().validate(1.3).catch((err) => {
+      error = err;
+    });
+    error.should.equal('Must be negative.');
+
+    const result = await NUMBER().negative().validate(-3.3);
+    result.should.equal(-3.3);
   }));
 });

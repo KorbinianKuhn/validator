@@ -64,4 +64,9 @@ describe('BOOLEAN()', function () {
     result = await BOOLEAN().default(true).validate(false);
     result.should.deepEqual(false);
   }));
+
+  it('deprecated function defaultValue should verify', async() => {
+    let result = await BOOLEAN().defaultValue(true).validate();
+    result.should.deepEqual(true);
+  });
 });
