@@ -110,7 +110,7 @@ class OBJECT extends BASE {
     }
 
     if (this[_private].length && length !== this[_private].length) {
-      throw `Object must have exactly ${this[_private].min} keys.`
+      throw `Object must have exactly ${this[_private].length} keys.`
     }
 
     const errors = {}

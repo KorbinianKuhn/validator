@@ -50,4 +50,9 @@ describe('ENUM()', () => {
     result = await ENUM(['a', 'b', 'c']).default('a').validate('b');
     result.should.deepEqual('b');
   }));
+
+  it('deprecated function defaultValue should verify', async() => {
+    let result = await ENUM(['a', 'b', 'c']).defaultValue('a').validate();
+    result.should.deepEqual('a');
+  });
 });

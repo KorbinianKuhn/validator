@@ -53,4 +53,9 @@ describe('FUNCTION()', function () {
     let result = await FUNCTION(testFunction).default('test').validate();
     result.should.equal('test');
   }));
+
+  it('deprecated function defaultValue should verify', helper.mochaAsync(async() => {
+    let result = await FUNCTION(testFunction).defaultValue('test').validate();
+    result.should.equal('test');
+  }));
 });

@@ -116,4 +116,17 @@ describe('REGEX()', function () {
     result.should.equal('Must have only uppercase letters.');
   }));
 
+  it('deprecated functions minLength, maxLength, exactLength, defaultValue should verify', async() => {
+    let result = await REGEX(/[A-Z]/).defaultValue('ABC').validate();
+    result.should.equal('ABC');
+
+    result = await REGEX(/[A-Z]/).minLength(3).validate('ABC');
+    result.should.equal('ABC');
+
+    result = await REGEX(/[A-Z]/).maxLength(3).validate('ABC');
+    result.should.equal('ABC');
+
+    result = await REGEX(/[A-Z]/).exactLength(3).validate('ABC');
+    result.should.equal('ABC');
+  });
 });

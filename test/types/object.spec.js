@@ -132,6 +132,18 @@ describe('OBJECT()', function () {
     });
   }));
 
+  it('deprecated function defaultValue should verify', helper.mochaAsync(async() => {
+    const object = OBJECT({
+      name: STRING()
+    });
+    let result = await object.defaultValue({
+      name: 'John Doe'
+    }).validate();
+    result.should.deepEqual({
+      name: 'John Doe'
+    });
+  }));
+
   it('empty should verify', helper.mochaAsync(async() => {
     const object = OBJECT({
       name: STRING()
@@ -202,5 +214,68 @@ describe('OBJECT()', function () {
     }
     const result = await object.validate(data).catch(err => error = err);
     result.should.deepEqual(data);
+  });
+
+  it('min should fail and verify', async() => {
+    const valid = {
+      name: 'Jane Doe',
+      age: 20
+    };
+    const invalid = {
+      name: 'Jane Doe'
+    };
+    let error;
+    const object = OBJECT({
+      name: STRING()
+    }).min(2);
+    await object.validate(invalid).catch((err) => {
+      error = err;
+    });
+    error.should.equal('Object must have at least 2 keys.');
+
+    const result = await object.validate(valid);
+    result.should.deepEqual(valid)
+  });
+
+  it('max should fail and verify', async() => {
+    const invalid = {
+      name: 'Jane Doe',
+      age: 20
+    };
+    const valid = {
+      name: 'Jane Doe'
+    };
+    let error;
+    const object = OBJECT({
+      name: STRING()
+    }).max(1);
+    await object.validate(invalid).catch((err) => {
+      error = err;
+    });
+    error.should.equal('Object must have at most 1 keys.');
+
+    const result = await object.validate(valid);
+    result.should.deepEqual(valid)
+  });
+
+  it('length should fail and verify', async() => {
+    const invalid = {
+      name: 'Jane Doe',
+      age: 20
+    };
+    const valid = {
+      name: 'Jane Doe'
+    };
+    let error;
+    const object = OBJECT({
+      name: STRING()
+    }).length(1);
+    await object.validate(invalid).catch((err) => {
+      error = err;
+    });
+    error.should.equal('Object must have exactly 1 keys.');
+
+    const result = await object.validate(valid);
+    result.should.deepEqual(valid)
   });
 });
