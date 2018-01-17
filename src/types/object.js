@@ -3,11 +3,6 @@ const BASE = require('./base');
 
 const ALLOWED_CONDITIONS = ['gt', 'equals', 'lt', 'gte', 'lte', 'notEquals', 'dependsOn', 'xor'];
 
-var _object = Symbol();
-var _options = Symbol();
-var _default = Symbol();
-var _empty = Symbol();
-var _conditions = Symbol();
 var _private = Symbol();
 
 const compare = (value, keyA, conditions) => {
@@ -77,16 +72,16 @@ class OBJECT extends BASE {
       throw new Error('Invalid object.');
     }
 
-    this[_object] = object;
-    this[_options] = options || {};
     this[_private] = {};
+    this[_private].object = object;
+    this[_private].options = options || {};
   }
 
   async validate(value, options = {}) {
-    options = _.defaults(this[_options], options);
+    options = _.defaults(this[_private].options, options);
 
     if (_.isNil(value)) {
-      if (this[_default]) return this[_default];
+      if (this[_private].default) return this[_private].default;
       if (this.isRequired(options)) throw `Required but is ${value}.`;
       return value;
     }
@@ -101,14 +96,27 @@ class OBJECT extends BASE {
       throw `Must be object.`;
     }
 
-    if (_.keys(value).length === 0 && (this[_empty] === false || (this[_empty] === undefined && options.noEmptyObjects))) {
+    const length = _.keys(value).length
+    if (length === 0 && (this[_private].empty === false || (this[_private].empty === undefined && options.noEmptyObjects))) {
       throw `Object is empty.`;
     }
 
+    if (this[_private].min && length < this[_private].min) {
+      throw `Object must have at least ${this[_private].min} keys.`
+    }
+
+    if (this[_private].max && length > this[_private].max) {
+      throw `Object must have at most ${this[_private].max} keys.`
+    }
+
+    if (this[_private].length && length !== this[_private].length) {
+      throw `Object must have exactly ${this[_private].min} keys.`
+    }
+
     const errors = {}
-    for (const key in this[_object]) {
+    for (const key in this[_private].object) {
       try {
-        const result = await this[_object][key].validate(value[key], options);
+        const result = await this[_private].object[key].validate(value[key], options);
         if (!_.isNil(result)) value[key] = result;
       } catch (err) {
         errors[key] = err;
@@ -117,16 +125,16 @@ class OBJECT extends BASE {
 
     if (options.noUndefinedKeys) {
       for (const key in value) {
-        if (!_.has(this[_object], key)) {
+        if (!_.has(this[_private].object, key)) {
           errors[key] = 'Invalid key.'
         }
       }
     }
 
-    if (this[_conditions] && _.keys(errors).length === 0) {
-      for (const key in this[_conditions]) {
+    if (this[_private].conditions && _.keys(errors).length === 0) {
+      for (const key in this[_private].conditions) {
         try {
-          compare(value, key, this[_conditions][key]);
+          compare(value, key, this[_private].conditions[key]);
         } catch (err) {
           errors[key] = err;
         }
@@ -155,28 +163,20 @@ class OBJECT extends BASE {
   }
 
   empty(boolean) {
-    this[_empty] = boolean;
-    return this;
-  }
-
-  defaultValue(value) {
-    if (!_.isPlainObject(value)) {
-      throw new Error('Must be object.');
-    }
-    this[_default] = value;
+    this[_private].empty = boolean;
     return this;
   }
 
   conditions(options) {
     let conditions = {}
-    if (this[_conditions]) {
-      conditions = this[_conditions];
+    if (this[_private].conditions) {
+      conditions = this[_private].conditions;
     }
     for (const key in options) {
-      if (!_.has(this[_object], key)) throw `Object has no key '${key}'.`;
+      if (!_.has(this[_private].object, key)) throw `Object has no key '${key}'.`;
       for (const method in options[key]) {
         if (ALLOWED_CONDITIONS.indexOf(method) === -1) throw `Object has no condition method '${method}'.`;
-        if (!_.has(this[_object], options[key][method])) throw `Object has no key '${options[key][method]}'.`;
+        if (!_.has(this[_private].object, options[key][method])) throw `Object has no key '${options[key][method]}'.`;
         if (_.has(conditions, key)) {
           _.merge(conditions[key], options[key]);
         } else {
@@ -184,7 +184,7 @@ class OBJECT extends BASE {
         }
       }
     }
-    this[_conditions] = conditions;
+    this[_private].conditions = conditions;
     return this;
   }
 
@@ -230,6 +230,35 @@ class OBJECT extends BASE {
       keys
     }
     return this;
+  }
+
+  min(length) {
+    this[_private].min = length;
+    return this;
+  }
+
+  max(length) {
+    this[_private].max = length;
+    return this;
+  }
+
+  length(length) {
+    this[_private].length = length;
+    return this;
+  }
+
+  default (value) {
+    if (!_.isPlainObject(value)) {
+      throw new Error('Must be object.');
+    }
+    this[_private].default = value;
+    return this;
+  }
+
+  // Deprecated remove in v1
+  defaultValue(value) {
+    console.log('using defaultValue() is deprecated. Use default() instead.');
+    return this.default(value);
   }
 }
 

@@ -54,21 +54,21 @@ describe('REGEX()', function () {
 
   it('invalid length should fail', helper.mochaAsync(async() => {
     try {
-      await REGEX(/[A-Z]/).minLength(5).validate('ABC', helper.DEFAULT_OPTIONS);
+      await REGEX(/[A-Z]/).min(5).validate('ABC', helper.DEFAULT_OPTIONS);
       should.equal(true, false, 'Should throw');
     } catch (err) {
       err.should.equal(`Must have at least 5 characters.`);
     }
 
     try {
-      await REGEX(/[A-Z]/).maxLength(3).validate('ABCD', helper.DEFAULT_OPTIONS);
+      await REGEX(/[A-Z]/).max(3).validate('ABCD', helper.DEFAULT_OPTIONS);
       should.equal(true, false, 'Should throw');
     } catch (err) {
       err.should.equal('Must have at most 3 characters.');
     }
 
     try {
-      await REGEX(/[A-Z]/).exactLength(3).validate('ABCD', helper.DEFAULT_OPTIONS);
+      await REGEX(/[A-Z]/).length(3).validate('ABCD', helper.DEFAULT_OPTIONS);
       should.equal(true, false, 'Should throw');
     } catch (err) {
       err.should.equal('Must have exactly 3 characters.');
@@ -76,26 +76,26 @@ describe('REGEX()', function () {
   }));
 
   it('valid length should verify', helper.mochaAsync(async() => {
-    let value = await REGEX(/[A-Z]/).minLength(3).validate('ABC', helper.DEFAULT_OPTIONS);
+    let value = await REGEX(/[A-Z]/).min(3).validate('ABC', helper.DEFAULT_OPTIONS);
     value.should.equal('ABC');
 
-    value = await REGEX(/[A-Z]/).maxLength(3).validate('ABC', helper.DEFAULT_OPTIONS);
+    value = await REGEX(/[A-Z]/).max(3).validate('ABC', helper.DEFAULT_OPTIONS);
     value.should.equal('ABC');
 
-    value = await REGEX(/[A-Z]/).exactLength(3).validate('ABC', helper.DEFAULT_OPTIONS);
+    value = await REGEX(/[A-Z]/).length(3).validate('ABC', helper.DEFAULT_OPTIONS);
     value.should.equal('ABC');
   }));
 
   it('invalid default value should throw', helper.mochaAsync(async() => {
-    const result = await helper.shouldThrow(async() => REGEX(/[A-Z]/).defaultValue(1234));
+    const result = await helper.shouldThrow(async() => REGEX(/[A-Z]/).default(1234));
     result.message.should.equal('Must be string.');
   }));
 
   it('valid default value should verify', helper.mochaAsync(async() => {
-    let result = await REGEX(/[A-Z]/).defaultValue('ABC').validate();
+    let result = await REGEX(/[A-Z]/).default('ABC').validate();
     result.should.equal('ABC');
 
-    result = await REGEX(/[A-Z]/).defaultValue('ABC').validate('DEF');
+    result = await REGEX(/[A-Z]/).default('ABC').validate('DEF');
     result.should.equal('DEF');
   }));
 

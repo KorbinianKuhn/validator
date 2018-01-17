@@ -1,20 +1,20 @@
 const _ = require('lodash');
 const BASE = require('./base');
 
-var _options = Symbol();
-var _default = Symbol();
+var _private = Symbol();
 
 class BOOLEAN extends BASE {
   constructor(options) {
     super();
-    this[_options] = options || {};
+    this[_private] = {};
+    this[_private].options = options || {};
   }
 
   async validate(value, options = {}) {
-    options = _.defaults(this[_options], options);
+    options = _.defaults(this[_private].options, options);
 
     if (_.isNil(value)) {
-      if (this[_default]) return this[_default];
+      if (this[_private].default) return this[_private].default;
       if (this.isRequired(options)) throw `Required but is ${value}.`;
       return value;
     }
@@ -31,12 +31,18 @@ class BOOLEAN extends BASE {
     return value;
   }
 
-  defaultValue(value) {
+  default (value) {
     if (!_.isBoolean(value)) {
       throw new Error('Must be boolean.');
     }
-    this[_default] = value;
+    this[_private].default = value;
     return this;
+  }
+
+  // Deprecated remove in v1
+  defaultValue(value) {
+    console.log('using defaultValue() is deprecated. Use default() instead.');
+    return this.default(value);
   }
 }
 

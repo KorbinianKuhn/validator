@@ -32,24 +32,24 @@ describe('STRING()', function () {
   }));
 
   it('invalid length should fail', helper.mochaAsync(async() => {
-    let message = await helper.shouldThrow(async() => STRING().minLength(5).validate('test', helper.DEFAULT_OPTIONS));
+    let message = await helper.shouldThrow(async() => STRING().min(5).validate('test', helper.DEFAULT_OPTIONS));
     message.should.equal(`Must have at least 5 characters.`);
 
-    message = await helper.shouldThrow(async() => STRING().maxLength(3).validate('test', helper.DEFAULT_OPTIONS));
+    message = await helper.shouldThrow(async() => STRING().max(3).validate('test', helper.DEFAULT_OPTIONS));
     message.should.equal('Must have at most 3 characters.');
 
-    message = await helper.shouldThrow(async() => STRING().exactLength(3).validate('test', helper.DEFAULT_OPTIONS));
+    message = await helper.shouldThrow(async() => STRING().length(3).validate('test', helper.DEFAULT_OPTIONS));
     message.should.equal('Must have exactly 3 characters.');
   }));
 
   it('valid length should verify', helper.mochaAsync(async() => {
-    let value = await STRING().minLength(3).validate('test', helper.DEFAULT_OPTIONS);
+    let value = await STRING().min(3).validate('test', helper.DEFAULT_OPTIONS);
     value.should.equal('test');
 
-    value = await STRING().maxLength(5).validate('test', helper.DEFAULT_OPTIONS);
+    value = await STRING().max(5).validate('test', helper.DEFAULT_OPTIONS);
     value.should.equal('test');
 
-    value = await STRING().exactLength(4).validate('test', helper.DEFAULT_OPTIONS);
+    value = await STRING().length(4).validate('test', helper.DEFAULT_OPTIONS);
     value.should.equal('test');
   }));
 
@@ -68,15 +68,15 @@ describe('STRING()', function () {
   }));
 
   it('invalid default value should throw', helper.mochaAsync(async() => {
-    const result = await helper.shouldThrow(async() => STRING().defaultValue(1234));
+    const result = await helper.shouldThrow(async() => STRING().default(1234));
     result.message.should.equal('Must be string.');
   }));
 
   it('valid default value should verify', helper.mochaAsync(async() => {
-    let result = await STRING().defaultValue('default').validate();
+    let result = await STRING().default('default').validate();
     result.should.equal('default');
 
-    result = await STRING().defaultValue('default').validate('test');
+    result = await STRING().default('default').validate('test');
     result.should.equal('test');
   }));
 

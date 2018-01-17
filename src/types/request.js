@@ -3,10 +3,7 @@ const BASE = require('./base');
 const OBJECT = require('./object')
 const defaults = require('../defaults');
 
-var _options = Symbol();
-var _uri = Symbol();
-var _query = Symbol();
-var _body = Symbol();
+var _private = Symbol();
 
 const validateSchema = (schema) => {
   if (!_.hasIn(schema, 'constructor.name')) {
@@ -27,7 +24,8 @@ const validateSchema = (schema) => {
 class REQUEST extends BASE {
   constructor(options) {
     super();
-    this[_options] = options || {};
+    this[_private] = {};
+    this[_private].options = options || {};
   }
 
   async validate(req, options = {}) {
@@ -36,14 +34,14 @@ class REQUEST extends BASE {
       throw new Error('Invalid express req object.');
     }
 
-    options = _.defaults(this[_options], options);
+    options = _.defaults(this[_private].options, options);
 
     const errors = {}
 
-    if (this[_uri]) {
-      const opt = _.defaults(this[_uri].options, options);
+    if (this[_private].uri) {
+      const opt = _.defaults(this[_private].uri.options, options);
       try {
-        req.params = await this[_uri].schema.validate(req.params, opt);
+        req.params = await this[_private].uri.schema.validate(req.params, opt);
       } catch (err) {
         errors.uri = err;
       }
@@ -53,10 +51,10 @@ class REQUEST extends BASE {
       }
     }
 
-    if (this[_query]) {
-      const opt = _.defaults(this[_query].options, options);
+    if (this[_private].query) {
+      const opt = _.defaults(this[_private].query.options, options);
       try {
-        req.query = await this[_query].schema.validate(req.query, opt);
+        req.query = await this[_private].query.schema.validate(req.query, opt);
       } catch (err) {
         errors.query = err;
       }
@@ -66,11 +64,11 @@ class REQUEST extends BASE {
       }
     }
 
-    if (this[_body]) {
-      if (this[_body].schema.isRequired() || _.keys(req.body).length !== 0) {
-        const opt = _.defaults(this[_body].options, options);
+    if (this[_private].body) {
+      if (this[_private].body.schema.isRequired() || _.keys(req.body).length !== 0) {
+        const opt = _.defaults(this[_private].body.options, options);
         try {
-          req.body = await this[_body].schema.validate(req.body, opt);
+          req.body = await this[_private].body.schema.validate(req.body, opt);
         } catch (err) {
           errors.body = err;
         }
@@ -91,9 +89,9 @@ class REQUEST extends BASE {
   uri(schema, options = {}) {
     schema = validateSchema(schema);
 
-    this[_uri] = {
+    this[_private].uri = {
       schema,
-      options: _.defaults(options, this[_options], defaults.URI_OPTIONS)
+      options: _.defaults(options, this[_private].options, defaults.URI_OPTIONS)
     }
     return this;
   }
@@ -101,9 +99,9 @@ class REQUEST extends BASE {
   query(schema, options = {}) {
     schema = validateSchema(schema);
 
-    this[_query] = {
+    this[_private].query = {
       schema,
-      options: _.defaults(options, this[_options], defaults.QUERY_OPTIONS)
+      options: _.defaults(options, this[_private].options, defaults.QUERY_OPTIONS)
     }
     return this;
   }
@@ -111,9 +109,9 @@ class REQUEST extends BASE {
   body(schema, options = {}) {
     schema = validateSchema(schema);
 
-    this[_body] = {
+    this[_private].body = {
       schema,
-      options: _.defaults(options, this[_options], defaults.BODY_OPTIONS)
+      options: _.defaults(options, this[_private].options, defaults.BODY_OPTIONS)
     }
     return this;
   }

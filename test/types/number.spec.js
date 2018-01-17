@@ -65,15 +65,15 @@ describe('NUMBER()', function () {
   }));
 
   it('invalid default value should throw', helper.mochaAsync(async() => {
-    const result = await helper.shouldThrow(async() => NUMBER().defaultValue('invalid'));
+    const result = await helper.shouldThrow(async() => NUMBER().default('invalid'));
     result.message.should.equal('Must be number.');
   }));
 
   it('valid default value should verify', helper.mochaAsync(async() => {
-    let result = await NUMBER().defaultValue(1.5).validate();
+    let result = await NUMBER().default(1.5).validate();
     result.should.equal(1.5);
 
-    result = await NUMBER().defaultValue(1.3).validate(2);
+    result = await NUMBER().default(1.3).validate(2);
     result.should.equal(2);
   }));
 });

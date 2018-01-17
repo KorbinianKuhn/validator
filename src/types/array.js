@@ -1,27 +1,21 @@
 const _ = require('lodash');
 const BASE = require('./base');
 
-var _type = Symbol();
-var _options = Symbol();
-var _minLength = Symbol();
-var _maxLength = Symbol();
-var _exactLength = Symbol();
-var _empty = Symbol();
-var _default = Symbol();
-var _unique = Symbol();
+var _private = Symbol();
 
 class ARRAY extends BASE {
   constructor(type, options) {
     super();
-    this[_type] = type;
-    this[_options] = options || {};
+    this[_private] = {};
+    this[_private].type = type;
+    this[_private].options = options || {};
   }
 
   async validate(value, options = {}) {
-    options = _.defaults(this[_options], options);
+    options = _.defaults(this[_private].options, options);
 
     if (_.isNil(value)) {
-      if (this[_default]) return this[_default];
+      if (this[_private].default) return this[_private].default;
       if (this.isRequired(options)) throw `Required but is ${value}.`;
       return value;
     }
@@ -38,32 +32,32 @@ class ARRAY extends BASE {
       throw `Must be array but is ${typeof value}.`;
     }
 
-    if (value.length === 0 && (this[_empty] === false || (this[_empty] === undefined && options.noEmptyArrays))) {
+    if (value.length === 0 && (this[_private].empty === false || (this[_private].empty === undefined && options.noEmptyArrays))) {
       throw `Array is empty.`;
     }
 
-    if (this[_minLength] && value.length < this[_minLength]) {
-      throw `Must have at least ${this[_minLength]} items.`;
+    if (this[_private].min && value.length < this[_private].min) {
+      throw `Must have at least ${this[_private].min} items.`;
     }
 
-    if (this[_maxLength] && value.length > this[_maxLength]) {
-      throw `Must have at most ${this[_maxLength]} items.`;
+    if (this[_private].max && value.length > this[_private].max) {
+      throw `Must have at most ${this[_private].max} items.`;
     }
 
-    if (this[_exactLength] && value.length !== this[_exactLength]) {
-      throw `Must have exactly ${this[_exactLength]} items.`;
+    if (this[_private].length && value.length !== this[_private].length) {
+      throw `Must have exactly ${this[_private].length} items.`;
     }
 
-    if (this[_unique] && _.uniqWith(value, _.isEqual).length !== value.length) {
+    if (this[_private].unique && _.uniqWith(value, _.isEqual).length !== value.length) {
       throw 'Values must be unique.';
     }
 
-    if (this[_type] !== undefined) {
+    if (this[_private].type !== undefined) {
       const errors = {};
 
       for (const index in value) {
         try {
-          value[index] = await this[_type].validate(value[index], options);
+          value[index] = await this[_private].type.validate(value[index], options);
         } catch (err) {
           errors[index] = err;
         }
@@ -79,37 +73,58 @@ class ARRAY extends BASE {
     }
   }
 
-  minLength(length) {
-    this[_minLength] = length;
+  min(length) {
+    this[_private].min = length;
     return this;
   }
 
-  maxLength(length) {
-    this[_maxLength] = length;
+  max(length) {
+    this[_private].max = length;
     return this;
   }
 
-  exactLength(length) {
-    this[_exactLength] = length;
+  length(length) {
+    this[_private].length = length;
     return this;
   }
 
   empty(boolean) {
-    this[_empty] = boolean;
+    this[_private].empty = boolean;
     return this;
   }
 
-  defaultValue(value) {
+  default (value) {
     if (!_.isArray(value)) {
       throw new Error('Must be array.');
     }
-    this[_default] = value;
+    this[_private].default = value;
     return this;
   }
 
   unique(boolean) {
-    this[_unique] = boolean;
+    this[_private].unique = boolean;
     return this;
+  }
+
+  // Deprecated remove in v1
+  defaultValue(value) {
+    console.log('using defaultValue() is deprecated. Use default() instead.');
+    return this.default(value);
+  }
+
+  minLength(length) {
+    console.log('using minLength() is deprecated. Use min() instead.');
+    return this.min(length);
+  }
+
+  maxLength(length) {
+    console.log('using maxLength() is deprecated. Use max() instead.');
+    return this.max(length);
+  }
+
+  exactLength(length) {
+    console.log('using exactLength() is deprecated. Use length() instead.');
+    return this.length(length);
   }
 }
 

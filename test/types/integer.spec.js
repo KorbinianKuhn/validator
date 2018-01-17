@@ -72,15 +72,15 @@ describe('INTEGER()', function () {
   }));
 
   it('invalid default value should throw', helper.mochaAsync(async() => {
-    const result = await helper.shouldThrow(async() => INTEGER().defaultValue('invalid'));
+    const result = await helper.shouldThrow(async() => INTEGER().default('invalid'));
     result.message.should.equal('Must be integer.');
   }));
 
   it('valid default value should verify', helper.mochaAsync(async() => {
-    let result = await INTEGER().defaultValue(1).validate();
+    let result = await INTEGER().default(1).validate();
     result.should.equal(1);
 
-    result = await INTEGER().defaultValue(1).validate(2);
+    result = await INTEGER().default(1).validate(2);
     result.should.equal(2);
   }));
 });

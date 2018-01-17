@@ -107,7 +107,7 @@ describe('OBJECT()', function () {
     const object = OBJECT({
       name: STRING()
     });
-    const result = await helper.shouldThrow(async() => object.defaultValue('invalid'));
+    const result = await helper.shouldThrow(async() => object.default('invalid'));
     result.message.should.equal('Must be object.');
   }));
 
@@ -115,14 +115,14 @@ describe('OBJECT()', function () {
     const object = OBJECT({
       name: STRING()
     });
-    let result = await object.defaultValue({
+    let result = await object.default({
       name: 'John Doe'
     }).validate();
     result.should.deepEqual({
       name: 'John Doe'
     });
 
-    result = await object.defaultValue({
+    result = await object.default({
       name: 'John Doe'
     }).validate({
       name: 'Jane Doe'

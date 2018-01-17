@@ -1,29 +1,23 @@
 const _ = require('lodash');
 const BASE = require('./base');
 
-var _regex = Symbol();
-var _options = Symbol();
-var _minLength = Symbol();
-var _maxLength = Symbol();
-var _exactLength = Symbol();
-var _default = Symbol();
-var _empty = Symbol();
-var _message = Symbol();
+var _private = Symbol();
 
 class REGEX extends BASE {
   constructor(regex, options) {
     super();
     if (!_.isRegExp(regex)) throw new Error('Invalid regular expression')
-    this[_regex] = regex;
-    this[_options] = options || {};
-    this[_message] = `Value does not match regular expression.`;
+    this[_private] = {}
+    this[_private].regex = regex;
+    this[_private].options = options || {};
+    this[_private].message = `Value does not match regular expression.`;
   }
 
   async validate(value, options = {}) {
-    options = _.defaults(this[_options], options);
+    options = _.defaults(this[_private].options, options);
 
     if (_.isNil(value)) {
-      if (this[_default]) return this[_default];
+      if (this[_private].default) return this[_private].default;
       if (this.isRequired(options)) throw `Required but is ${value}.`;
       return value;
     }
@@ -32,60 +26,81 @@ class REGEX extends BASE {
       throw `Must be string but is ${typeof value}.`;
     }
 
-    if (value === '' && this[_empty]) {
+    if (value === '' && this[_private].empty) {
       return value;
     }
 
-    if (!value.match(this[_regex])) {
-      throw this[_message];
+    if (!value.match(this[_private].regex)) {
+      throw this[_private].message;
     }
 
-    if (this[_minLength] && value.length < this[_minLength]) {
-      throw `Must have at least ${this[_minLength]} characters.`;
+    if (this[_private].min && value.length < this[_private].min) {
+      throw `Must have at least ${this[_private].min} characters.`;
     }
 
-    if (this[_maxLength] && value.length > this[_maxLength]) {
-      throw `Must have at most ${this[_maxLength]} characters.`;
+    if (this[_private].max && value.length > this[_private].max) {
+      throw `Must have at most ${this[_private].max} characters.`;
     }
 
-    if (this[_exactLength] && value.length !== this[_exactLength]) {
-      throw `Must have exactly ${this[_exactLength]} characters.`;
+    if (this[_private].length && value.length !== this[_private].length) {
+      throw `Must have exactly ${this[_private].length} characters.`;
     }
 
     return value;
   }
 
   minLength(length) {
-    this[_minLength] = length;
-    return this;
+    console.log('using minLength() is deprecated. Use min() instead.');
+    return this.min(length);
   }
 
   maxLength(length) {
-    this[_maxLength] = length;
-    return this;
+    console.log('using maxLength() is deprecated. Use max() instead.');
+    return this.max(length);
   }
 
   exactLength(length) {
-    this[_exactLength] = length;
+    console.log('using exactLength() is deprecated. Use length() instead.');
+    return this.length(length);
+  }
+
+  min(length) {
+    this[_private].min = length;
+    return this;
+  }
+
+  max(length) {
+    this[_private].max = length;
+    return this;
+  }
+
+  length(length) {
+    this[_private].length = length;
     return this;
   }
 
   empty(boolean) {
-    this[_empty] = boolean;
-    return this;
-  }
-
-  defaultValue(value) {
-    if (!_.isString(value)) {
-      throw new Error('Must be string.');
-    }
-    this[_default] = value;
+    this[_private].empty = boolean;
     return this;
   }
 
   message(message) {
-    this[_message] = message;
+    this[_private].message = message;
     return this;
+  }
+
+  default (value) {
+    if (!_.isString(value)) {
+      throw new Error('Must be string.');
+    }
+    this[_private].default = value;
+    return this;
+  }
+
+  // Deprecated remove in v1
+  defaultValue(value) {
+    console.log('using defaultValue() is deprecated. Use default() instead.');
+    return this.default(value);
   }
 }
 

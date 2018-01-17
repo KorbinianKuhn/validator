@@ -33,24 +33,24 @@ describe('ARRAY()', function () {
   }));
 
   it('invalid length should fail', helper.mochaAsync(async() => {
-    let result = await helper.shouldThrow(async() => ARRAY().minLength(5).validate(['test'], helper.DEFAULT_OPTIONS));
+    let result = await helper.shouldThrow(async() => ARRAY().min(5).validate(['test'], helper.DEFAULT_OPTIONS));
     result.should.equal(`Must have at least 5 items.`);
 
-    result = await helper.shouldThrow(async() => ARRAY().maxLength(5).validate([1, 2, 3, 4, 5, 6], helper.DEFAULT_OPTIONS));
+    result = await helper.shouldThrow(async() => ARRAY().max(5).validate([1, 2, 3, 4, 5, 6], helper.DEFAULT_OPTIONS));
     result.should.equal(`Must have at most 5 items.`);
 
-    result = await helper.shouldThrow(async() => ARRAY().exactLength(3).validate(['test'], helper.DEFAULT_OPTIONS));
+    result = await helper.shouldThrow(async() => ARRAY().length(3).validate(['test'], helper.DEFAULT_OPTIONS));
     result.should.equal(`Must have exactly 3 items.`);
   }));
 
   it('valid length should verify', helper.mochaAsync(async() => {
-    let value = await ARRAY().minLength(1).validate(['test'], helper.DEFAULT_OPTIONS);
+    let value = await ARRAY().min(1).validate(['test'], helper.DEFAULT_OPTIONS);
     value.should.deepEqual(['test']);
 
-    value = await ARRAY().maxLength(1).validate(['test'], helper.DEFAULT_OPTIONS);
+    value = await ARRAY().max(1).validate(['test'], helper.DEFAULT_OPTIONS);
     value.should.deepEqual(['test']);
 
-    value = await ARRAY().exactLength(1).validate(['test'], helper.DEFAULT_OPTIONS);
+    value = await ARRAY().length(1).validate(['test'], helper.DEFAULT_OPTIONS);
     value.should.deepEqual(['test']);
   }));
 
@@ -93,15 +93,15 @@ describe('ARRAY()', function () {
   }));
 
   it('invalid default value should throw', helper.mochaAsync(async() => {
-    const result = await helper.shouldThrow(async() => ARRAY().defaultValue('invalid'));
+    const result = await helper.shouldThrow(async() => ARRAY().default('invalid'));
     result.message.should.equal('Must be array.');
   }));
 
   it('valid default value should verify', helper.mochaAsync(async() => {
-    let result = await ARRAY().defaultValue([1, 2, 3]).validate();
+    let result = await ARRAY().default([1, 2, 3]).validate();
     result.should.deepEqual([1, 2, 3]);
 
-    result = await ARRAY().defaultValue([1, 2, 3]).validate([1, 2]);
+    result = await ARRAY().default([1, 2, 3]).validate([1, 2]);
     result.should.deepEqual([1, 2]);
   }));
 

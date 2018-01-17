@@ -53,15 +53,15 @@ describe('BOOLEAN()', function () {
   }));
 
   it('invalid default value should throw', helper.mochaAsync(async() => {
-    const result = await helper.shouldThrow(async() => BOOLEAN().defaultValue('invalid'));
+    const result = await helper.shouldThrow(async() => BOOLEAN().default('invalid'));
     result.message.should.equal('Must be boolean.');
   }));
 
   it('valid default value should verify', helper.mochaAsync(async() => {
-    let result = await BOOLEAN().defaultValue(true).validate();
+    let result = await BOOLEAN().default(true).validate();
     result.should.deepEqual(true);
 
-    result = await BOOLEAN().defaultValue(true).validate(false);
+    result = await BOOLEAN().default(true).validate(false);
     result.should.deepEqual(false);
   }));
 });

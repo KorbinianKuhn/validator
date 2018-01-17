@@ -24,17 +24,17 @@ Initialize a new Validator:
 
 ``` javascript
 const eiv = require('@korbiniankuhn/express-input-validator');
-const Validator = eiv.Validator();
+const validator = eiv.Validator();
 ```
 
 Create a new Schema:
 
 ``` javascript
-const schema = Validator.Object({
-  name: Validator.String()
+const schema = validator.Object({
+  name: validator.String()
 });
 
-await Validator.validate(schema, {name: 'Jane Doe'});
+await validator.validate(schema, {name: 'Jane Doe'});
 // returns the given object
 ```
 
@@ -42,48 +42,48 @@ The different Schema types:
 
 ``` javascript
 // Simple types
-Validator.Boolean();
-Validator.Date();
-Validator.Integer();
-Validator.Number();
-Validator.Regex(\[A-Z]\);
-Validator.String();
+validator.Boolean();
+validator.Date();
+validator.Integer();
+validator.Number();
+validator.Regex(\[A-Z]\);
+validator.String();
 
 // Whitelisted inputs
-Validator.Enum([1,2,3]);
+validator.Enum([1,2,3]);
 
 // Arrays
-Validator.Array(Validator.String());
+validator.Array(validator.String());
 
 // Objects / stacked types
-Validator.Object({
-  street: Validator.String(),
-  postal: Validator.Integer()
+validator.Object({
+  street: validator.String(),
+  postal: validator.Integer()
 });
 
 // Custom functions
-Validator.Function((value, options) => { return true});
+validator.Function((value, options) => { return true});
 
 // Request to validate express req
-Validator.Request(options);
+validator.Request(options);
 ```
 
 Extend the validator with custom schemas and types to reuse them later:
 
 ``` javascript
 // Create a reusable regular expression
-const myRegex = Validator.Regex(\[A-Z]\);
-Validator.addType('myRegex', myRegex);
-Validator.Custom('myRegex');
+const myRegex = validator.Regex(\[A-Z]\);
+validator.addType('myRegex', myRegex);
+validator.Custom('myRegex');
 
 // Create a reusable address schema
-const address = Validator.Object({
-  street: Validator.String(),
-  postal: Validator.Integer(),
-  city: Validator.String()
+const address = validator.Object({
+  street: validator.String(),
+  postal: validator.Integer(),
+  city: validator.String()
 })
-Validator.addType('address', address);
-Validator.Custom('address');
+validator.addType('address', address);
+validator.Custom('address');
 ```
 
 ## Validator
@@ -103,10 +103,10 @@ If a schema gets checked by a validator it will get the validators options.
 Every schema and type can get own options which will override the ones of its parent.
 
 ``` javascript
-const Validator = eiv.Validator({noEmptyStrings: true});
-const schema = Validator.Object({
-  empty: Validator.String({noEmptyStrings: false}),
-  notEmpty: Validator.String()
+const validator = eiv.Validator({noEmptyStrings: true});
+const schema = validator.Object({
+  empty: validator.String({noEmptyStrings: false}),
+  notEmpty: validator.String()
 });
 
 const data = {
@@ -114,7 +114,7 @@ const data = {
   notEmpty: 'hi'
 }
 
-await Validator.validate(schema, data);
+await validator.validate(schema, data);
 // returns data
 ```
 
@@ -123,32 +123,32 @@ await Validator.validate(schema, data);
 All types share these functions:
 
 - `required(boolean)`: Is the parameter required.
-- `defaultValue(value)`: Default value if input is undefined/null. Overwrites `required` and `empty` settings.
+- `default(value)`: Default value if input is undefined/null. Overwrites `required` and `empty` settings.
 
 ``` javascript
-Validator.Boolean().required(false);
-Validator.Boolean().defaultValue(false);
+validator.Boolean().required(false);
+validator.Boolean().default(false);
 ```
 
 ### Array
 
-- `minLength(integer)`: Minimum length of the array.
-- `maxLength(integer)`: Maximum length of the array.
-- `exactLength(integer)`: Exact length of the array.
+- `min(integer)`: Minimum length of the array.
+- `max(integer)`: Maximum length of the array.
+- `length(integer)`: Exact length of the array.
 - `empty(boolean)`: If array can be empty. Overwrites options.
 - `unique(boolean)`: Only allow unique items (including objects and arrays).
 
 ```javascript
-Validator.Array(Validator.String(), options);
-Validator.Array(Validator.String(), options).minLength(5).maxLength(10);
-Validator.Array(Validator.String(), options).exactLength(5);
-Validator.Array(Validator.String(), options).empty(true);
+validator.Array(validator.String(), options);
+validator.Array(validator.String(), options).min(5).max(10);
+validator.Array(validator.String(), options).length(5);
+validator.Array(validator.String(), options).empty(true);
 ```
 
 ### Boolean
 
 ```javascript
-Validator.Boolean(options);
+validator.Boolean(options);
 ```
 
 ### Date
@@ -157,42 +157,50 @@ Validator.Boolean(options);
 - `parse(boolean)`: Parse date string to Date object.
 
 ```javascript
-Validator.Date(format, options);
-Validator.Date(null, options).format('YYYY-MM-DD');
-Validator.Date('YYYY-MM-DD').parse(true);
+validator.Date(format, options);
+validator.Date(null, options).format('YYYY-MM-DD');
+validator.Date('YYYY-MM-DD').parse(true);
 ```
 
 ### Enum
 
 ```javascript
-Validator.Enum([1,2,3], options);
+validator.Enum([1,2,3], options);
 ```
 
 ### Integer
 
 - `min(integer)`: Minimum value.
 - `max(integer)`: Maximum value.
+- `greater(integer)`: Must be greater.
+- `less(integer)`: Must be less.
+- `positive(integer)`: Must be positive.
+- `negative(integer)`: Must be negative.
 
 ```javascript
-Validator.Integer(options);
-Validator.Integer(options).min(5).max(20);
+validator.Integer(options);
+validator.Integer(options).min(5).max(20);
 ```
 
 ### Number
 
 - `min(number)`: Minimum number.
 - `max(number)`: Maximum number.
+- `greater(number)`: Must be greater.
+- `less(number)`: Must be less.
+- `positive(number)`: Must be positive.
+- `negative(number)`: Must be negative.
 
 ```javascript
-Validator.Number(options);
-Validator.Number(options).min(0.0).max(5.0);
+validator.Number(options);
+validator.Number(options).min(0.0).max(5.0);
 ```
 
 ### Object
 
-- `minLength(integer)`: Minimum number of object properties.
-- `maxLength(integer)`: Maximum number of object properties.
-- `exactLength(integer)`: Exact number of object properties.
+- `min(integer)`: Minimum number of object properties.
+- `max(integer)`: Maximum number of object properties.
+- `length(integer)`: Exact number of object properties.
 - `empty(boolean)`: If object can be empty. Overwrites options.
 - `func(function, ...string)`: Call an async function with values of the given keys.
 
@@ -209,18 +217,18 @@ Add conditions to check multiple values against each other. Navigate to nested k
 - `xor(string, string)`: Only one of theses key should be set. Useful for optional parameters.
 
 ```javascript
-Validator.Object({name: Validator.String()}, options);
-Validator.Object({name: Validator.String()}, options).minLength(5).maxLength(10);
-Validator.Object({name: Validator.String()}, options).exactLength(5);
-Validator.Object({name: Validator.String()}, options).empty(true);
-Validator.Object({name: Validator.String(), age: Validator.Integer()}, options).func(fn, 'name', 'age');
+validator.Object({name: validator.String()}, options);
+validator.Object({name: validator.String()}, options).min(5).max(10);
+validator.Object({name: validator.String()}, options).length(5);
+validator.Object({name: validator.String()}, options).empty(true);
+validator.Object({name: validator.String(), age: validator.Integer()}, options).func(fn, 'name', 'age');
 
-Validator.Object({bigger: Validator.Integer(), smaller: Validator.Integer()}, options).equals('a', 'b');
-Validator.Object({
-  bigger: Validator.Integer(),
-  smaller: Validator.Integer(),
-  child: Validator.Object({
-    smaller: Validator.Integer()
+validator.Object({bigger: validator.Integer(), smaller: validator.Integer()}, options).equals('a', 'b');
+validator.Object({
+  bigger: validator.Integer(),
+  smaller: validator.Integer(),
+  child: validator.Object({
+    smaller: validator.Integer()
   })
 }, options)
   .conditions({
@@ -235,18 +243,18 @@ Validator.Object({
 
 ### Regex
 
-- `minLength(integer)`: Minimum length of the regex.
-- `maxLength(integer)`: Maximum length of the regex.
-- `exactLength(integer)`: Exact length of the regex.
+- `min(integer)`: Minimum length of the regex.
+- `max(integer)`: Maximum length of the regex.
+- `length(integer)`: Exact length of the regex.
 - `empty(boolean)`: If string can be empty. Overwrites options.
 - `message(string)`: Use a custom message if value does not match regular expression. The default message is 'Value does not match regular expression.'.
 
 ```javascript
-Validator.Regex(/A-Z/, options);
-Validator.Regex(/A-Z/, options).minLength(5).maxLength(20);
-Validator.Regex(/A-Z/, options).exactLength(15);
-Validator.Regex(/A-Z/, options).empty(true);
-Validator.Regex(/A-Z/, options).message('Only uppercase letters.');
+validator.Regex(/A-Z/, options);
+validator.Regex(/A-Z/, options).min(5).max(20);
+validator.Regex(/A-Z/, options).length(15);
+validator.Regex(/A-Z/, options).empty(true);
+validator.Regex(/A-Z/, options).message('Only uppercase letters.');
 ```
 
 ## Request
@@ -260,14 +268,14 @@ This is a special object to validate the express req object. It validates uri, q
 You can pass a Object or Array schema to each function or and just an object.
 
 ```javascript
-const schema = Validator.Request()
+const schema = validator.Request()
   .uri({
     id: INTEGER()
   })
   .body({
     name: STRING()
   })
-  .query(Validator.Object({
+  .query(validator.Object({
     deleted: BOOLEAN()
   }))
 
@@ -281,7 +289,7 @@ const req = {
   }
 }
 
-await Validator.validate(schema, req);
+await validator.validate(schema, req);
 /*
 {
   params: {
@@ -297,17 +305,17 @@ await Validator.validate(schema, req);
 
 ### String
 
-- `minLength(integer)`: Minimum length of the string.
-- `maxLength(integer)`: Maximum length of the string.
-- `exactLength(integer)`: Exact length of the string.
+- `min(integer)`: Minimum length of the string.
+- `max(integer)`: Maximum length of the string.
+- `length(integer)`: Exact length of the string.
 - `empty(boolean)`: If string can be empty. Overwrites options.
 - `trim(boolean)`: Trim whitespaces from string. Overwrites options.
 
 ```javascript
-Validator.String(options);
-Validator.String(options).minLength(5).maxLength(20);
-Validator.String(options).exactLength(15);
-Validator.String(options).empty(true);
+validator.String(options);
+validator.String(options).min(5).max(20);
+validator.String(options).length(15);
+validator.String(options).empty(true);
 ```
 
 ## Express middleware
@@ -399,7 +407,7 @@ const schema = new Schema({
 });
 
 const validationSchema = validator.Object({
-  name: validator.String().minLength(10).maxLength(50),
+  name: validator.String().min(10).max(50),
   age: validator.Integer().required(false),
 });
 

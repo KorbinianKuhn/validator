@@ -50,7 +50,7 @@ describe('FUNCTION()', function () {
   }));
 
   it('valid default value should verify', helper.mochaAsync(async() => {
-    let result = await FUNCTION(testFunction).defaultValue('test').validate();
+    let result = await FUNCTION(testFunction).default('test').validate();
     result.should.equal('test');
   }));
 });

@@ -31,15 +31,15 @@ describe('DATE()', function () {
   }));
 
   it('invalid default value should throw', helper.mochaAsync(async() => {
-    const result = await helper.shouldThrow(async() => DATE().defaultValue('2018-01-01'));
+    const result = await helper.shouldThrow(async() => DATE().default('2018-01-01'));
     result.message.should.equal(`Not a valid date. Must match format '${helper.DATE_FORMAT}'`);
   }));
 
   it('valid default value should verify', helper.mochaAsync(async() => {
-    let result = await DATE().defaultValue('2018-01-01T00:00:00.000Z').validate();
+    let result = await DATE().default('2018-01-01T00:00:00.000Z').validate();
     result.should.equal('2018-01-01T00:00:00.000Z');
 
-    result = await DATE().defaultValue('2018-01-01T00:00:00.000Z').validate('2019-01-01T00:00:00.000Z');
+    result = await DATE().default('2018-01-01T00:00:00.000Z').validate('2019-01-01T00:00:00.000Z');
     result.should.equal('2019-01-01T00:00:00.000Z');
   }));
 

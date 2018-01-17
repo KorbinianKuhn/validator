@@ -44,10 +44,10 @@ describe('ENUM()', () => {
   }));
 
   it('valid default value should verify', helper.mochaAsync(async() => {
-    let result = await ENUM(['a', 'b', 'c']).defaultValue('a').validate();
+    let result = await ENUM(['a', 'b', 'c']).default('a').validate();
     result.should.deepEqual('a');
 
-    result = await ENUM(['a', 'b', 'c']).defaultValue('a').validate('b');
+    result = await ENUM(['a', 'b', 'c']).default('a').validate('b');
     result.should.deepEqual('b');
   }));
 });
