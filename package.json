@@ -16,7 +16,10 @@
     "validator",
     "validation",
     "security",
-    "parser"
+    "parser",
+    "async",
+    "await",
+    "promise"
   ],
   "author": "Korbinian Kuhn",
   "license": "MIT",

@@ -1,6 +1,6 @@
 # Express input validator [![Travis](https://img.shields.io/travis/KorbinianKuhn/express-input-validator.svg)](https://travis-ci.org/KorbinianKuhn/express-input-validator/builds)  [![standard](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](http://standardjs.com/)
 
-This package validates variable input parameters for express REST APIs. The validation parameters are described by objects as schemas. The goal of this package is easy readability and flexible customization. The validator provides detailed information about invalid input values that can be automatically sent as an error response to the user.
+This package validates variable input parameters for express REST APIs. The validation parameters are described by objects as schemas. The goal of this package is easy readability and flexible customization. The validator provides detailed information about invalid input values that can be automatically sent as an error response to the user. All validation will be handled asynchronous and can be extended with custom async functions.
 
 It can also parse input string values to target types (e.g. boolean, integer, number, array or object).
 
@@ -34,7 +34,7 @@ const schema = Validator.Object({
   name: Validator.String()
 });
 
-Validator.validate(schema, {name: 'Jane Doe'});
+await Validator.validate(schema, {name: 'Jane Doe'});
 // returns the given object
 ```
 
@@ -114,7 +114,7 @@ const data = {
   notEmpty: 'hi'
 }
 
-Validator.validate(schema, data);
+await Validator.validate(schema, data);
 // returns data
 ```
 
@@ -281,7 +281,7 @@ const req = {
   }
 }
 
-Validator.validate(schema, req);
+await Validator.validate(schema, req);
 /*
 {
   params: {
@@ -359,8 +359,8 @@ const loginSchema = validator.Request()
   })
 
 // Login route controller
-app.post('/login', asyncMiddleware((req, res, next) => {
-  validator.validate(loginSchema, req);
+app.post('/login', asyncMiddleware(async (req, res) => {
+  await validator.validate(loginSchema, req);
   if (email === 'jan.doe@example.com' && password === 'secret') {
     res.send('success');
   } else {
