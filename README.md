@@ -399,23 +399,17 @@ const schema = new Schema({
   name: {
     type: String,
     index: true,
-    required: true
+    required: true,
+    validate: async (v) => {
+      await validator.validate(validator.String().min(5).max(50), v);
+    }
   },
   age: {
-    type: Integer
+    type: Integer,
+    validate: async (v) => {
+      await validator.validate(validator.Integer().greater(0), v);
+    }
   },
-});
-
-const validationSchema = validator.Object({
-  name: validator.String().min(10).max(50),
-  age: validator.Integer().required(false),
-});
-
-schema.pre('save', async function (next) {
-  await validator.validate(validationSchema, this.toObject()).catch(err => {
-    next(err);
-  });
-  next();
 });
 ```
 
