@@ -11,7 +11,7 @@ const ARRAY = require('../../src/types/array');
 describe('REQUEST()', function () {
   it('invalid schema should throw', helper.mochaAsync(async() => {
     (() => {
-      REQUEST().uri(null)
+      REQUEST().params(null)
     }).should.throw('Invalid schema.');
 
     (() => {
@@ -25,7 +25,7 @@ describe('REQUEST()', function () {
 
   it('unknown schema should throw', helper.mochaAsync(async() => {
     (() => {
-      REQUEST().uri(STRING())
+      REQUEST().params(STRING())
     }).should.throw('Must be OBJECT or ARRAY Schema.');
 
     (() => {
@@ -43,7 +43,7 @@ describe('REQUEST()', function () {
     });
 
     try {
-      await REQUEST().uri(schema).validate(null);
+      await REQUEST().params(schema).validate(null);
       should.equal(true, false, 'Should throw');
     } catch (err) {
       err.message.should.equal('Invalid express req object.');
@@ -79,11 +79,11 @@ describe('REQUEST()', function () {
     }
 
     try {
-      await REQUEST().uri(schema).validate(req);
+      await REQUEST().params(schema).validate(req);
       should.equal(true, false, 'Should throw');
     } catch (err) {
       err.should.deepEqual({
-        uri: 'Object is empty.'
+        params: 'Object is empty.'
       });
     }
 
@@ -118,7 +118,7 @@ describe('REQUEST()', function () {
     }
 
     const result = await REQUEST()
-      .uri(OBJECT({
+      .params(OBJECT({
         id: INTEGER()
       }))
       .body(OBJECT({
@@ -156,7 +156,7 @@ describe('REQUEST()', function () {
     const result = await schema.validate(req, helper.DEFAULT_OPTIONS);
   }));
 
-  it('uri data without schema definition should fail', async() => {
+  it('params data without schema definition should fail', async() => {
     const req = {
       params: {
         name: 'test'
@@ -168,7 +168,7 @@ describe('REQUEST()', function () {
     const result = await REQUEST().validate(req, helper.DEFAULT_OPTIONS).catch((err) => {
       error = err;
     });
-    error.should.have.property('uri', 'No uri parameters allowed.');
+    error.should.have.property('params', 'No params parameters allowed.');
   });
 
   it('query data without schema definition should fail', async() => {
@@ -200,4 +200,29 @@ describe('REQUEST()', function () {
     });
     error.should.have.property('body', 'No body parameters allowed.');
   });
+
+  it('deprecated uri function should verify', helper.mochaAsync(async() => {
+    const req = {
+      params: {
+        id: '20'
+      },
+      query: {},
+      body: {}
+    }
+
+    const result = await REQUEST()
+      .uri(OBJECT({
+        id: INTEGER()
+      }))
+      .validate(req);
+
+    result.should.deepEqual({
+      params: {
+        id: 20
+      },
+      query: {},
+      body: {}
+    });
+
+  }));
 });

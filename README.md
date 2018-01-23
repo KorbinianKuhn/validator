@@ -99,6 +99,8 @@ If a schema gets checked by a validator it will get the validators options.
 - `noEmptyObjects (boolean)`: Disallow empty objects. Default true.
 - `noUndefinedKeys (boolean)`: Disallow keys that are not defined by the schema. Default true.
 - `parseDates (boolean)`: Parse date string to Date objects. Default true.
+- `utc (boolean)`: Use UTC to parse dates. Default true.
+- `strictDateValidation (boolean)`: Use strict date validation. Datestrings have to match exactly the given format. Default true.
 
 Every schema and type can get own options which will override the ones of its parent.
 
@@ -155,6 +157,10 @@ validator.Boolean(options);
 
 - `format(string | array)`: Format will get validated with [moment](https://github.com/moment/moment) as utc time in strict mode. Default format is the ISO6801 standard 'YYYY-MM-DD[T]HH:mm:ss.SSSZ'.
 - `parse(boolean)`: Parse date string to Date object.
+- `min(date)`: Set a minimum valid date.
+- `max(date)`: Set a maximum valid date.
+- `utc(boolean)`: Overwrite options use UTC. Default true.
+- `strict(boolean)`: Overwrite options strict date validation. Default true.
 
 ```javascript
 validator.Date(format, options);
@@ -259,9 +265,9 @@ validator.Regex(/A-Z/, options).message('Only uppercase letters.');
 
 ## Request
 
-This is a special object to validate the express req object. It validates uri, query and body parameters, with different default settings:
+This is a special object to validate the express req object. It validates params, query and body parameters, with different default settings:
 
-- `uri(schema, options)`: Default: Parameters will get parsed to type and are required.
+- `params(schema, options)`: Default: Parameters will get parsed to type and are required.
 - `query(schema, options)`: Default: Parameters will get parsed to type and are optional.
 - `body(schema, options)`: Default: Parameters will not get parsed to type and are required.
 
@@ -269,7 +275,7 @@ You can pass a Object or Array schema to each function or and just an object.
 
 ```javascript
 const schema = validator.Request()
-  .uri({
+  .params({
     id: INTEGER()
   })
   .body({

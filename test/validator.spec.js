@@ -13,7 +13,9 @@ const OVERWRITE_OPTIONS = {
   noEmptyArrays: false,
   noEmptyObjects: false,
   noUndefinedKeys: false,
-  dateFormat: 'YYYY-MM-DD'
+  dateFormat: 'YYYY-MM-DD',
+  utc: false,
+  strictDateValidation: false
 }
 
 describe('Validator()', function () {
@@ -51,7 +53,9 @@ describe('Validator()', function () {
       noEmptyObjects: true,
       noUndefinedKeys: true,
       dateFormat: defaults.DATE_FORMAT,
-      parseDates: true
+      parseDates: true,
+      utc: true,
+      strictDateValidation: true
     });
   });
 

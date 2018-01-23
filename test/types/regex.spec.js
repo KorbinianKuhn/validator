@@ -43,6 +43,11 @@ describe('REGEX()', function () {
     value.should.equal('ABC');
   }));
 
+  it('regex object should verify', helper.mochaAsync(async() => {
+    const value = await REGEX(new RegExp(/[A-Z]/)).validate('ABC');
+    value.should.equal('ABC');
+  }));
+
   it('invalid value should fail', helper.mochaAsync(async() => {
     try {
       await REGEX(/[A-Z]/).validate('abc');

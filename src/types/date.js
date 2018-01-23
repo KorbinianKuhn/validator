@@ -23,10 +23,26 @@ class DATE extends BASE {
 
     const format = this[_private].format || options.dateFormat || defaults.DATE_FORMAT;
 
-    const date = moment.utc(value, format, true);
+    const utc = _.defaultTo(this[_private].utc, _.defaultTo(options.utc, true));
+    const strict = _.defaultTo(this[_private].strict, _.defaultTo(options.strictDateValidation, true));
+
+    let date;
+    if (utc) {
+      date = moment.utc(value, format, strict);
+    } else {
+      date = moment(value, format, strict);
+    }
 
     if (!date.isValid()) {
       throw `Not a valid date. Must match format '${format}'`;
+    }
+
+    if (this[_private].min && date.toDate() < this[_private].min) {
+      throw `Must be at minimum '${this[_private].min.toISOString()}'`;
+    }
+
+    if (this[_private].max && date.toDate() > this[_private].max) {
+      throw `Must be at maximum '${this[_private].max.toISOString()}'`;
     }
 
     if (this[_private].parse || options.parseDates) {
@@ -53,6 +69,26 @@ class DATE extends BASE {
       throw new Error(`Not a valid date. Must match format '${format}'`);
     }
     this[_private].default = value;
+    return this;
+  }
+
+  strict(boolean) {
+    this[_private].strict = boolean;
+    return this;
+  }
+
+  utc(boolean) {
+    this[_private].utc = boolean;
+    return this;
+  }
+
+  min(date) {
+    this[_private].min = date;
+    return this;
+  }
+
+  max(date) {
+    this[_private].max = date;
     return this;
   }
 

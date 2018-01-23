@@ -57,6 +57,47 @@ describe('DATE()', function () {
     result.should.deepEqual(date.toDate());
   }));
 
+  it('test minimum date', helper.mochaAsync(async() => {
+    const date = DATE().min(moment.utc('2018-01-01').toDate());
+    let error;
+    try {
+      await date.validate('2017-01-01T00:00:00.000Z');
+    } catch (err) {
+      error = err
+    };
+    error.should.equal(`Must be at minimum '2018-01-01T00:00:00.000Z'`);
+
+    const result = await date.validate('2019-01-01T00:00:00.000Z');
+    result.should.equal('2019-01-01T00:00:00.000Z');
+  }));
+
+  it('test maximum date', helper.mochaAsync(async() => {
+    const date = DATE().max(moment.utc('2018-01-01').toDate());
+    let error;
+    try {
+      await date.validate('2019-01-01T00:00:00.000Z');
+    } catch (err) {
+      error = err
+    };
+    error.should.equal(`Must be at maximum '2018-01-01T00:00:00.000Z'`);
+
+    const result = await date.validate('2017-01-01T00:00:00.000Z');
+    result.should.equal('2017-01-01T00:00:00.000Z');
+  }));
+
+  it('test no strict date validation', helper.mochaAsync(async() => {
+    const date = DATE().strict(false);
+    const result = await date.validate('2017-01-01');
+    result.should.equal('2017-01-01');
+  }));
+
+  it('test no utc date parsing', helper.mochaAsync(async() => {
+    const date = DATE().utc(false);
+    const datestring = moment().toISOString();
+    const result = await date.validate(datestring);
+    result.should.equal(datestring);
+  }));
+
   it('deprecated function defaultValue should verify', async() => {
     const date = moment.utc().toDate();
     let result = await DATE().defaultValue(date).validate();

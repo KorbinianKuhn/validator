@@ -38,16 +38,16 @@ class REQUEST extends BASE {
 
     const errors = {}
 
-    if (this[_private].uri) {
-      const opt = _.defaults(this[_private].uri.options, options);
+    if (this[_private].params) {
+      const opt = _.defaults(this[_private].params.options, options);
       try {
-        req.params = await this[_private].uri.schema.validate(req.params, opt);
+        req.params = await this[_private].params.schema.validate(req.params, opt);
       } catch (err) {
-        errors.uri = err;
+        errors.params = err;
       }
     } else if (options.noUndefinedKeys) {
       if (_.keys(req.params).length > 0) {
-        errors.uri = 'No uri parameters allowed.';
+        errors.params = 'No params parameters allowed.';
       }
     }
 
@@ -86,10 +86,16 @@ class REQUEST extends BASE {
     }
   }
 
+  // Deprecated remove in v1
   uri(schema, options = {}) {
+    console.log('using uri() is deprecated. Use params() instead.');
+    return this.params(schema, options);
+  }
+
+  params(schema, options = {}) {
     schema = validateSchema(schema);
 
-    this[_private].uri = {
+    this[_private].params = {
       schema,
       options: _.defaults(options, this[_private].options, defaults.URI_OPTIONS)
     }

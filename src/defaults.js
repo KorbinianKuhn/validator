@@ -14,7 +14,9 @@ exports.VALIDATOR_OPTIONS = {
   noEmptyObjects: true,
   noUndefinedKeys: true,
   dateFormat: DATE_FORMAT,
-  parseDates: true
+  parseDates: true,
+  utc: true,
+  strictDateValidation: true
 }
 
 exports.URI_OPTIONS = {
@@ -26,7 +28,9 @@ exports.URI_OPTIONS = {
   noEmptyObjects: true,
   noUndefinedKeys: true,
   dateFormat: DATE_FORMAT,
-  parseDates: true
+  parseDates: true,
+  utc: true,
+  strictDateValidation: true
 }
 
 exports.QUERY_OPTIONS = {
@@ -38,7 +42,9 @@ exports.QUERY_OPTIONS = {
   noEmptyObjects: false,
   noUndefinedKeys: true,
   dateFormat: DATE_FORMAT,
-  parseDates: true
+  parseDates: true,
+  utc: true,
+  strictDateValidation: true
 }
 
 exports.BODY_OPTIONS = {
@@ -50,5 +56,7 @@ exports.BODY_OPTIONS = {
   noEmptyObjects: true,
   noUndefinedKeys: true,
   dateFormat: DATE_FORMAT,
-  parseDates: true
+  parseDates: true,
+  utc: true,
+  strictDateValidation: true
 }
