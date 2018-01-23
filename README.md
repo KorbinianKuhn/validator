@@ -1,4 +1,6 @@
-# Express input validator [![Travis](https://img.shields.io/travis/KorbinianKuhn/express-input-validator.svg)](https://travis-ci.org/KorbinianKuhn/express-input-validator/builds)  [![standard](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](http://standardjs.com/)
+# Express input validator
+
+[![Travis](https://img.shields.io/travis/KorbinianKuhn/express-input-validator.svg)](https://travis-ci.org/KorbinianKuhn/express-input-validator/builds) [![Coverage Status](https://coveralls.io/repos/github/KorbinianKuhn/express-input-validator/badge.svg?branch=master)](https://coveralls.io/github/KorbinianKuhn/express-input-validator?branch=master) [![dependencies](https://david-dm.org/KorbinianKuhn/express-input-validator.svg)]() [![standard](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](http://standardjs.com/) [![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
 
 This package validates variable input parameters for express REST APIs. The validation parameters are described by objects as schemas. The goal of this package is easy readability and flexible customization. The validator provides detailed information about invalid input values that can be automatically sent as an error response to the user. All validation will be handled asynchronous and can be extended with custom async functions.
 
