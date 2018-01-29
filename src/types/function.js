@@ -42,7 +42,7 @@ class FUNCTION extends BASE {
 
   // Deprecated remove in v1
   defaultValue(value) {
-    console.log('using defaultValue() is deprecated. Use default() instead.');
+    console.log('express-input-validator: using defaultValue() is deprecated. Use default() instead.');
     return this.default(value);
   }
 }

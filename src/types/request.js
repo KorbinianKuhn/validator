@@ -86,12 +86,6 @@ class REQUEST extends BASE {
     }
   }
 
-  // Deprecated remove in v1
-  uri(schema, options = {}) {
-    console.log('using uri() is deprecated. Use params() instead.');
-    return this.params(schema, options);
-  }
-
   params(schema, options = {}) {
     schema = validateSchema(schema);
 
@@ -120,6 +114,12 @@ class REQUEST extends BASE {
       options: _.defaults(options, this[_private].options, defaults.BODY_OPTIONS)
     }
     return this;
+  }
+
+  // Deprecated remove in v1
+  uri(schema, options = {}) {
+    console.log('express-input-validator: using uri() is deprecated. Use params() instead.');
+    return this.params(schema, options);
   }
 }
 

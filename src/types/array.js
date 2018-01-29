@@ -108,22 +108,22 @@ class ARRAY extends BASE {
 
   // Deprecated remove in v1
   defaultValue(value) {
-    console.log('using defaultValue() is deprecated. Use default() instead.');
+    console.log('express-input-validator: using defaultValue() is deprecated. Use default() instead.');
     return this.default(value);
   }
 
   minLength(length) {
-    console.log('using minLength() is deprecated. Use min() instead.');
+    console.log('express-input-validator: using minLength() is deprecated. Use min() instead.');
     return this.min(length);
   }
 
   maxLength(length) {
-    console.log('using maxLength() is deprecated. Use max() instead.');
+    console.log('express-input-validator: using maxLength() is deprecated. Use max() instead.');
     return this.max(length);
   }
 
   exactLength(length) {
-    console.log('using exactLength() is deprecated. Use length() instead.');
+    console.log('express-input-validator: using exactLength() is deprecated. Use length() instead.');
     return this.length(length);
   }
 }
