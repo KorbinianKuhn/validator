@@ -1,11 +1,13 @@
 # Express input validator
 
-[![Travis](https://img.shields.io/travis/KorbinianKuhn/express-input-validator.svg)](https://travis-ci.org/KorbinianKuhn/express-input-validator/builds)
-[![Coverage Status](https://coveralls.io/repos/github/KorbinianKuhn/express-input-validator/badge.svg?branch=master)](https://coveralls.io/github/KorbinianKuhn/express-input-validator?branch=master)
-[![Known Vulnerabilities](https://snyk.io/test/github/KorbinianKuhn/express-input-validator/badge.svg)](https://snyk.io/test/github/KorbinianKuhn/express-input-validator) 
-[![dependencies](https://david-dm.org/KorbinianKuhn/express-input-validator.svg)]()
-[![npm](https://img.shields.io/npm/dt/@korbiniankuhn/express-input-validator.svg)](https://www.npmjs.com/package/@korbiniankuhn/express-input-validator)
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
+[![Travis](https://img.shields.io/travis/KorbinianKuhn/express-input-validator.svg?style=flat-square)](https://travis-ci.org/KorbinianKuhn/express-input-validator/builds)
+[![Coverage](http://img.shields.io/coveralls/KorbinianKuhn/express-input-validator.svg?style=flat-square&branch=master)](https://coveralls.io/r/KorbinianKuhn/express-input-validator)
+[![Known Vulnerabilities](https://snyk.io/test/github/KorbinianKuhn/express-input-validator/badge.svg?style=flat-square)](https://snyk.io/test/github/KorbinianKuhn/express-input-validator)
+[![Dependencies](https://img.shields.io/david/KorbinianKuhn/express-input-validator.svg?style=flat-square)](https://david-dm.org/KorbinianKuhn/express-input-validator)
+[![Dev Dependencies](https://img.shields.io/david/dev/KorbinianKuhn/express-input-validator.svg?style=flat-square)](https://david-dm.org/KorbinianKuhn/express-input-validator)
+[![npm](https://img.shields.io/npm/dt/@korbiniankuhn/express-input-validator.svg?style=flat-square)](https://www.npmjs.com/package/@korbiniankuhn/express-input-validator)
+[![npm-version](https://img.shields.io/npm/v/@korbiniankuhn/express-input-validator.svg?style=flat-square)](https://www.npmjs.com/package/@korbiniankuhn/express-input-validator)
+![license](https://img.shields.io/github/license/KorbinianKuhn/express-input-validator.svg?style=flat-square)
 
 This package validates variable input parameters for express REST APIs. The validation parameters are described by objects as schemas. The goal of this package is easy readability and flexible customization. The validator provides detailed information about invalid input values that can be automatically sent as an error response to the user. All validation will be handled asynchronous and can be extended with custom async functions.
 
