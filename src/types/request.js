@@ -5,17 +5,21 @@ const defaults = require('../defaults');
 
 var _private = Symbol();
 
-const validateSchema = (schema) => {
+const validateSchema = (schema, required) => {
   if (!_.hasIn(schema, 'constructor.name')) {
     throw new Error('Invalid schema.');
   }
 
   if (['OBJECT', 'ARRAY'].indexOf(schema.constructor.name) === -1) {
     if (_.isPlainObject(schema)) {
-      return OBJECT(schema);
+      schema = OBJECT(schema);
     } else {
       throw new Error('Must be OBJECT or ARRAY Schema.');
     }
+  }
+
+  if (required && !schema.hasRequiredProperty()) {
+    schema.required(required);
   }
 
   return schema;
@@ -87,7 +91,7 @@ class REQUEST extends BASE {
   }
 
   params(schema, options = {}) {
-    schema = validateSchema(schema);
+    schema = validateSchema(schema, true);
 
     this[_private].params = {
       schema,
@@ -97,7 +101,7 @@ class REQUEST extends BASE {
   }
 
   query(schema, options = {}) {
-    schema = validateSchema(schema);
+    schema = validateSchema(schema, false);
 
     this[_private].query = {
       schema,
@@ -107,7 +111,7 @@ class REQUEST extends BASE {
   }
 
   body(schema, options = {}) {
-    schema = validateSchema(schema);
+    schema = validateSchema(schema, true);
 
     this[_private].body = {
       schema,

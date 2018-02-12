@@ -9,7 +9,7 @@ const OBJECT = require('../../src/types/object');
 const ARRAY = require('../../src/types/array');
 
 describe('REQUEST()', function () {
-  it('invalid schema should throw', helper.mochaAsync(async() => {
+  it('invalid schema should throw', helper.mochaAsync(async () => {
     (() => {
       REQUEST().params(null)
     }).should.throw('Invalid schema.');
@@ -23,7 +23,7 @@ describe('REQUEST()', function () {
     }).should.throw('Invalid schema.');
   }));
 
-  it('unknown schema should throw', helper.mochaAsync(async() => {
+  it('unknown schema should throw', helper.mochaAsync(async () => {
     (() => {
       REQUEST().params(STRING())
     }).should.throw('Must be OBJECT or ARRAY Schema.');
@@ -37,7 +37,7 @@ describe('REQUEST()', function () {
     }).should.throw('Must be OBJECT or ARRAY Schema.');
   }));
 
-  it('invalid req object should throw', helper.mochaAsync(async() => {
+  it('invalid req object should throw', helper.mochaAsync(async () => {
     const schema = OBJECT({
       name: STRING()
     });
@@ -50,7 +50,7 @@ describe('REQUEST()', function () {
     }
   }));
 
-  it('object should get converted to schema and verify', helper.mochaAsync(async() => {
+  it('object should get converted to schema and verify', helper.mochaAsync(async () => {
     const schema = {
       name: STRING()
     };
@@ -67,7 +67,7 @@ describe('REQUEST()', function () {
     result.should.deepEqual(req);
   }));
 
-  it('invalid data should throw', helper.mochaAsync(async() => {
+  it('invalid data should throw', helper.mochaAsync(async () => {
     const schema = OBJECT({
       name: STRING()
     }).required(true);
@@ -106,7 +106,7 @@ describe('REQUEST()', function () {
     }
   }));
 
-  it('valid data should verify', helper.mochaAsync(async() => {
+  it('valid data should verify', helper.mochaAsync(async () => {
     const req = {
       params: {
         id: '20'
@@ -141,10 +141,10 @@ describe('REQUEST()', function () {
 
   }));
 
-  it('optional body should verify', helper.mochaAsync(async() => {
+  it('optional body should verify', helper.mochaAsync(async () => {
     const schema = REQUEST()
       .body(OBJECT({
-        meters: ARRAY(OBJECT({}))
+        names: ARRAY(OBJECT({}))
       }).required(false))
 
     const req = {
@@ -156,7 +156,45 @@ describe('REQUEST()', function () {
     const result = await schema.validate(req, helper.DEFAULT_OPTIONS);
   }));
 
-  it('params data without schema definition should fail', async() => {
+  it('body should be required by default', helper.mochaAsync(async () => {
+    const schema = REQUEST()
+      .body({
+        names: ARRAY(OBJECT({}))
+      })
+
+    const req = {
+      params: {},
+      query: {},
+      body: {},
+    }
+
+    let error;
+    const result = await schema.validate(req, helper.DEFAULT_OPTIONS).catch((err) => {
+      error = err;
+    });
+    error.should.have.property('body', 'Object is empty.');
+  }));
+
+  it('body object should be required by default', helper.mochaAsync(async () => {
+    const schema = REQUEST()
+      .body(OBJECT({
+        names: ARRAY(OBJECT({}))
+      }));
+
+    const req = {
+      params: {},
+      query: {},
+      body: {},
+    }
+
+    let error;
+    const result = await schema.validate(req, helper.DEFAULT_OPTIONS).catch((err) => {
+      error = err;
+    });
+    error.should.have.property('body', 'Object is empty.');
+  }));
+
+  it('params data without schema definition should fail', async () => {
     const req = {
       params: {
         name: 'test'
@@ -171,7 +209,7 @@ describe('REQUEST()', function () {
     error.should.have.property('params', 'No params parameters allowed.');
   });
 
-  it('query data without schema definition should fail', async() => {
+  it('query data without schema definition should fail', async () => {
     const req = {
       params: {},
       query: {
@@ -186,7 +224,7 @@ describe('REQUEST()', function () {
     error.should.have.property('query', 'No query parameters allowed.');
   });
 
-  it('body data without schema definition should fail', async() => {
+  it('body data without schema definition should fail', async () => {
     const req = {
       params: {},
       query: {},
@@ -201,7 +239,7 @@ describe('REQUEST()', function () {
     error.should.have.property('body', 'No body parameters allowed.');
   });
 
-  it('deprecated uri function should verify', helper.mochaAsync(async() => {
+  it('deprecated uri function should verify', helper.mochaAsync(async () => {
     const req = {
       params: {
         id: '20'

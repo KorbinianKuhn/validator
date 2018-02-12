@@ -16,6 +16,10 @@ class BASE {
       return this[_required];
     }
   }
+
+  hasRequiredProperty() {
+    return this[_required] !== undefined;
+  }
 }
 
 module.exports = BASE;
