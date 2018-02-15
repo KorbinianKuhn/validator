@@ -1,7 +1,26 @@
 const _ = require('lodash');
 const BASE = require('./base');
+const message = require('../message');
+const helper = require('../helper');
 
-var _private = Symbol();
+const _private = Symbol('Private variables');
+
+const validateBoolean = async (value, privates, options) => {
+  if (_.isNil(value)) {
+    if (privates.default) return privates.default;
+    if (privates.required) throw message.required(options.language, options.type, value);
+    return value;
+  }
+
+  if (options.parseToType) {
+    if (value === 'true') value = true;
+    if (value === 'false') value = false;
+  }
+
+  if (!_.isBoolean(value)) throw message.wrongType(options.language, options.type, 'boolean', typeof value);
+
+  return value;
+};
 
 class BOOLEAN extends BASE {
   constructor(options) {
@@ -13,36 +32,20 @@ class BOOLEAN extends BASE {
   async validate(value, options = {}) {
     options = _.defaults(this[_private].options, options);
 
-    if (_.isNil(value)) {
-      if (this[_private].default) return this[_private].default;
-      if (this.isRequired(options)) throw `Required but is ${value}.`;
-      return value;
-    }
+    const func = validateBoolean(value, {
+      required: this.isRequired(options),
+      default: this[_private].default
+    }, options);
 
-    if (options.parseToType) {
-      if (value === 'true') value = true;
-      if (value === 'false') value = false;
-    }
-
-    if (!_.isBoolean(value)) {
-      throw `Must be boolean but is ${typeof value}.`;
-    }
-
-    return value;
+    return helper.validate(options.type, func);
   }
 
-  default (value) {
+  default(value) {
     if (!_.isBoolean(value)) {
       throw new Error('Must be boolean.');
     }
     this[_private].default = value;
     return this;
-  }
-
-  // Deprecated remove in v1
-  defaultValue(value) {
-    console.log('express-input-validator: using defaultValue() is deprecated. Use default() instead.');
-    return this.default(value);
   }
 }
 

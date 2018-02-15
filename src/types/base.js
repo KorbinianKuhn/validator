@@ -1,9 +1,7 @@
 const _ = require('lodash');
 
-var _required = Symbol();
+const _required = Symbol('Required variable');
 class BASE {
-  constructor() {}
-
   required(required) {
     this[_required] = required;
     return this;

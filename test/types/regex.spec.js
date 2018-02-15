@@ -3,14 +3,14 @@ const should = require('should');
 const helper = require('./helper');
 const REGEX = require('../../src/types/regex');
 
-describe('REGEX()', function () {
+describe('REGEX()', () => {
   it('no regex should throw', () => {
     (function () {
-      REGEX()
+      REGEX();
     }).should.throw('Invalid regular expression');
   });
 
-  it('required but null should fail', helper.mochaAsync(async() => {
+  it('required but null should fail', helper.mochaAsync(async () => {
     try {
       await REGEX(/[A-Z]/).validate(null, helper.DEFAULT_OPTIONS);
       should.equal(true, false, 'Should throw');
@@ -19,7 +19,7 @@ describe('REGEX()', function () {
     }
   }));
 
-  it('null and undefined should verify', helper.mochaAsync(async() => {
+  it('null and undefined should verify', helper.mochaAsync(async () => {
     let result = await REGEX(/[A-Z]/).validate(null);
     should.equal(result, null);
 
@@ -27,7 +27,7 @@ describe('REGEX()', function () {
     should.equal(result, undefined);
   }));
 
-  it('invalid type should fail', helper.mochaAsync(async() => {
+  it('invalid type should fail', helper.mochaAsync(async () => {
     for (const value of [1, true]) {
       try {
         await REGEX(/[A-Z]/).validate(value);
@@ -38,17 +38,17 @@ describe('REGEX()', function () {
     }
   }));
 
-  it('valid value should verify', helper.mochaAsync(async() => {
+  it('valid value should verify', helper.mochaAsync(async () => {
     const value = await REGEX(/[A-Z]/).validate('ABC');
     value.should.equal('ABC');
   }));
 
-  it('regex object should verify', helper.mochaAsync(async() => {
+  it('regex object should verify', helper.mochaAsync(async () => {
     const value = await REGEX(new RegExp(/[A-Z]/)).validate('ABC');
     value.should.equal('ABC');
   }));
 
-  it('invalid value should fail', helper.mochaAsync(async() => {
+  it('invalid value should fail', helper.mochaAsync(async () => {
     try {
       await REGEX(/[A-Z]/).validate('abc');
       should.equal(true, false, 'Should throw');
@@ -57,7 +57,7 @@ describe('REGEX()', function () {
     }
   }));
 
-  it('invalid length should fail', helper.mochaAsync(async() => {
+  it('invalid length should fail', helper.mochaAsync(async () => {
     try {
       await REGEX(/[A-Z]/).min(5).validate('ABC', helper.DEFAULT_OPTIONS);
       should.equal(true, false, 'Should throw');
@@ -80,7 +80,7 @@ describe('REGEX()', function () {
     }
   }));
 
-  it('valid length should verify', helper.mochaAsync(async() => {
+  it('valid length should verify', helper.mochaAsync(async () => {
     let value = await REGEX(/[A-Z]/).min(3).validate('ABC', helper.DEFAULT_OPTIONS);
     value.should.equal('ABC');
 
@@ -91,12 +91,12 @@ describe('REGEX()', function () {
     value.should.equal('ABC');
   }));
 
-  it('invalid default value should throw', helper.mochaAsync(async() => {
-    const result = await helper.shouldThrow(async() => REGEX(/[A-Z]/).default(1234));
+  it('invalid default value should throw', helper.mochaAsync(async () => {
+    const result = await helper.shouldThrow(async () => REGEX(/[A-Z]/).default(1234));
     result.message.should.equal('Must be string.');
   }));
 
-  it('valid default value should verify', helper.mochaAsync(async() => {
+  it('valid default value should verify', helper.mochaAsync(async () => {
     let result = await REGEX(/[A-Z]/).default('ABC').validate();
     result.should.equal('ABC');
 
@@ -104,34 +104,16 @@ describe('REGEX()', function () {
     result.should.equal('DEF');
   }));
 
-  it('empty should verify', helper.mochaAsync(async() => {
-    let result = await helper.shouldThrow(
-      async() => await REGEX(/[A-Z]/).empty(false).validate('')
-    );
+  it('empty should verify', helper.mochaAsync(async () => {
+    let result = await helper.shouldThrow(async () => REGEX(/[A-Z]/).empty(false).validate(''));
     result.should.equal('Value does not match regular expression.');
 
     result = await REGEX(/[A-Z]/).empty(true).validate('');
     result.should.equal('');
   }));
 
-  it('should return custom message', helper.mochaAsync(async() => {
-    let result = await helper.shouldThrow(
-      async() => await REGEX(/[A-Z]/).empty(false).message('Must have only uppercase letters.').validate('')
-    );
+  it('should return custom message', helper.mochaAsync(async () => {
+    const result = await helper.shouldThrow(async () => REGEX(/[A-Z]/).empty(false).message('Must have only uppercase letters.').validate(''));
     result.should.equal('Must have only uppercase letters.');
   }));
-
-  it('deprecated functions minLength, maxLength, exactLength, defaultValue should verify', async() => {
-    let result = await REGEX(/[A-Z]/).defaultValue('ABC').validate();
-    result.should.equal('ABC');
-
-    result = await REGEX(/[A-Z]/).minLength(3).validate('ABC');
-    result.should.equal('ABC');
-
-    result = await REGEX(/[A-Z]/).maxLength(3).validate('ABC');
-    result.should.equal('ABC');
-
-    result = await REGEX(/[A-Z]/).exactLength(3).validate('ABC');
-    result.should.equal('ABC');
-  });
 });

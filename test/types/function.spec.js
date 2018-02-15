@@ -3,32 +3,30 @@ const should = require('should');
 const helper = require('./helper');
 const FUNCTION = require('../../src/types/function');
 
-const testFunction = (value) => {
-  return value;
-}
+const testFunction = value => value;
 const throwFunction = () => {
   throw new Error('Custom error message.');
-}
+};
 
-describe('FUNCTION()', function () {
+describe('FUNCTION()', () => {
   it('no function should throw', () => {
     (() => {
-      FUNCTION()
+      FUNCTION();
     }).should.throw('Missing function.');
   });
 
   it('invalid function should throw', () => {
     (() => {
-      FUNCTION('invalid')
+      FUNCTION('invalid');
     }).should.throw('Not a function.');
   });
 
-  it('required but null should fail', helper.mochaAsync(async() => {
-    const message = await helper.shouldThrow(async() => FUNCTION(testFunction).validate(null, helper.DEFAULT_OPTIONS));
+  it('required but null should fail', helper.mochaAsync(async () => {
+    const message = await helper.shouldThrow(async () => FUNCTION(testFunction).validate(null, helper.DEFAULT_OPTIONS));
     message.should.equal('Required but is null.');
   }));
 
-  it('null and undefined should verify', helper.mochaAsync(async() => {
+  it('null and undefined should verify', helper.mochaAsync(async () => {
     let result = await FUNCTION(testFunction).validate(null);
     should.equal(result, null);
 
@@ -36,7 +34,7 @@ describe('FUNCTION()', function () {
     should.equal(result, undefined);
   }));
 
-  it('function should verify', helper.mochaAsync(async() => {
+  it('function should verify', helper.mochaAsync(async () => {
     let result = await FUNCTION(testFunction).validate('test');
     result.should.equal('test');
 
@@ -44,18 +42,13 @@ describe('FUNCTION()', function () {
     result.should.equal('test');
   }));
 
-  it('function should throw custom error message', helper.mochaAsync(async() => {
-    const message = await helper.shouldThrow(async() => FUNCTION(throwFunction).validate('test', helper.DEFAULT_OPTIONS));
+  it('function should throw custom error message', helper.mochaAsync(async () => {
+    const message = await helper.shouldThrow(async () => FUNCTION(throwFunction).validate('test', helper.DEFAULT_OPTIONS));
     message.should.equal('Custom error message.');
   }));
 
-  it('valid default value should verify', helper.mochaAsync(async() => {
-    let result = await FUNCTION(testFunction).default('test').validate();
-    result.should.equal('test');
-  }));
-
-  it('deprecated function defaultValue should verify', helper.mochaAsync(async() => {
-    let result = await FUNCTION(testFunction).defaultValue('test').validate();
+  it('valid default value should verify', helper.mochaAsync(async () => {
+    const result = await FUNCTION(testFunction).default('test').validate();
     result.should.equal('test');
   }));
 });

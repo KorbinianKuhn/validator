@@ -1,0 +1,12 @@
+{
+  "invalid": {
+    "default": {
+      "en": "'$' is not one of [$].",
+      "de": "'$' ist nicht in [$] enthalten."
+    },
+    "angular": {
+      "en": "Only [$] are allowed.",
+      "de": "Nur [$] sind erlaubt."
+    }
+  }
+}

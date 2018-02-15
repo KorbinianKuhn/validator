@@ -5,6 +5,8 @@ const DATE_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
 exports.DATE_FORMAT = DATE_FORMAT;
 
 exports.VALIDATOR_OPTIONS = {
+  language: 'en',
+  type: 'default',
   requiredAsDefault: true,
   throwValidationErrors: true,
   parseToType: false,
@@ -17,7 +19,7 @@ exports.VALIDATOR_OPTIONS = {
   parseDates: true,
   utc: true,
   strictDateValidation: true
-}
+};
 
 exports.URI_OPTIONS = {
   requiredAsDefault: true,
@@ -31,7 +33,7 @@ exports.URI_OPTIONS = {
   parseDates: true,
   utc: true,
   strictDateValidation: true
-}
+};
 
 exports.QUERY_OPTIONS = {
   requiredAsDefault: false,
@@ -45,7 +47,7 @@ exports.QUERY_OPTIONS = {
   parseDates: true,
   utc: true,
   strictDateValidation: true
-}
+};
 
 exports.BODY_OPTIONS = {
   requiredAsDefault: true,
@@ -59,4 +61,4 @@ exports.BODY_OPTIONS = {
   parseDates: true,
   utc: true,
   strictDateValidation: true
-}
+};

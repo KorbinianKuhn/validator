@@ -1,7 +1,7 @@
 {
-  "name": "@korbiniankuhn/express-input-validator",
-  "version": "0.0.14",
-  "description": "Validate input parameters for express REST APIs.",
+  "name": "@korbiniankuhn/validator",
+  "version": "0.0.0",
+  "description": "Validate input parameters for express REST APIs and Angular.",
   "main": "index.js",
   "scripts": {
     "test": "mocha \"./test/**/*.spec.js\"",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KorbinianKuhn/express-input-validator.git"
+    "url": "git+https://github.com/KorbinianKuhn/validator.git"
   },
   "keywords": [
     "express",
@@ -25,14 +25,19 @@
   "author": "Korbinian Kuhn",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/KorbinianKuhn/express-input-validator/issues"
+    "url": "https://github.com/KorbinianKuhn/validator/issues"
   },
-  "homepage": "https://github.com/KorbinianKuhn/express-input-validator#readme",
+  "homepage": "https://github.com/KorbinianKuhn/validator#readme",
   "devDependencies": {
     "coveralls": "^3.0.0",
     "mocha": "^5.0.0",
     "nyc": "^11.4.1",
-    "should": "^13.2.1"
+    "should": "^13.2.1",
+    "eslint": "^4.15.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.5.1"
   },
   "dependencies": {
     "lodash": "^4.17.5",

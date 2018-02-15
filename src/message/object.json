@@ -1,0 +1,142 @@
+{
+  "wrong_type": {
+    "default": {
+      "en": "Must be an object.",
+      "de": "Muss vom Typ Object sein."
+    },
+    "angular": {
+      "en": "Must be an object.",
+      "de": "Muss vom Typ Object sein."
+    }
+  },
+  "empty": {
+    "default": {
+      "en": "Object is empty.",
+      "de": "Objekt ist leer."
+    },
+    "angular": {
+      "en": "The object is empty.",
+      "de": "Das Objekt ist leer."
+    }
+  },
+  "min": {
+    "default": {
+      "en": "Object must have at least $ keys.",
+      "de": "Objekt muss mindestes $ Einträge besitzen."
+    },
+    "angular": {
+      "en": "The object must have at least $ keys.",
+      "de": "Das Objekt muss mindestes $ Einträge besitzen."
+    }
+  },
+  "max": {
+    "default": {
+      "en": "Object must have at most $ keys.",
+      "de": "Objekt darf maximal $ Einträge besitzen."
+    },
+    "angular": {
+      "en": "The object must have at most $ keys.",
+      "de": "Das Objekt darf maximal $ Einträge besitzen."
+    }
+  },
+  "length": {
+    "default": {
+      "en": "Object must have exactly $ keys.",
+      "de": "Objekt muss genau $ Einträge besitzen."
+    },
+    "angular": {
+      "en": "The object must have exactly $ keys.",
+      "de": "Das Objekt muss genau $ Einträge besitzen."
+    }
+  },
+  "unknown": {
+    "default": {
+      "en": "Unknown key.",
+      "de": "Unbekannter Eintrag."
+    },
+    "angular": {
+      "en": "$ is an unknown key.",
+      "de": "$ ist ein unbekannter Eintrag."
+    }
+  },
+  "gt": {
+    "default": {
+      "en": "Must be greater than $.",
+      "de": "Muss größer als $ sein."
+    },
+    "angular": {
+      "en": "$ must be greater than $.",
+      "de": "$ muss größer als $ sein."
+    }
+  },
+  "gte": {
+    "default": {
+      "en": "Must be greater or equal than $.",
+      "de": "Muss größer oder gleich wie $ sein."
+    },
+    "angular": {
+      "en": "$ must be greater or equal than $.",
+      "de": "$ muss größer oder gleich wie $ sein."
+    }
+  },
+  "lt": {
+    "default": {
+      "en": "Must be less than $.",
+      "de": "Muss kleiner als $ sein."
+    },
+    "angular": {
+      "en": "$ must be less than $.",
+      "de": "$ muss kleiner als $ sein."
+    }
+  },
+  "lte": {
+    "default": {
+      "en": "Must be less or equal than $.",
+      "de": "Muss kleiner or gleich wie $ sein."
+    },
+    "angular": {
+      "en": "$ must be less or equal than $.",
+      "de": "$ muss kleiner or gleich wie $ sein."
+    }
+  },
+  "equals": {
+    "default": {
+      "en": "Must equal $.",
+      "de": "Muss gleich wie $ sein."
+    },
+    "angular": {
+      "en": "$ must equal $.",
+      "de": "$ muss gleich wie $ sein."
+    }
+  },
+  "not_equals": {
+    "default": {
+      "en": "Must not equal $.",
+      "de": "Darf nicht gleich wie $ sein."
+    },
+    "angular": {
+      "en": "$ must not equal $.",
+      "de": "$ darf nicht gleich wie $ sein."
+    }
+  },
+  "xor": {
+    "default": {
+      "en": "Only $ or $ can be set.",
+      "de": "Entweder $ oder $ darf gesetzt sein."
+    },
+    "angular": {
+      "en": "Only $ or $ can be set.",
+      "de": "Entweder $ oder $ darf gesetzt sein."
+    }
+  },
+  "depends_on": {
+    "default": {
+      "en": "Depends on $.",
+      "de": "Benötigt $."
+    },
+    "angular": {
+      "en": "$ depends on $.",
+      "de": "$ benötigt $."
+    }
+  }
+}

@@ -1,13 +1,13 @@
 const _ = require('lodash');
-const TYPES = require('./types');
-const ValidationError = require('./error');
-const defaults = require('./defaults');
+const TYPES = require('./../types');
+const ValidationError = require('./../error');
+const defaults = require('./../defaults');
 
-var _options = Symbol();
-var _customs = Symbol();
+const _options = Symbol('Private options');
+const _customs = Symbol('Custom types');
 
 class Validator {
-  constructor(options) {
+  constructor(options = {}) {
     this[_customs] = {};
     this[_options] = _.defaults(options, defaults.VALIDATOR_OPTIONS);
   }
@@ -41,7 +41,7 @@ class Validator {
   }
 
   Boolean(options) {
-    return TYPES.Boolean(options);
+    return TYPES.Boolean(_.defaults(options, this.getOptions()));
   }
 
   Date(options) {
@@ -104,8 +104,4 @@ class Validator {
   }
 }
 
-function ValidatorFactory(options) {
-  return new Validator(options);
-}
-
-module.exports = ValidatorFactory;
+module.exports = Validator;

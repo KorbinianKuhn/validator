@@ -1,0 +1,32 @@
+{
+  "invalid": {
+    "default": {
+      "en": "Not a valid date. Must match format '$'.",
+      "de": "Ungültiges Datum. Erforderliches Format '$'."
+    },
+    "angular": {
+      "en": "Is not a valid date.",
+      "de": "Ist kein gültiges Datum."
+    }
+  },
+  "minimum": {
+    "default": {
+      "en": "Must be at minimum '$'.",
+      "de": "Muss mindestens '$' sein."
+    },
+    "angular": {
+      "en": "Must be at minimum '$'.",
+      "de": "Muss mindestens '$' sein."
+    }
+  },
+  "maximum": {
+    "default": {
+      "en": "Must be at maximum '$'.",
+      "de": "Darf maximal '$' sein.'"
+    },
+    "angular": {
+      "en": "Must be at maximum '$'.",
+      "de": "Darf maximal '$' sein.'"
+    }
+  }
+}

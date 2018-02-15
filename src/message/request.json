@@ -1,0 +1,32 @@
+{
+  "no_uri": {
+    "default": {
+      "en": "URI parameters are not allowed.",
+      "de": "URI parameter sind nicht erlaubt."
+    },
+    "angular": {
+      "en": "URI parameters are not allowed.",
+      "de": "URI parameter sind nicht erlaubt."
+    }
+  },
+  "no_query": {
+    "default": {
+      "en": "Query parameters are not allowed.",
+      "de": "Query parameter sind nicht erlaubt."
+    },
+    "angular": {
+      "en": "Query parameters are not allowed.",
+      "de": "Query parameter sind nicht erlaubt."
+    }
+  },
+  "no_body": {
+    "default": {
+      "en": "Body parameters are not allowed.",
+      "de": "Body parameter sind nicht erlaubt."
+    },
+    "angular": {
+      "en": "Body parameters are not allowed.",
+      "de": "Body parameter sind nicht erlaubt."
+    }
+  }
+}

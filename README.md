@@ -1,13 +1,13 @@
-# Express input validator
+# Validator
 
-[![Travis](https://img.shields.io/travis/KorbinianKuhn/express-input-validator.svg?style=flat-square)](https://travis-ci.org/KorbinianKuhn/express-input-validator/builds)
-[![Coverage](http://img.shields.io/coveralls/KorbinianKuhn/express-input-validator.svg?style=flat-square&branch=master)](https://coveralls.io/r/KorbinianKuhn/express-input-validator)
-[![Known Vulnerabilities](https://snyk.io/test/github/KorbinianKuhn/express-input-validator/badge.svg?style=flat-square)](https://snyk.io/test/github/KorbinianKuhn/express-input-validator)
-[![Dependencies](https://img.shields.io/david/KorbinianKuhn/express-input-validator.svg?style=flat-square)](https://david-dm.org/KorbinianKuhn/express-input-validator)
-[![Dev Dependencies](https://img.shields.io/david/dev/KorbinianKuhn/express-input-validator.svg?style=flat-square)](https://david-dm.org/KorbinianKuhn/express-input-validator)
-[![npm](https://img.shields.io/npm/dt/@korbiniankuhn/express-input-validator.svg?style=flat-square)](https://www.npmjs.com/package/@korbiniankuhn/express-input-validator)
-[![npm-version](https://img.shields.io/npm/v/@korbiniankuhn/express-input-validator.svg?style=flat-square)](https://www.npmjs.com/package/@korbiniankuhn/express-input-validator)
-![license](https://img.shields.io/github/license/KorbinianKuhn/express-input-validator.svg?style=flat-square)
+[![Travis](https://img.shields.io/travis/KorbinianKuhn/validator.svg?style=flat-square)](https://travis-ci.org/KorbinianKuhn/validator/builds)
+[![Coverage](http://img.shields.io/coveralls/KorbinianKuhn/validator.svg?style=flat-square&branch=master)](https://coveralls.io/r/KorbinianKuhn/validator)
+[![Known Vulnerabilities](https://snyk.io/test/github/KorbinianKuhn/validator/badge.svg?style=flat-square)](https://snyk.io/test/github/KorbinianKuhn/validator)
+[![Dependencies](https://img.shields.io/david/KorbinianKuhn/validator.svg?style=flat-square)](https://david-dm.org/KorbinianKuhn/validator)
+[![Dev Dependencies](https://img.shields.io/david/dev/KorbinianKuhn/validator.svg?style=flat-square)](https://david-dm.org/KorbinianKuhn/validator)
+[![npm](https://img.shields.io/npm/dt/@korbiniankuhn/validator.svg?style=flat-square)](https://www.npmjs.com/package/@korbiniankuhn/validator)
+[![npm-version](https://img.shields.io/npm/v/@korbiniankuhn/validator.svg?style=flat-square)](https://www.npmjs.com/package/@korbiniankuhn/validator)
+![license](https://img.shields.io/github/license/KorbinianKuhn/validator.svg?style=flat-square)
 
 This package validates variable input parameters for express REST APIs. The validation parameters are described by objects as schemas. The goal of this package is easy readability and flexible customization. The validator provides detailed information about invalid input values that can be automatically sent as an error response to the user. All validation will be handled asynchronous and can be extended with custom async functions.
 
@@ -18,13 +18,13 @@ It can also parse input string values to target types (e.g. boolean, integer, nu
 For installation use the [Node Package Manager](https://github.com/npm/npm):
 
 ```
-$ npm install --save @korbiniankuhn/express-input-validator
+$ npm install --save @korbiniankuhn/validator
 ```
 
 or clone the repository:
 
 ```
-$ git clone https://github.com/KorbinianKuhn/express-input-validator
+$ git clone https://github.com/KorbinianKuhn/validator
 ```
 
 ## Getting started
@@ -32,7 +32,7 @@ $ git clone https://github.com/KorbinianKuhn/express-input-validator
 Initialize a new Validator:
 
 ``` javascript
-const eiv = require('@korbiniankuhn/express-input-validator');
+const eiv = require('@korbiniankuhn/validator');
 const validator = eiv.Validator();
 ```
 
@@ -346,7 +346,7 @@ options:
 - `next (boolean)`: Next the error after sending the response. Default false.
 
 ``` javascript
-const eiv = require('@korbiniankuhn/express-input-validator');
+const eiv = require('@korbiniankuhn/validator');
 
 app.use(eiv.middleware());
 
@@ -363,7 +363,7 @@ This example shows how easy input validation gets. Due to the async middleware n
 
 ```javascript
 const express = require('express');
-const eiv = require('@korbiniankuhn/express-input-validator');
+const eiv = require('@korbiniankuhn/validator');
 const app = express();
 
 // Middleware to next all exception

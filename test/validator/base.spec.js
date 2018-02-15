@@ -1,10 +1,12 @@
 const assert = require('assert');
 const should = require('should');
-const helper = require('./types/helper');
-const Validator = require('../src/validator');
-const defaults = require('../src/defaults');
+const helper = require('./../types/helper');
+const Validator = require('./../../src/validator').Validator;
+const defaults = require('../../src/defaults');
 
 const OVERWRITE_OPTIONS = {
+  type: 'angular',
+  language: 'de',
   requiredAsDefault: false,
   throwValidationErrors: false,
   parseToType: true,
@@ -16,16 +18,16 @@ const OVERWRITE_OPTIONS = {
   dateFormat: 'YYYY-MM-DD',
   utc: false,
   strictDateValidation: false
-}
+};
 
-describe('Validator()', function () {
+describe('Validator()', () => {
   it('all types should be created with the validator', () => {
     const VALIDATOR = Validator();
     VALIDATOR.Array().constructor.name.should.equal('ARRAY');
     VALIDATOR.Boolean().constructor.name.should.equal('BOOLEAN');
     VALIDATOR.Date().constructor.name.should.equal('DATE');
     VALIDATOR.Enum([]).constructor.name.should.equal('ENUM');
-    VALIDATOR.Function(function () {}).constructor.name.should.equal('FUNCTION');
+    VALIDATOR.Function(() => {}).constructor.name.should.equal('FUNCTION');
     VALIDATOR.Integer().constructor.name.should.equal('INTEGER');
     VALIDATOR.Number().constructor.name.should.equal('NUMBER');
     VALIDATOR.Object({}).constructor.name.should.equal('OBJECT');
@@ -44,6 +46,8 @@ describe('Validator()', function () {
     Validator({
       requiredAsDefault: false
     }).getOptions().should.eql({
+      type: 'default',
+      language: 'en',
       requiredAsDefault: false,
       throwValidationErrors: true,
       parseToType: false,
@@ -91,7 +95,7 @@ describe('Validator()', function () {
     VALIDATOR.Custom('test').should.deepEqual(type);
   });
 
-  it('unknown schema should throw', helper.mochaAsync(async() => {
+  it('unknown schema should throw', helper.mochaAsync(async () => {
     try {
       await Validator().validate({
         constructor: {
@@ -104,7 +108,7 @@ describe('Validator()', function () {
     }
   }));
 
-  it('invalid schema should throw', helper.mochaAsync(async() => {
+  it('invalid schema should throw', helper.mochaAsync(async () => {
     try {
       await Validator().validate(null, {});
       should.equal(true, false, 'Did not throw error.');
@@ -113,7 +117,7 @@ describe('Validator()', function () {
     }
   }));
 
-  it('invalid data should fail', helper.mochaAsync(async() => {
+  it('invalid data should fail', helper.mochaAsync(async () => {
     const VALIDATOR = Validator();
 
     try {
@@ -126,20 +130,19 @@ describe('Validator()', function () {
     }
   }));
 
-  it('valid data and schema should verify', helper.mochaAsync(async() => {
+  it('valid data and schema should verify', helper.mochaAsync(async () => {
     const VALIDATOR = Validator();
 
     const value = await VALIDATOR.validate(VALIDATOR.Boolean(), true);
     value.should.equal(true);
   }));
 
-  it('should not throw', helper.mochaAsync(async() => {
+  it('should not throw', helper.mochaAsync(async () => {
     const VALIDATOR = Validator({
       throwValidationErrors: false
     });
 
     const err = await VALIDATOR.validate(VALIDATOR.Boolean(), 'true');
     err.details.should.equal('Must be boolean but is string.');
-
   }));
 });

@@ -2,8 +2,48 @@ const _ = require('lodash');
 const moment = require('moment');
 const BASE = require('./base');
 const defaults = require('../defaults');
+const helper = require('../helper');
+const message = require('../message');
 
-var _private = Symbol();
+const _private = Symbol('Private variables');
+
+const validateDate = async (value, privates, options) => {
+  if (_.isNil(value)) {
+    if (privates.default) return privates.default;
+    if (privates.required) throw message.required(options.language, options.type, value);
+    return value;
+  }
+
+  const format = privates.format || options.dateFormat || defaults.DATE_FORMAT;
+
+  const utc = _.defaultTo(privates.utc, _.defaultTo(options.utc, true));
+  const strict = _.defaultTo(privates.strict, _.defaultTo(options.strictDateValidation, true));
+
+  let date;
+  if (utc) {
+    date = moment.utc(value, format, strict);
+  } else {
+    date = moment(value, format, strict);
+  }
+
+  if (!date.isValid()) {
+    throw message.get(options.language, options.type, 'date', 'invalid', format);
+  }
+
+  if (privates.min && date.toDate() < privates.min) {
+    throw message.get(options.language, options.type, 'date', 'minimum', privates.min.toISOString());
+  }
+
+  if (privates.max && date.toDate() > privates.max) {
+    throw message.get(options.language, options.type, 'date', 'maximum', privates.max.toISOString());
+  }
+
+  if (privates.parse || options.parseDates) {
+    value = date.toDate();
+  }
+
+  return value;
+};
 
 class DATE extends BASE {
   constructor(format, options) {
@@ -15,41 +55,18 @@ class DATE extends BASE {
   async validate(value, options = {}) {
     options = _.defaults(this[_private].options, options);
 
-    if (_.isNil(value)) {
-      if (this[_private].default) return this[_private].default;
-      if (this.isRequired(options)) throw `Required but is ${value}.`;
-      return value;
-    }
+    const func = validateDate(value, {
+      required: this.isRequired(options),
+      default: this[_private].default,
+      format: this[_private].format,
+      utc: this[_private].utc,
+      strict: this[_private].strict,
+      min: this[_private].min,
+      max: this[_private].max,
+      parse: this[_private].parse
+    }, options);
 
-    const format = this[_private].format || options.dateFormat || defaults.DATE_FORMAT;
-
-    const utc = _.defaultTo(this[_private].utc, _.defaultTo(options.utc, true));
-    const strict = _.defaultTo(this[_private].strict, _.defaultTo(options.strictDateValidation, true));
-
-    let date;
-    if (utc) {
-      date = moment.utc(value, format, strict);
-    } else {
-      date = moment(value, format, strict);
-    }
-
-    if (!date.isValid()) {
-      throw `Not a valid date. Must match format '${format}'`;
-    }
-
-    if (this[_private].min && date.toDate() < this[_private].min) {
-      throw `Must be at minimum '${this[_private].min.toISOString()}'`;
-    }
-
-    if (this[_private].max && date.toDate() > this[_private].max) {
-      throw `Must be at maximum '${this[_private].max.toISOString()}'`;
-    }
-
-    if (this[_private].parse || options.parseDates) {
-      value = date.toDate();
-    }
-
-    return value;
+    return helper.validate(options.type, func);
   }
 
   format(format) {
@@ -62,11 +79,11 @@ class DATE extends BASE {
     return this;
   }
 
-  default (value) {
+  default(value) {
     const format = this[_private].format || this[_private].options.dateFormat || defaults.DATE_FORMAT;
     const date = moment(value, format, true);
     if (!date.isValid()) {
-      throw new Error(`Not a valid date. Must match format '${format}'`);
+      throw new Error(`Not a valid date. Must match format '${format}'.`);
     }
     this[_private].default = value;
     return this;
@@ -90,12 +107,6 @@ class DATE extends BASE {
   max(date) {
     this[_private].max = date;
     return this;
-  }
-
-  // Deprecated remove in v1
-  defaultValue(value) {
-    console.log('express-input-validator: using defaultValue() is deprecated. Use default() instead.');
-    return this.default(value);
   }
 }
 

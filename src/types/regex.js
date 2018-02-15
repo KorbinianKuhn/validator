@@ -1,52 +1,63 @@
 const _ = require('lodash');
 const BASE = require('./base');
+const message = require('../message');
+const helper = require('../helper');
 
-var _private = Symbol();
+const _private = Symbol('Private variables');
+
+const validateRegex = async (value, privates, options) => {
+  const language = options.language || 'en';
+  if (_.isNil(value)) {
+    if (privates.default) return privates.default;
+    if (privates.required) throw message.required(options.language, options.type, value);
+    return value;
+  }
+
+  if (!_.isString(value)) throw message.wrongType(options.language, options.type, 'string', typeof value);
+
+  if (value === '' && privates.empty) {
+    return value;
+  }
+
+  if (!value.match(privates.regex)) {
+    throw privates.message[language];
+  }
+
+  if (privates.min && value.length < privates.min) throw message.get(options.language, options.type, 'regex', 'min', privates.min);
+  if (privates.max && value.length > privates.max) throw message.get(options.language, options.type, 'regex', 'max', privates.max);
+  if (privates.length && value.length !== privates.length) throw message.get(options.language, options.type, 'regex', 'length', privates.length);
+
+  return value;
+};
 
 class REGEX extends BASE {
   constructor(regex, options) {
     super();
-    if (!_.isRegExp(regex)) throw new Error('Invalid regular expression')
-    this[_private] = {}
+    if (!_.isRegExp(regex)) throw new Error('Invalid regular expression');
+    this[_private] = {};
     this[_private].regex = regex;
     this[_private].options = options || {};
-    this[_private].message = `Value does not match regular expression.`;
+    this[_private].message = {
+      en: message.get('en', this[_private].options.type, 'regex', 'invalid'),
+      de: message.get('de', this[_private].options.type, 'regex', 'invalid'),
+    };
   }
 
   async validate(value, options = {}) {
     options = _.defaults(this[_private].options, options);
 
-    if (_.isNil(value)) {
-      if (this[_private].default) return this[_private].default;
-      if (this.isRequired(options)) throw `Required but is ${value}.`;
-      return value;
-    }
+    const func = validateRegex(value, {
+      required: this.isRequired(options),
+      default: this[_private].default,
+      empty: this[_private].empty,
+      regex: this[_private].regex,
+      min: this[_private].min,
+      max: this[_private].max,
+      length: this[_private].length,
+      message: this[_private].message
+    }, options);
 
-    if (!_.isString(value)) {
-      throw `Must be string but is ${typeof value}.`;
-    }
-
-    if (value === '' && this[_private].empty) {
-      return value;
-    }
-
-    if (!value.match(this[_private].regex)) {
-      throw this[_private].message;
-    }
-
-    if (this[_private].min && value.length < this[_private].min) {
-      throw `Must have at least ${this[_private].min} characters.`;
-    }
-
-    if (this[_private].max && value.length > this[_private].max) {
-      throw `Must have at most ${this[_private].max} characters.`;
-    }
-
-    if (this[_private].length && value.length !== this[_private].length) {
-      throw `Must have exactly ${this[_private].length} characters.`;
-    }
-
-    return value;
+    return helper.validate(options.type, func);
   }
 
   min(length) {
@@ -69,38 +80,17 @@ class REGEX extends BASE {
     return this;
   }
 
-  message(message) {
-    this[_private].message = message;
+  message(text, language = 'en') {
+    this[_private].message[language] = text;
     return this;
   }
 
-  default (value) {
+  default(value) {
     if (!_.isString(value)) {
       throw new Error('Must be string.');
     }
     this[_private].default = value;
     return this;
-  }
-
-  // Deprecated remove in v1
-  defaultValue(value) {
-    console.log('express-input-validator: using defaultValue() is deprecated. Use default() instead.');
-    return this.default(value);
-  }
-
-  minLength(length) {
-    console.log('express-input-validator: using minLength() is deprecated. Use min() instead.');
-    return this.min(length);
-  }
-
-  maxLength(length) {
-    console.log('express-input-validator: using maxLength() is deprecated. Use max() instead.');
-    return this.max(length);
-  }
-
-  exactLength(length) {
-    console.log('express-input-validator: using exactLength() is deprecated. Use length() instead.');
-    return this.length(length);
   }
 }
 

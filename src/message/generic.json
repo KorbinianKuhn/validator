@@ -1,0 +1,22 @@
+{
+  "required": {
+    "default": {
+      "en": "Required but is $.",
+      "de": "Erforderlich aber ist $."
+    },
+    "angular": {
+      "en": "This field is required.",
+      "de": "Dieses Feld ist erforderlich."
+    }
+  },
+  "wrong_type": {
+    "default": {
+      "en": "Must be $ but is $.",
+      "de": "Muss $ sein aber ist $."
+    },
+    "angular": {
+      "en": "Must be type $ but is $.",
+      "de": "Muss vom Type $ sein aber ist $."
+    }
+  }
+}

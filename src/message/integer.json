@@ -1,0 +1,62 @@
+{
+  "min": {
+    "default": {
+      "en": "Must be at minimum $.",
+      "de": "Muss mindestens $ sein."
+    },
+    "angular": {
+      "en": "Must be at minimum $.",
+      "de": "Muss mindestens $ sein."
+    }
+  },
+  "max": {
+    "default": {
+      "en": "Must be at maximum $.",
+      "de": "Darf maximial $ sein."
+    },
+    "angular": {
+      "en": "Must be at maximum $.",
+      "de": "Darf maximial $ sein."
+    }
+  },
+  "less": {
+    "default": {
+      "en": "Must be less than $.",
+      "de": "Muss kleiner als $ sein."
+    },
+    "angular": {
+      "en": "Must be less than $.",
+      "de": "Muss kleiner als $ sein."
+    }
+  },
+  "greater": {
+    "default": {
+      "en": "Must be greater than $.",
+      "de": "Muss größer als $ sein."
+    },
+    "angular": {
+      "en": "Must be greater than $.",
+      "de": "Muss größer als $ sein."
+    }
+  },
+  "positive": {
+    "default": {
+      "en": "Must be a positive integer.",
+      "de": "Muss eine positive Ganzzahl sein."
+    },
+    "angular": {
+      "en": "Must be a positive integer.",
+      "de": "Muss eine positive Ganzzahl sein."
+    }
+  },
+  "negative": {
+    "default": {
+      "en": "Must be a negative integer.",
+      "de": "Muss eine negative Ganzzahl sein."
+    },
+    "angular": {
+      "en": "Must be a negative integer.",
+      "de": "Muss eine negative Ganzzahl sein."
+    }
+  }
+}

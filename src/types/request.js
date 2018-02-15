@@ -1,9 +1,67 @@
 const _ = require('lodash');
 const BASE = require('./base');
-const OBJECT = require('./object')
+const OBJECT = require('./object');
 const defaults = require('../defaults');
 
-var _private = Symbol();
+const message = require('../message');
+const helper = require('../helper');
+
+const _private = Symbol('Private variables');
+
+const validateRequest = async (req, privates, options) => {
+  if (!_.every(['params', 'query', 'body'], _.partial(_.has, req))) {
+    throw new Error('Invalid express req object.');
+  }
+
+  const errors = {};
+
+  if (privates.params) {
+    const opt = _.defaults(privates.params.options, options);
+    try {
+      req.params = await privates.params.schema.validate(req.params, opt);
+    } catch (err) {
+      errors.params = err;
+    }
+  } else if (options.noUndefinedKeys) {
+    if (_.keys(req.params).length > 0) {
+      errors.params = message.get(options.language, options.type, 'request', 'no_uri');
+    }
+  }
+
+  if (privates.query) {
+    const opt = _.defaults(privates.query.options, options);
+    try {
+      req.query = await privates.query.schema.validate(req.query, opt);
+    } catch (err) {
+      errors.query = err;
+    }
+  } else if (options.noUndefinedKeys) {
+    if (_.keys(req.query).length > 0) {
+      errors.query = message.get(options.language, options.type, 'request', 'no_query');
+    }
+  }
+
+  if (privates.body) {
+    if (privates.body.schema.isRequired() || _.keys(req.body).length !== 0) {
+      const opt = _.defaults(privates.body.options, options);
+      try {
+        req.body = await privates.body.schema.validate(req.body, opt);
+      } catch (err) {
+        errors.body = err;
+      }
+    }
+  } else if (options.noUndefinedKeys) {
+    if (_.keys(req.body).length > 0) {
+      errors.body = message.get(options.language, options.type, 'request', 'no_body');
+    }
+  }
+
+  if (_.keys(errors).length > 0) {
+    throw errors;
+  } else {
+    return req;
+  }
+};
 
 const validateSchema = (schema, required) => {
   if (!_.hasIn(schema, 'constructor.name')) {
@@ -23,7 +81,7 @@ const validateSchema = (schema, required) => {
   }
 
   return schema;
-}
+};
 
 class REQUEST extends BASE {
   constructor(options) {
@@ -33,61 +91,15 @@ class REQUEST extends BASE {
   }
 
   async validate(req, options = {}) {
-
-    if (!_.every(['params', 'query', 'body'], _.partial(_.has, req))) {
-      throw new Error('Invalid express req object.');
-    }
-
     options = _.defaults(this[_private].options, options);
 
-    const errors = {}
+    const func = validateRequest(req, {
+      params: this[_private].params,
+      query: this[_private].query,
+      body: this[_private].body,
+    }, options);
 
-    if (this[_private].params) {
-      const opt = _.defaults(this[_private].params.options, options);
-      try {
-        req.params = await this[_private].params.schema.validate(req.params, opt);
-      } catch (err) {
-        errors.params = err;
-      }
-    } else if (options.noUndefinedKeys) {
-      if (_.keys(req.params).length > 0) {
-        errors.params = 'No params parameters allowed.';
-      }
-    }
-
-    if (this[_private].query) {
-      const opt = _.defaults(this[_private].query.options, options);
-      try {
-        req.query = await this[_private].query.schema.validate(req.query, opt);
-      } catch (err) {
-        errors.query = err;
-      }
-    } else if (options.noUndefinedKeys) {
-      if (_.keys(req.query).length > 0) {
-        errors.query = 'No query parameters allowed.';
-      }
-    }
-
-    if (this[_private].body) {
-      if (this[_private].body.schema.isRequired() || _.keys(req.body).length !== 0) {
-        const opt = _.defaults(this[_private].body.options, options);
-        try {
-          req.body = await this[_private].body.schema.validate(req.body, opt);
-        } catch (err) {
-          errors.body = err;
-        }
-      }
-    } else if (options.noUndefinedKeys) {
-      if (_.keys(req.body).length > 0) {
-        errors.body = 'No body parameters allowed.';
-      }
-    }
-
-    if (_.keys(errors).length > 0) {
-      throw errors;
-    } else {
-      return req;
-    }
+    return helper.validate(options.type, func);
   }
 
   params(schema, options = {}) {
@@ -96,7 +108,7 @@ class REQUEST extends BASE {
     this[_private].params = {
       schema,
       options: _.defaults(options, this[_private].options, defaults.URI_OPTIONS)
-    }
+    };
     return this;
   }
 
@@ -106,7 +118,7 @@ class REQUEST extends BASE {
     this[_private].query = {
       schema,
       options: _.defaults(options, this[_private].options, defaults.QUERY_OPTIONS)
-    }
+    };
     return this;
   }
 
@@ -116,14 +128,8 @@ class REQUEST extends BASE {
     this[_private].body = {
       schema,
       options: _.defaults(options, this[_private].options, defaults.BODY_OPTIONS)
-    }
+    };
     return this;
-  }
-
-  // Deprecated remove in v1
-  uri(schema, options = {}) {
-    console.log('express-input-validator: using uri() is deprecated. Use params() instead.');
-    return this.params(schema, options);
   }
 }
 

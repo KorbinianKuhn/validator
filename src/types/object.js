@@ -1,11 +1,88 @@
 const _ = require('lodash');
 const BASE = require('./base');
+const message = require('../message');
+const helper = require('../helper');
+
+const _private = Symbol('Private variables');
 
 const ALLOWED_CONDITIONS = ['gt', 'equals', 'lt', 'gte', 'lte', 'notEquals', 'dependsOn', 'xor'];
 
-var _private = Symbol();
+const validateObject = async (value, privates, options) => {
+  if (_.isNil(value)) {
+    if (privates.default) return privates.default;
+    if (privates.required) throw message.required(options.language, options.type, value);
+    return value;
+  }
 
-const compare = (value, keyA, conditions) => {
+  if (options.parseToType && _.isString(value)) {
+    try {
+      value = JSON.parse(value);
+    } catch (err) {
+      // Do nothing
+    }
+  }
+
+  if (!_.isPlainObject(value)) throw message.get(options.language, options.type, 'object', 'wrong_type');
+
+  const length = _.keys(value).length;
+  if (length === 0 && (privates.empty === false || (privates.empty === undefined && options.noEmptyObjects))) {
+    throw message.get(options.language, options.type, 'object', 'empty');
+  }
+
+  if (privates.min && length < privates.min) throw message.get(options.language, options.type, 'object', 'min', privates.min);
+  if (privates.max && length > privates.max) throw message.get(options.language, options.type, 'object', 'max', privates.max);
+  if (privates.length && length !== privates.length) throw message.get(options.language, options.type, 'object', 'length', privates.length);
+
+  const errors = {};
+  for (const key in privates.object) {
+    try {
+      const result = await privates.object[key].validate(value[key], options);
+      if (!_.isNil(result)) value[key] = result;
+    } catch (err) {
+      errors[key] = err;
+    }
+  }
+
+  if (options.noUndefinedKeys) {
+    for (const key in value) {
+      if (!_.has(privates.object, key)) {
+        errors[key] = message.get(options.language, options.type, 'object', 'unknown', key);
+      }
+    }
+  }
+
+  if (privates.conditions && _.keys(errors).length === 0) {
+    for (const key in privates.conditions) {
+      try {
+        compare(value, key, privates.conditions[key], options);
+      } catch (err) {
+        errors[key] = err;
+      }
+    }
+  }
+
+  if (privates.func) {
+    const fn = privates.func.fn;
+    const keys = privates.func.keys;
+    const values = [];
+    for (const key of keys) {
+      values.push(_.get(value, key, null));
+    }
+    try {
+      await fn(...values);
+    } catch (err) {
+      errors[keys.join(', ')] = err;
+    }
+  }
+
+  if (_.keys(errors).length > 0) {
+    throw errors;
+  } else {
+    return value;
+  }
+};
+
+const compare = (value, keyA, conditions, options) => {
   const errors = [];
   for (const method in conditions) {
     const keyB = conditions[method];
@@ -22,16 +99,16 @@ const compare = (value, keyA, conditions) => {
       } else {
         switch (method) {
           case 'gt':
-            if (!(a > b)) errors.push(`must be greater then '${conditions[method]}'`);
+            if (!(a > b)) errors.push(message.get(options.language, options.type, 'object', 'gt', keyB, keyA));
             break;
           case 'gte':
-            if (!(a >= b)) errors.push(`must be greater or equal then '${conditions[method]}'`);
+            if (!(a >= b)) errors.push(message.get(options.language, options.type, 'object', 'gte', keyB, keyA));
             break;
           case 'lt':
-            if (!(a < b)) errors.push(`must be less then '${conditions[method]}'`);
+            if (!(a < b)) errors.push(message.get(options.language, options.type, 'object', 'lt', keyB, keyA));
             break;
           case 'lte':
-            if (!(a <= b)) errors.push(`must be less or equal then '${conditions[method]}'`);
+            if (!(a <= b)) errors.push(message.get(options.language, options.type, 'object', 'lte', keyB, keyA));
             break;
         }
         continue;
@@ -40,25 +117,24 @@ const compare = (value, keyA, conditions) => {
 
     switch (method) {
       case 'equals':
-        if (!_.isEqual(a, b)) errors.push(`must equal '${conditions[method]}'`);
+        if (!_.isEqual(a, b)) errors.push(message.get(options.language, options.type, 'object', 'equals', keyB, keyA));
         break;
       case 'notEquals':
-        if (_.isEqual(a, b)) errors.push(`must not equal '${conditions[method]}'`);
+        if (_.isEqual(a, b)) errors.push(message.get(options.language, options.type, 'object', 'not_equals', keyB, keyA));
         break;
       case 'xor':
-        errors.push(`only '${keyA}' or '${keyB}' can be set`);
+        errors.push(message.get(options.language, options.type, 'object', 'xor', keyB, keyA));
         break;
       case 'dependsOn':
-        if (a && !b) errors.push(`depends on '${keyB}'`);
+        if (a && !b) errors.push(message.get(options.language, options.type, 'object', 'depends_on', keyB, keyA));
         break;
     }
-
   }
 
   if (errors.length > 0) {
     throw errors.join(', ');
   }
-}
+};
 
 class OBJECT extends BASE {
   constructor(object, options) {
@@ -80,86 +156,19 @@ class OBJECT extends BASE {
   async validate(value, options = {}) {
     options = _.defaults(this[_private].options, options);
 
-    if (_.isNil(value)) {
-      if (this[_private].default) return this[_private].default;
-      if (this.isRequired(options)) throw `Required but is ${value}.`;
-      return value;
-    }
+    const func = validateObject(value, {
+      required: this.isRequired(options),
+      default: this[_private].default,
+      empty: this[_private].empty,
+      min: this[_private].min,
+      max: this[_private].max,
+      length: this[_private].length,
+      object: this[_private].object,
+      conditions: this[_private].conditions,
+      func: this[_private].func
+    }, options);
 
-    if (options.parseToType && _.isString(value)) {
-      try {
-        value = JSON.parse(value);
-      } catch (err) {}
-    }
-
-    if (!_.isPlainObject(value)) {
-      throw `Must be object.`;
-    }
-
-    const length = _.keys(value).length
-    if (length === 0 && (this[_private].empty === false || (this[_private].empty === undefined && options.noEmptyObjects))) {
-      throw `Object is empty.`;
-    }
-
-    if (this[_private].min && length < this[_private].min) {
-      throw `Object must have at least ${this[_private].min} keys.`
-    }
-
-    if (this[_private].max && length > this[_private].max) {
-      throw `Object must have at most ${this[_private].max} keys.`
-    }
-
-    if (this[_private].length && length !== this[_private].length) {
-      throw `Object must have exactly ${this[_private].length} keys.`
-    }
-
-    const errors = {}
-    for (const key in this[_private].object) {
-      try {
-        const result = await this[_private].object[key].validate(value[key], options);
-        if (!_.isNil(result)) value[key] = result;
-      } catch (err) {
-        errors[key] = err;
-      }
-    }
-
-    if (options.noUndefinedKeys) {
-      for (const key in value) {
-        if (!_.has(this[_private].object, key)) {
-          errors[key] = 'Invalid key.'
-        }
-      }
-    }
-
-    if (this[_private].conditions && _.keys(errors).length === 0) {
-      for (const key in this[_private].conditions) {
-        try {
-          compare(value, key, this[_private].conditions[key]);
-        } catch (err) {
-          errors[key] = err;
-        }
-      }
-    }
-
-    if (this[_private].func) {
-      const fn = this[_private].func.fn;
-      const keys = this[_private].func.keys;
-      const values = [];
-      for (const key of keys) {
-        values.push(_.get(value, key, null));
-      }
-      try {
-        await fn(...values);
-      } catch (err) {
-        errors[keys.join(', ')] = err;
-      }
-    }
-
-    if (_.keys(errors).length > 0) {
-      throw errors;
-    } else {
-      return value;
-    }
+    return helper.validate(options.type, func);
   }
 
   empty(boolean) {
@@ -168,7 +177,7 @@ class OBJECT extends BASE {
   }
 
   conditions(options) {
-    let conditions = {}
+    let conditions = {};
     if (this[_private].conditions) {
       conditions = this[_private].conditions;
     }
@@ -222,13 +231,13 @@ class OBJECT extends BASE {
 
   func(fn, ...keys) {
     if (!_.isFunction(fn)) {
-      throw new Error('Is not a function.')
+      throw new Error('Is not a function.');
     }
 
     this[_private].func = {
       fn,
       keys
-    }
+    };
     return this;
   }
 
@@ -247,18 +256,12 @@ class OBJECT extends BASE {
     return this;
   }
 
-  default (value) {
+  default(value) {
     if (!_.isPlainObject(value)) {
-      throw new Error('Must be object.');
+      throw new Error('Must be an object.');
     }
     this[_private].default = value;
     return this;
-  }
-
-  // Deprecated remove in v1
-  defaultValue(value) {
-    console.log('express-input-validator: using defaultValue() is deprecated. Use default() instead.');
-    return this.default(value);
   }
 }
 

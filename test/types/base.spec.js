@@ -3,7 +3,7 @@ const should = require('should');
 const helper = require('./helper');
 const BASE = require('../../src/types/base');
 
-describe('BASE()', function () {
+describe('BASE()', () => {
   it('required should be false', () => {
     new BASE().isRequired().should.be.false();
     new BASE().required(false).isRequired().should.be.false();
@@ -20,5 +20,4 @@ describe('BASE()', function () {
       requiredAsDefault: true
     }).should.be.ok();
   });
-
 });
