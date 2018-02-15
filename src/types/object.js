@@ -263,6 +263,34 @@ class OBJECT extends BASE {
     this[_private].default = value;
     return this;
   }
+
+  toObject() {
+    const object = {
+      type: 'object',
+      required: this.isRequired(this[_private].options)
+    };
+
+    if (this.name()) object.displayName = this.name();
+    if (this.description()) object.description = this.description();
+    if (this.examples()) {
+      object.examples = this.examples();
+    } else if (this.example()) {
+      object.example = this.example();
+    }
+    if (this[_private].default) object.default = this[_private].default;
+
+    if (this[_private].min) object.minProperties = this[_private].min;
+    if (this[_private].max) object.maxProperties = this[_private].max;
+
+    if (_.keys(this[_private].object).length > 0) {
+      object.properties = {};
+      for (const key in this[_private].object) {
+        object.properties[key] = this[_private].object[key].toObject();
+      }
+    }
+
+    return object;
+  }
 }
 
 function ObjectFactory(object, options) {

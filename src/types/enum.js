@@ -50,6 +50,24 @@ class ENUM extends BASE {
     this[_private].default = value;
     return this;
   }
+
+  toObject() {
+    const object = {
+      type: 'enum',
+      required: this.isRequired(this[_private].options)
+    };
+
+    if (this.name()) object.displayName = this.name();
+    if (this.description()) object.description = this.description();
+    if (this.examples()) {
+      object.examples = this.examples();
+    } else if (this.example()) {
+      object.example = this.example();
+    }
+    if (this[_private].default) object.default = this[_private].default;
+
+    return object;
+  }
 }
 
 function EnumFactory(values, options) {

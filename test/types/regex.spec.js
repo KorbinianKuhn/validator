@@ -116,4 +116,9 @@ describe('REGEX()', () => {
     const result = await helper.shouldThrow(async () => REGEX(/[A-Z]/).empty(false).message('Must have only uppercase letters.').validate(''));
     result.should.equal('Must have only uppercase letters.');
   }));
+
+  it.only('toObject() should verify', async () => {
+    const schema = REGEX(/[A-Z]/).min(2).max(20).name('My Regex').description('A very nice regex.').example('ABC');
+    console.log(schema.toObject());
+  });
 });

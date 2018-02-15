@@ -145,4 +145,9 @@ describe('ARRAY()', () => {
     })).validate(array);
     result.should.deepEqual(array);
   }));
+
+  it.only('toObject() should verify', async () => {
+    const schema = ARRAY(STRING()).min(2).max(10).name('My Array').description('A very nice array.').example('["a", "b", "c"]');
+    console.log(schema.toObject());
+  });
 });

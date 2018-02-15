@@ -139,4 +139,9 @@ describe('INTEGER()', () => {
     const result = await INTEGER().negative().validate(-3);
     result.should.equal(-3);
   }));
+
+  it.only('toObject() should verify', async () => {
+    const schema = INTEGER().min(2).max(10).name('My Integer').description('A very nice integer.').example(5);
+    console.log(schema.toObject());
+  });
 });

@@ -64,4 +64,9 @@ describe('BOOLEAN()', () => {
     result = await BOOLEAN().default(true).validate(false);
     result.should.deepEqual(false);
   }));
+
+  it.only('toObject() should verify', async () => {
+    const schema = BOOLEAN().name('My Boolean').description('A very nice boolean.').example(true);
+    console.log(schema.toObject());
+  });
 });

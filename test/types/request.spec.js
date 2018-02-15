@@ -237,4 +237,19 @@ describe('REQUEST()', () => {
     });
     error.should.have.property('body', 'Body parameters are not allowed.');
   });
+
+  it.only('toObject() should verify', async () => {
+    const schema = REQUEST()
+      .params({
+        userid: INTEGER()
+      })
+      .query({
+        deleted: BOOLEAN()
+      })
+      .body({
+        name: STRING()
+      })
+      .description('A very nice route.');
+    console.log(schema.toObject());
+  });
 });

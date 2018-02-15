@@ -50,4 +50,9 @@ describe('ENUM()', () => {
     result = await ENUM(['a', 'b', 'c']).default('a').validate('b');
     result.should.deepEqual('b');
   }));
+
+  it.only('toObject() should verify', async () => {
+    const schema = ENUM([1, 2, 3]).name('My Enum').description('A very nice enum.').example(2);
+    console.log(schema.toObject());
+  });
 });

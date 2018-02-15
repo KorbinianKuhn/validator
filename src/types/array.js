@@ -120,6 +120,32 @@ class ARRAY extends BASE {
     this[_private].unique = boolean;
     return this;
   }
+
+  toObject() {
+    const object = {
+      type: 'string',
+      required: this.isRequired(this[_private].options)
+    };
+
+    if (this.name()) object.displayName = this.name();
+    if (this.description()) object.description = this.description();
+    if (this.examples()) {
+      object.examples = this.examples();
+    } else if (this.example()) {
+      object.example = this.example();
+    }
+    if (this[_private].default) object.default = this[_private].default;
+
+    if (this[_private].unique) object.uniqueItems = this[_private].unique;
+    if (this[_private].min) object.minItems = this[_private].min;
+    if (this[_private].max) object.maxItems = this[_private].max;
+
+    if (this[_private].type) {
+      object.items = this[_private].type.toObject();
+    }
+
+    return object;
+  }
 }
 
 function ArrayFactory(type, options) {

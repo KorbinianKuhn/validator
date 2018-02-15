@@ -265,4 +265,12 @@ describe('OBJECT()', () => {
     const result = await object.validate(valid);
     result.should.deepEqual(valid);
   });
+
+  it.only('toObject() should verify', async () => {
+    const schema = OBJECT({
+      name: STRING(),
+      age: INTEGER()
+    }).min(1).max(2).name('My Object').description('A very nice object.').example({ name: 'Jane', age: 25 });
+    console.log(schema.toObject());
+  });
 });

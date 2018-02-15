@@ -52,6 +52,16 @@ class FUNCTION extends BASE {
     this[_private].default = value;
     return this;
   }
+
+  toObject() {
+    const object = {
+      type: 'function',
+      required: this.isRequired(this[_private].options),
+      description: 'Function is not implemented yet.'
+    };
+
+    return object;
+  }
 }
 
 function FunctionFactory(func, options) {

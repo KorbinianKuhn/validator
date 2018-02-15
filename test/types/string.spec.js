@@ -101,4 +101,9 @@ describe('STRING()', () => {
     const result = await helper.shouldThrow(async () => STRING(helper.DEFAULT_OPTIONS).validate(' '));
     result.should.equal('String is empty.');
   }));
+
+  it.only('toObject() should verify', async () => {
+    const schema = STRING().min(2).max(20).name('My String').description('A very nice string.').example('test');
+    console.log(schema.toObject());
+  });
 });

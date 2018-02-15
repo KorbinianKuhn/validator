@@ -132,4 +132,9 @@ describe('NUMBER()', () => {
     const result = await NUMBER().negative().validate(-3.3);
     result.should.equal(-3.3);
   }));
+
+  it.only('toObject() should verify', async () => {
+    const schema = NUMBER().min(2).max(10).name('My Number').description('A very nice number.').example(5);
+    console.log(schema.toObject());
+  });
 });

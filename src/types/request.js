@@ -131,6 +131,20 @@ class REQUEST extends BASE {
     };
     return this;
   }
+
+  toObject() {
+    const object = {
+      type: 'request',
+    };
+
+    if (this.description()) object.description = this.description();
+
+    if (this[_private].params) object.uriParameters = this[_private].params.schema.toObject().properties;
+    if (this[_private].query) object.queryParameters = this[_private].query.schema.toObject().properties;
+    if (this[_private].body) object.body = this[_private].body.schema.toObject().properties;
+
+    return object;
+  }
 }
 
 function RequestFactory(options) {

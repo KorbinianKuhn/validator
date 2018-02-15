@@ -90,4 +90,9 @@ describe('DATE()', () => {
     const result = await date.validate(datestring);
     result.should.equal(datestring);
   }));
+
+  it.only('toObject() should verify', async () => {
+    const schema = DATE().name('My Date').description('A very nice date.').example(moment.utc().toISOString());
+    console.log(schema.toObject());
+  });
 });
