@@ -1,83 +1,69 @@
 const _ = require('lodash');
-const BASE = require('./base');
+const ANY = require('./any').ANY;
 const message = require('../message');
 const helper = require('../helper');
 
-const _private = Symbol('Private variables');
+const validateInteger = async (value, schema) => {
+  const language = schema._options.language;
+  const messages = schema._options.messages;
 
-const validateInteger = async (value, privates, options) => {
   if (_.isNil(value)) {
-    if (privates.default) return privates.default;
-    if (privates.required) throw message.required(options.language, options.type, value);
+    if (schema._default) return schema._default;
+    if (schema._required) throw message.required(language, messages, value);
     return value;
   }
 
-  if (options.parseToType && _.isString(value)) {
-    if (value.match(/^[+-]?\d+$/)) value = parseInt(value);
+  if (schema._parse && _.isString(value) && value.match(/^[+-]?\d+$/)) {
+    value = parseInt(value);
   }
 
-  if (!_.isInteger(value)) throw message.wrongType(options.language, options.type, 'integer', typeof value);
-  if (privates.min && value < privates.min) throw message.get(options.language, options.type, 'integer', 'min', privates.min);
-  if (privates.max && value > privates.max) throw message.get(options.language, options.type, 'integer', 'max', privates.max);
-  if (privates.less && value >= privates.less) throw message.get(options.language, options.type, 'integer', 'less', privates.less);
-  if (privates.greater && value <= privates.greater) throw message.get(options.language, options.type, 'integer', 'greater', privates.greater);
-  if (privates.positive && value <= 0) throw message.get(options.language, options.type, 'integer', 'positive');
-  if (privates.negative && value >= 0) throw message.get(options.language, options.type, 'integer', 'negative');
+  if (!_.isInteger(value)) throw message.wrongType(language, messages, 'integer', typeof value);
+  if (schema._min && value < schema._min) throw message.get(language, messages, 'integer', 'min', schema._min);
+  if (schema._max && value > schema._max) throw message.get(language, messages, 'integer', 'max', schema._max);
+  if (schema._less && value >= schema._less) throw message.get(language, messages, 'integer', 'less', schema._less);
+  if (schema._greater && value <= schema._greater) throw message.get(language, messages, 'integer', 'greater', schema._greater);
+  if (schema._positive && value <= 0) throw message.get(language, messages, 'integer', 'positive');
+  if (schema._negative && value >= 0) throw message.get(language, messages, 'integer', 'negative');
 
   return value;
 };
 
-class INTEGER extends BASE {
+class INTEGER extends ANY {
   constructor(options) {
-    super();
-    this[_private] = {};
-    this[_private].options = options || {};
+    super(options);
   }
 
-  async validate(value, options = {}) {
-    options = _.defaults(this[_private].options, options);
-
-    const func = validateInteger(value, {
-      required: this.isRequired(options),
-      default: this[_private].default,
-      min: this[_private].min,
-      max: this[_private].max,
-      less: this[_private].less,
-      greater: this[_private].greater,
-      positive: this[_private].positive,
-      negative: this[_private].negative
-    }, options);
-
-    return helper.validate(options.type, func);
+  async validate(value) {
+    return helper.validate(this._options.type, validateInteger(value, this));
   }
 
   min(value) {
-    this[_private].min = value;
+    this._min = value;
     return this;
   }
 
   max(value) {
-    this[_private].max = value;
+    this._max = value;
     return this;
   }
 
   less(value) {
-    this[_private].less = value;
+    this._less = value;
     return this;
   }
 
   greater(value) {
-    this[_private].greater = value;
+    this._greater = value;
     return this;
   }
 
   positive() {
-    this[_private].positive = true;
+    this._positive = true;
     return this;
   }
 
   negative() {
-    this[_private].negative = true;
+    this._negative = true;
     return this;
   }
 
@@ -85,33 +71,27 @@ class INTEGER extends BASE {
     if (!_.isInteger(value)) {
       throw new Error('Must be integer.');
     }
-    this[_private].default = value;
+    this._default = value;
     return this;
   }
 
   toObject() {
-    const object = {
+    return _.pickBy({
       type: 'integer',
-      required: this.isRequired(this[_private].options)
-    };
-
-    if (this.name()) object.displayName = this.name();
-    if (this.description()) object.description = this.description();
-    if (this.examples()) {
-      object.examples = this.examples();
-    } else if (this.example()) {
-      object.example = this.example();
-    }
-    if (this[_private].default) object.default = this[_private].default;
-
-    if (this[_private].min) object.minLength = this[_private].min;
-    if (this[_private].max) object.maxLength = this[_private].max;
-
-    return object;
+      required: this._required,
+      name: this._name,
+      description: this._description,
+      default: this._default,
+      example: this._example,
+      examples: this._examples,
+      min: this._min,
+      max: this._max,
+      less: this._less,
+      greater: this._greater,
+      positive: this._positive,
+      negative: this._negative
+    }, helper.isNotNil);
   }
 }
 
-function IntegerFactory(options) {
-  return new INTEGER(options);
-}
-module.exports = IntegerFactory;
+exports.IntegerFactory = (options = {}) => new INTEGER(options);

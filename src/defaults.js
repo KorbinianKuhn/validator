@@ -1,4 +1,4 @@
-exports.TYPE_NAMES = ['ARRAY', 'BOOLEAN', 'DATE', 'ENUM', 'FUNCTION', 'INTEGER', 'NUMBER', 'OBJECT', 'REGEX', 'REQUEST',
+exports.TYPE_NAMES = ['ANY', 'ARRAY', 'BOOLEAN', 'DATE', 'ENUM', 'FUNCTION', 'INTEGER', 'NUMBER', 'OBJECT', 'REGEX', 'REQUEST',
   'STRING'
 ];
 const DATE_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
@@ -6,7 +6,8 @@ exports.DATE_FORMAT = DATE_FORMAT;
 
 exports.VALIDATOR_OPTIONS = {
   language: 'en',
-  type: 'default',
+  messages: 'default',
+  type: 'any',
   requiredAsDefault: true,
   throwValidationErrors: true,
   parseToType: false,

@@ -1,25 +1,26 @@
 const _ = require('lodash');
-const BASE = require('./base');
+const ANY = require('./any').ANY;
 const helper = require('../helper');
 const message = require('../message');
 
-const _private = Symbol('Private variables');
+const validateEnum = async (value, schema) => {
+  const language = schema._options.language;
+  const messages = schema._options.messages;
 
-const validateEnum = async (value, privates, options) => {
   if (_.isNil(value)) {
-    if (privates.default) return privates.default;
-    if (privates.required) throw message.required(options.language, options.type, value);
+    if (schema._default) return schema._default;
+    if (schema._required) throw message.required(language, messages, value);
     return value;
   }
 
-  if (privates.values.indexOf(value) === -1) throw message.get(options.language, options.type, 'enum', 'invalid', value, privates.values.toString());
+  if (schema._values.indexOf(value) === -1) throw message.get(language, messages, 'enum', 'invalid', value, schema._values.toString());
 
   return value;
 };
 
-class ENUM extends BASE {
+class ENUM extends ANY {
   constructor(values, options) {
-    super();
+    super(options);
 
     if (!values) {
       throw new Error('Missing values for enum.');
@@ -29,48 +30,33 @@ class ENUM extends BASE {
       throw new Error('Values must be an array.');
     }
 
-    this[_private] = {};
-    this[_private].values = values;
-    this[_private].options = options || {};
+    this._values = values;
   }
 
-  async validate(value, options = {}) {
-    options = _.defaults(this[_private].options, options);
-
-    const func = validateEnum(value, {
-      required: this.isRequired(options),
-      default: this[_private].default,
-      values: this[_private].values
-    }, options);
-
-    return helper.validate(options.type, func);
+  async validate(value) {
+    return helper.validate(this._options.type, validateEnum(value, this));
   }
 
   default(value) {
-    this[_private].default = value;
+    if (!_.isArray(value)) {
+      throw new Error('Must be array.');
+    }
+    this._default = value;
     return this;
   }
 
   toObject() {
-    const object = {
+    return _.pickBy({
       type: 'enum',
-      required: this.isRequired(this[_private].options)
-    };
-
-    if (this.name()) object.displayName = this.name();
-    if (this.description()) object.description = this.description();
-    if (this.examples()) {
-      object.examples = this.examples();
-    } else if (this.example()) {
-      object.example = this.example();
-    }
-    if (this[_private].default) object.default = this[_private].default;
-
-    return object;
+      required: this._required,
+      name: this._name,
+      description: this._description,
+      default: this._default,
+      example: this._example,
+      examples: this._examples,
+      enum: this._values
+    }, helper.isNotNil);
   }
 }
 
-function EnumFactory(values, options) {
-  return new ENUM(values, options);
-}
-module.exports = EnumFactory;
+exports.EnumFactory = (values, options = {}) => new ENUM(values, options);

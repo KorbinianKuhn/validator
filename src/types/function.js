@@ -1,27 +1,28 @@
 const _ = require('lodash');
-const BASE = require('./base');
+const ANY = require('./any').ANY;
 const message = require('../message');
 const helper = require('../helper');
 
-const _private = Symbol('Private variables.');
+const validateFunction = async (value, schema) => {
+  const language = schema._options.language;
+  const messages = schema._options.messages;
 
-const validateFunction = async (value, privates, options) => {
   if (_.isNil(value)) {
-    if (privates.default) return privates.default;
-    if (privates.required) throw message.required(options.language, options.type, value);
+    if (schema._default) return schema._default;
+    if (schema._required) throw message.required(language, messages, value);
     return value;
   }
 
   try {
-    return await privates.func(value, options);
+    return await schema._func(value, schema);
   } catch (err) {
     throw err.message;
   }
 };
 
-class FUNCTION extends BASE {
+class FUNCTION extends ANY {
   constructor(func, options) {
-    super();
+    super(options);
     if (func === undefined) {
       throw new Error('Missing function.');
     }
@@ -30,41 +31,24 @@ class FUNCTION extends BASE {
       throw new Error('Not a function.');
     }
 
-    this[_private] = {};
-    this[_private].func = func;
-    this[_private].options = options || {};
+    this._func = func;
   }
 
-  async validate(value, options = {}) {
-    options = _.defaults(this[_private].options, options);
-
-    options = _.defaults(this[_private].options, options);
-    const func = validateFunction(value, {
-      required: this.isRequired(options),
-      default: this[_private].default,
-      func: this[_private].func
-    }, options);
-
-    return helper.validate(options.type, func);
-  }
-
-  default(value) {
-    this[_private].default = value;
-    return this;
+  async validate(value) {
+    return helper.validate(this._options.type, validateFunction(value, this));
   }
 
   toObject() {
-    const object = {
+    return _.pickBy({
       type: 'function',
-      required: this.isRequired(this[_private].options),
-      description: 'Function is not implemented yet.'
-    };
-
-    return object;
+      required: this._required,
+      name: this._name,
+      description: this._description,
+      default: this._default,
+      example: this._example,
+      examples: this._examples
+    }, helper.isNotNil);
   }
 }
 
-function FunctionFactory(func, options) {
-  return new FUNCTION(func, options);
-}
-module.exports = FunctionFactory;
+exports.FunctionFactory = (func, options = {}) => new FUNCTION(func, options);

@@ -1,53 +1,52 @@
-const assert = require('assert');
 const should = require('should');
 const _ = require('lodash');
 const helper = require('./helper');
-const OBJECT = require('../../src/types/object');
-const STRING = require('../../src/types/string');
-const INTEGER = require('../../src/types/integer');
+const Validator = require('../../index').Validator;
 
-describe('OBJECT()', () => {
+const validator = Validator();
+
+describe('Object()', () => {
   it('no object should throw', () => {
     (() => {
-      OBJECT();
+      validator.Object();
     }).should.throw('Missing object.');
   });
 
   it('invalid object should throw', () => {
     (() => {
-      OBJECT(['test']);
+      validator.Object(['test']);
     }).should.throw('Invalid object.');
   });
 
   it('required but null should fail', helper.mochaAsync(async () => {
-    const message = await helper.shouldThrow(async () => OBJECT({
-      name: STRING()
+    const message = await helper.shouldThrow(async () => validator.Object({
+      name: validator.String()
     }).validate(null, helper.DEFAULT_OPTIONS));
     message.should.equal(`Required but is null.`);
   }));
 
   it('null and undefined should verify', helper.mochaAsync(async () => {
-    let result = await OBJECT({
-      name: STRING()
+    let result = await validator.Object({
+      name: validator.String()
     }).validate(null);
     should.equal(result, null);
 
-    result = await OBJECT({
-      name: STRING()
+    result = await validator.Object({
+      name: validator.String()
     }).validate(undefined);
     should.equal(result, undefined);
   }));
 
   it('invalid data type should fail', helper.mochaAsync(async () => {
-    const message = await helper.shouldThrow(async () => OBJECT({
-      name: STRING()
+    const message = await helper.shouldThrow(async () => validator.Object({
+      name: validator.String()
     }).validate(['test'], helper.DEFAULT_OPTIONS));
     message.should.equal(`Must be an object.`);
   }));
 
   it('invalid data should fail', helper.mochaAsync(async () => {
-    const object = OBJECT({
-      name: STRING()
+    const object = validator.Object({
+      name: validator.String()
     });
 
     let message = await helper.shouldThrow(async () => object.validate({}, helper.DEFAULT_OPTIONS));
@@ -62,8 +61,8 @@ describe('OBJECT()', () => {
   }));
 
   it('valid data should verify', helper.mochaAsync(async () => {
-    const object = OBJECT({
-      name: STRING()
+    const object = validator.Object({
+      name: validator.String()
     });
 
     let result = await object.validate({
@@ -82,8 +81,8 @@ describe('OBJECT()', () => {
   }));
 
   it('parsed string should fail', helper.mochaAsync(async () => {
-    const message = await helper.shouldThrow(async () => OBJECT({
-      name: STRING()
+    const message = await helper.shouldThrow(async () => validator.Object({
+      name: validator.String()
     }).validate('invalid', {
       parseToType: true
     }));
@@ -91,8 +90,8 @@ describe('OBJECT()', () => {
   }));
 
   it('parsed string should verify', helper.mochaAsync(async () => {
-    const result = await OBJECT({
-      name: STRING()
+    const result = await validator.Object({
+      name: validator.String()
     }).validate('{"name":"Jane Doe"}', {
       parseToType: true
     });
@@ -103,16 +102,16 @@ describe('OBJECT()', () => {
   }));
 
   it('invalid default value should throw', helper.mochaAsync(async () => {
-    const object = OBJECT({
-      name: STRING()
+    const object = validator.Object({
+      name: validator.String()
     });
     const result = await helper.shouldThrow(async () => object.default('invalid'));
     result.message.should.equal('Must be an object.');
   }));
 
   it('valid default value should verify', helper.mochaAsync(async () => {
-    const object = OBJECT({
-      name: STRING()
+    const object = validator.Object({
+      name: validator.String()
     });
     let result = await object.default({
       name: 'John Doe'
@@ -132,8 +131,8 @@ describe('OBJECT()', () => {
   }));
 
   it('empty should verify', helper.mochaAsync(async () => {
-    const object = OBJECT({
-      name: STRING()
+    const object = validator.Object({
+      name: validator.String()
     }, {
       noEmptyArrays: true
     });
@@ -147,7 +146,7 @@ describe('OBJECT()', () => {
 
   it('invalid custom function should throw', helper.mochaAsync(async () => {
     (() => {
-      OBJECT({}).func('test');
+      validator.Object({}).func('test');
     }).should.throw('Is not a function.');
   }));
 
@@ -159,10 +158,10 @@ describe('OBJECT()', () => {
         return true;
       }
     };
-    const object = OBJECT({
-      name: STRING(),
-      nested: OBJECT({
-        age: INTEGER(),
+    const object = validator.Object({
+      name: validator.String(),
+      nested: validator.Object({
+        age: validator.Integer(),
       })
     }).func(throwFunction, 'name', 'nested.age');
 
@@ -178,8 +177,8 @@ describe('OBJECT()', () => {
   }));
 
   it('undefined key should throw', async () => {
-    const object = OBJECT({
-      name: STRING()
+    const object = validator.Object({
+      name: validator.String()
     }, helper.DEFAULT_OPTIONS);
     let error;
     await object.validate({
@@ -192,8 +191,8 @@ describe('OBJECT()', () => {
   });
 
   it('undefined key should not throw', async () => {
-    const object = OBJECT({
-      name: STRING()
+    const object = validator.Object({
+      name: validator.String()
     });
     const data = {
       name: 'test',
@@ -212,8 +211,8 @@ describe('OBJECT()', () => {
       name: 'Jane Doe'
     };
     let error;
-    const object = OBJECT({
-      name: STRING()
+    const object = validator.Object({
+      name: validator.String()
     }).min(2);
     await object.validate(invalid).catch((err) => {
       error = err;
@@ -233,8 +232,8 @@ describe('OBJECT()', () => {
       name: 'Jane Doe'
     };
     let error;
-    const object = OBJECT({
-      name: STRING()
+    const object = validator.Object({
+      name: validator.String()
     }).max(1);
     await object.validate(invalid).catch((err) => {
       error = err;
@@ -254,8 +253,8 @@ describe('OBJECT()', () => {
       name: 'Jane Doe'
     };
     let error;
-    const object = OBJECT({
-      name: STRING()
+    const object = validator.Object({
+      name: validator.String()
     }).length(1);
     await object.validate(invalid).catch((err) => {
       error = err;
@@ -266,10 +265,10 @@ describe('OBJECT()', () => {
     result.should.deepEqual(valid);
   });
 
-  it.only('toObject() should verify', async () => {
-    const schema = OBJECT({
-      name: STRING(),
-      age: INTEGER()
+  it.skip('toObject() should verify', async () => {
+    const schema = validator.Object({
+      name: validator.String(),
+      age: validator.Integer()
     }).min(1).max(2).name('My Object').description('A very nice object.').example({ name: 'Jane', age: 25 });
     console.log(schema.toObject());
   });

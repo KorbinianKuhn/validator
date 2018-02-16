@@ -1,79 +1,66 @@
 const _ = require('lodash');
-const BASE = require('./base');
+const ANY = require('./any').ANY;
 const message = require('../message');
 const helper = require('../helper');
 
-const _private = Symbol('Private variables');
+const validateString = async (value, schema) => {
+  const language = schema._options.language;
+  const messages = schema._options.messages;
 
-const validateString = async (value, privates, options) => {
   if (_.isNil(value)) {
-    if (privates.default) return privates.default;
-    if (privates.required) throw message.required(options.language, options.type, value);
+    if (schema._default) return schema._default;
+    if (schema._required) throw message.required(language, messages, value);
     return value;
   }
 
-  if (!_.isString(value)) throw message.wrongType(options.language, options.type, 'string', typeof value);
+  if (!_.isString(value)) throw message.wrongType(language, messages, 'string', typeof value);
 
-  if (privates.trim || (privates.trim === undefined && options.trimStrings)) {
+  if (schema._trim) {
     value = value.trim();
   }
 
-  if (value === '' && (privates.empty === false || (privates.empty === undefined && options.noEmptyStrings))) {
-    throw message.get(options.language, options.type, 'string', 'empty');
+  if (value === '' && schema._empty) {
+    throw message.get(language, messages, 'string', 'empty');
   }
 
-  if (privates.min && value.length < privates.min) throw message.get(options.language, options.type, 'string', 'min', privates.min);
-  if (privates.max && value.length > privates.max) throw message.get(options.language, options.type, 'string', 'max', privates.max);
-  if (privates.length && value.length !== privates.length) throw message.get(options.language, options.type, 'string', 'length', privates.length);
+  if (schema._min && value.length < schema._min) throw message.get(language, messages, 'string', 'min', schema._min);
+  if (schema._max && value.length > schema._max) throw message.get(language, messages, 'string', 'max', schema._max);
+  if (schema._length && value.length !== schema._length) throw message.get(language, messages, 'string', 'length', schema._length);
 
   return value;
 };
 
-class STRING extends BASE {
+class STRING extends ANY {
   constructor(options) {
-    super();
-    this[_private] = {};
-    this[_private].options = options || {};
+    super(options);
   }
 
-  async validate(value, options = {}) {
-    options = _.defaults(this[_private].options, options);
-
-    const func = validateString(value, {
-      required: this.isRequired(options),
-      default: this[_private].default,
-      min: this[_private].min,
-      max: this[_private].max,
-      length: this[_private].length,
-      empty: this[_private].empty,
-      trim: this[_private].trim,
-    }, options);
-
-    return helper.validate(options.type, func);
+  async validate(value) {
+    return helper.validate(this._options.type, validateString(value, this));
   }
 
   min(length) {
-    this[_private].min = length;
+    this._min = length;
     return this;
   }
 
   max(length) {
-    this[_private].max = length;
+    this._max = length;
     return this;
   }
 
   length(length) {
-    this[_private].length = length;
+    this._length = length;
     return this;
   }
 
   empty(boolean) {
-    this[_private].empty = boolean;
+    this._empty = boolean;
     return this;
   }
 
   trim(boolean) {
-    this[_private].trim = boolean;
+    this._trim = boolean;
     return this;
   }
 
@@ -81,33 +68,13 @@ class STRING extends BASE {
     if (!_.isString(value)) {
       throw new Error('Must be string.');
     }
-    this[_private].default = value;
+    this._default = value;
     return this;
   }
 
   toObject() {
-    const object = {
-      type: 'string',
-      required: this.isRequired(this[_private].options)
-    };
-
-    if (this.name()) object.displayName = this.name();
-    if (this.description()) object.description = this.description();
-    if (this.examples()) {
-      object.examples = this.examples();
-    } else if (this.example()) {
-      object.example = this.example();
-    }
-    if (this[_private].default) object.default = this[_private].default;
-
-    if (this[_private].min) object.minLength = this[_private].min;
-    if (this[_private].max) object.maxLength = this[_private].max;
-
-    return object;
+    throw new Error('Not Implemented');
   }
 }
 
-function StringFactory(options) {
-  return new STRING(options);
-}
-module.exports = StringFactory;
+exports.StringFactory = (options = {}) => new STRING(options);

@@ -1,49 +1,46 @@
-const assert = require('assert');
 const should = require('should');
 const helper = require('./helper');
-const REQUEST = require('../../src/types/request');
-const STRING = require('../../src/types/string');
-const INTEGER = require('../../src/types/integer');
-const BOOLEAN = require('../../src/types/boolean');
-const OBJECT = require('../../src/types/object');
-const ARRAY = require('../../src/types/array');
 
-describe('REQUEST()', () => {
+const Validator = require('../../index').ExpressValidator;
+
+const validator = Validator();
+
+describe('Request()', () => {
   it('invalid schema should throw', helper.mochaAsync(async () => {
     (() => {
-      REQUEST().params(null);
+      validator.Request().params(null);
     }).should.throw('Invalid schema.');
 
     (() => {
-      REQUEST().query(null);
+      validator.Request().query(null);
     }).should.throw('Invalid schema.');
 
     (() => {
-      REQUEST().body(null);
+      validator.Request().body(null);
     }).should.throw('Invalid schema.');
   }));
 
   it('unknown schema should throw', helper.mochaAsync(async () => {
     (() => {
-      REQUEST().params(STRING());
-    }).should.throw('Must be OBJECT or ARRAY Schema.');
+      validator.Request().params(validator.String());
+    }).should.throw('Must be validator.Object or validator.Array Schema.');
 
     (() => {
-      REQUEST().query(STRING());
-    }).should.throw('Must be OBJECT or ARRAY Schema.');
+      validator.Request().query(validator.String());
+    }).should.throw('Must be validator.Object or validator.Array Schema.');
 
     (() => {
-      REQUEST().body(STRING());
-    }).should.throw('Must be OBJECT or ARRAY Schema.');
+      validator.Request().body(validator.String());
+    }).should.throw('Must be validator.Object or validator.Array Schema.');
   }));
 
   it('invalid req object should throw', helper.mochaAsync(async () => {
-    const schema = OBJECT({
-      name: STRING()
+    const schema = validator.Object({
+      name: validator.String()
     });
 
     try {
-      await REQUEST().params(schema).validate(null);
+      await validator.Request().params(schema).validate(null);
       should.equal(true, false, 'Should throw');
     } catch (err) {
       err.message.should.equal('Invalid express req object.');
@@ -52,7 +49,7 @@ describe('REQUEST()', () => {
 
   it('object should get converted to schema and verify', helper.mochaAsync(async () => {
     const schema = {
-      name: STRING()
+      name: validator.String()
     };
 
     const req = {
@@ -63,13 +60,13 @@ describe('REQUEST()', () => {
       }
     };
 
-    const result = await REQUEST().body(schema).validate(req);
+    const result = await validator.Request().body(schema).validate(req);
     result.should.deepEqual(req);
   }));
 
   it('invalid data should throw', helper.mochaAsync(async () => {
-    const schema = OBJECT({
-      name: STRING()
+    const schema = validator.Object({
+      name: validator.String()
     }).required(true);
 
     const req = {
@@ -79,7 +76,7 @@ describe('REQUEST()', () => {
     };
 
     try {
-      await REQUEST().params(schema).validate(req);
+      await validator.Request().params(schema).validate(req);
       should.equal(true, false, 'Should throw');
     } catch (err) {
       err.should.deepEqual({
@@ -88,7 +85,7 @@ describe('REQUEST()', () => {
     }
 
     try {
-      await REQUEST().query(schema).validate(req);
+      await validator.Request().query(schema).validate(req);
       should.equal(true, false, 'Should throw');
     } catch (err) {
       err.should.deepEqual({
@@ -97,7 +94,7 @@ describe('REQUEST()', () => {
     }
 
     try {
-      await REQUEST().body(schema).validate(req);
+      await validator.Request().body(schema).validate(req);
       should.equal(true, false, 'Should throw');
     } catch (err) {
       err.should.deepEqual({
@@ -117,15 +114,15 @@ describe('REQUEST()', () => {
       }
     };
 
-    const result = await REQUEST()
-      .params(OBJECT({
-        id: INTEGER()
+    const result = await validator.Request()
+      .params(validator.Object({
+        id: validator.Integer()
       }))
-      .body(OBJECT({
-        name: STRING()
+      .body(validator.Object({
+        name: validator.String()
       }))
-      .query(OBJECT({
-        deleted: BOOLEAN()
+      .query(validator.Object({
+        deleted: validator.Boolean()
       }))
       .validate(req);
 
@@ -141,9 +138,9 @@ describe('REQUEST()', () => {
   }));
 
   it('optional body should verify', helper.mochaAsync(async () => {
-    const schema = REQUEST()
-      .body(OBJECT({
-        names: ARRAY(OBJECT({}))
+    const schema = validator.Request()
+      .body(validator.Object({
+        names: validator.Array(validator.Object({}))
       }).required(false));
 
     const req = {
@@ -156,9 +153,9 @@ describe('REQUEST()', () => {
   }));
 
   it('body should be required by default', helper.mochaAsync(async () => {
-    const schema = REQUEST()
+    const schema = validator.Request()
       .body({
-        names: ARRAY(OBJECT({}))
+        names: validator.Array(validator.Object({}))
       });
 
     const req = {
@@ -175,9 +172,9 @@ describe('REQUEST()', () => {
   }));
 
   it('body object should be required by default', helper.mochaAsync(async () => {
-    const schema = REQUEST()
-      .body(OBJECT({
-        names: ARRAY(OBJECT({}))
+    const schema = validator.Request()
+      .body(validator.Object({
+        names: validator.Array(validator.Object({}))
       }));
 
     const req = {
@@ -202,7 +199,7 @@ describe('REQUEST()', () => {
       body: {}
     };
     let error;
-    const result = await REQUEST().validate(req, helper.DEFAULT_OPTIONS).catch((err) => {
+    const result = await validator.Request().validate(req, helper.DEFAULT_OPTIONS).catch((err) => {
       error = err;
     });
     error.should.have.property('params', 'URI parameters are not allowed.');
@@ -217,7 +214,7 @@ describe('REQUEST()', () => {
       body: {}
     };
     let error;
-    const result = await REQUEST().validate(req, helper.DEFAULT_OPTIONS).catch((err) => {
+    const result = await validator.Request().validate(req, helper.DEFAULT_OPTIONS).catch((err) => {
       error = err;
     });
     error.should.have.property('query', 'Query parameters are not allowed.');
@@ -232,22 +229,22 @@ describe('REQUEST()', () => {
       },
     };
     let error;
-    const result = await REQUEST().validate(req, helper.DEFAULT_OPTIONS).catch((err) => {
+    const result = await validator.Request().validate(req, helper.DEFAULT_OPTIONS).catch((err) => {
       error = err;
     });
     error.should.have.property('body', 'Body parameters are not allowed.');
   });
 
-  it.only('toObject() should verify', async () => {
-    const schema = REQUEST()
+  it.skip('toObject() should verify', async () => {
+    const schema = validator.Request()
       .params({
-        userid: INTEGER()
+        userid: validator.Integer()
       })
       .query({
-        deleted: BOOLEAN()
+        deleted: validator.Boolean()
       })
       .body({
-        name: STRING()
+        name: validator.String()
       })
       .description('A very nice route.');
     console.log(schema.toObject());

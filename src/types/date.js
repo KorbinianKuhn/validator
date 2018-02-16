@@ -1,134 +1,107 @@
 const _ = require('lodash');
 const moment = require('moment');
-const BASE = require('./base');
-const defaults = require('../defaults');
+const ANY = require('./any').ANY;
 const helper = require('../helper');
 const message = require('../message');
 
-const _private = Symbol('Private variables');
+const validateDate = async (value, schema) => {
+  const language = schema._options.language;
+  const messages = schema._options.messages;
 
-const validateDate = async (value, privates, options) => {
   if (_.isNil(value)) {
-    if (privates.default) return privates.default;
-    if (privates.required) throw message.required(options.language, options.type, value);
+    if (schema._default) return schema._default;
+    if (schema._required) throw message.required(language, messages, value);
     return value;
   }
 
-  const format = privates.format || options.dateFormat || defaults.DATE_FORMAT;
-
-  const utc = _.defaultTo(privates.utc, _.defaultTo(options.utc, true));
-  const strict = _.defaultTo(privates.strict, _.defaultTo(options.strictDateValidation, true));
-
   let date;
-  if (utc) {
-    date = moment.utc(value, format, strict);
+  if (this._utc) {
+    date = moment.utc(value, this._format, this._strict);
   } else {
-    date = moment(value, format, strict);
+    date = moment(value, this._format, this._strict);
   }
 
   if (!date.isValid()) {
-    throw message.get(options.language, options.type, 'date', 'invalid', format);
+    throw message.get(language, messages, 'date', 'invalid', this._format);
   }
 
-  if (privates.min && date.toDate() < privates.min) {
-    throw message.get(options.language, options.type, 'date', 'minimum', privates.min.toISOString());
+  if (schema._min && date.toDate() < schema._min) {
+    throw message.get(language, messages, 'date', 'minimum', schema._min.toISOString());
   }
 
-  if (privates.max && date.toDate() > privates.max) {
-    throw message.get(options.language, options.type, 'date', 'maximum', privates.max.toISOString());
+  if (schema._max && date.toDate() > schema._max) {
+    throw message.get(language, messages, 'date', 'maximum', schema._max.toISOString());
   }
 
-  if (privates.parse || options.parseDates) {
+  if (schema._parse) {
     value = date.toDate();
   }
 
   return value;
 };
 
-class DATE extends BASE {
-  constructor(format, options) {
-    super();
-    this[_private] = {};
-    this[_private].options = options || {};
+class DATE extends ANY {
+  constructor(options) {
+    super(options);
+    this._format = options.dateFormat;
+    this._utc = options.utc;
+    this._strict = options.strictDateValidation;
   }
 
-  async validate(value, options = {}) {
-    options = _.defaults(this[_private].options, options);
-
-    const func = validateDate(value, {
-      required: this.isRequired(options),
-      default: this[_private].default,
-      format: this[_private].format,
-      utc: this[_private].utc,
-      strict: this[_private].strict,
-      min: this[_private].min,
-      max: this[_private].max,
-      parse: this[_private].parse
-    }, options);
-
-    return helper.validate(options.type, func);
+  async validate(value) {
+    return helper.validate(this._options.type, validateDate(value, this));
   }
 
   format(format) {
-    this[_private].format = format;
-    return this;
-  }
-
-  parse(boolean) {
-    this[_private].parse = boolean;
+    this._format = format;
     return this;
   }
 
   default(value) {
-    const format = this[_private].format || this[_private].options.dateFormat || defaults.DATE_FORMAT;
-    const date = moment(value, format, true);
+    const date = moment(value, this._format, this._strict);
     if (!date.isValid()) {
-      throw new Error(`Not a valid date. Must match format '${format}'.`);
+      throw new Error(`Not a valid date. Must match format '${this._format}'.`);
     }
-    this[_private].default = value;
+    this._default = value;
     return this;
   }
 
   strict(boolean) {
-    this[_private].strict = boolean;
+    this._strict = boolean;
     return this;
   }
 
   utc(boolean) {
-    this[_private].utc = boolean;
+    this._utc = boolean;
     return this;
   }
 
   min(date) {
-    this[_private].min = date;
+    this._min = date;
     return this;
   }
 
   max(date) {
-    this[_private].max = date;
+    this._max = date;
     return this;
   }
 
   toObject() {
-    const object = {
-      type: 'datetime',
-      required: this.isRequired(this[_private].options)
-    };
-
-    if (this.name()) object.displayName = this.name();
-    if (this.description()) object.description = this.description();
-    if (this.examples()) {
-      object.examples = this.examples();
-    } else if (this.example()) {
-      object.example = this.example();
-    }
-    if (this[_private].default) object.default = this[_private].default;
-
-    return object;
+    return _.pickBy({
+      type: 'date',
+      required: this._required,
+      name: this._name,
+      description: this._description,
+      default: this._default,
+      example: this._example,
+      examples: this._examples,
+      min: this._min,
+      max: this._max,
+      format: this._format,
+      utc: this._utc,
+      strict: this._strict
+    }, helper.isNotNil);
   }
 }
 
-function DateFactory(options) {
-  return new DATE(options);
-}
-module.exports = DateFactory;
+exports.DateFactory = (options = {}) => new DATE(options);

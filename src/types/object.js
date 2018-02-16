@@ -1,20 +1,21 @@
 const _ = require('lodash');
-const BASE = require('./base');
+const ANY = require('./any').ANY;
 const message = require('../message');
 const helper = require('../helper');
 
-const _private = Symbol('Private variables');
-
 const ALLOWED_CONDITIONS = ['gt', 'equals', 'lt', 'gte', 'lte', 'notEquals', 'dependsOn', 'xor'];
 
-const validateObject = async (value, privates, options) => {
+const validateObject = async (value, schema) => {
+  const language = schema._options.language;
+  const messages = schema._options.messages;
+
   if (_.isNil(value)) {
-    if (privates.default) return privates.default;
-    if (privates.required) throw message.required(options.language, options.type, value);
+    if (schema._default) return schema._default;
+    if (schema._required) throw message.required(language, messages, value);
     return value;
   }
 
-  if (options.parseToType && _.isString(value)) {
+  if (schema._parse && _.isString(value)) {
     try {
       value = JSON.parse(value);
     } catch (err) {
@@ -22,48 +23,48 @@ const validateObject = async (value, privates, options) => {
     }
   }
 
-  if (!_.isPlainObject(value)) throw message.get(options.language, options.type, 'object', 'wrong_type');
+  if (!_.isPlainObject(value)) throw message.get(language, messages, 'object', 'wrong_type');
 
   const length = _.keys(value).length;
-  if (length === 0 && (privates.empty === false || (privates.empty === undefined && options.noEmptyObjects))) {
-    throw message.get(options.language, options.type, 'object', 'empty');
+  if (length === 0 && schema._empty) {
+    throw message.get(language, messages, 'object', 'empty');
   }
 
-  if (privates.min && length < privates.min) throw message.get(options.language, options.type, 'object', 'min', privates.min);
-  if (privates.max && length > privates.max) throw message.get(options.language, options.type, 'object', 'max', privates.max);
-  if (privates.length && length !== privates.length) throw message.get(options.language, options.type, 'object', 'length', privates.length);
+  if (schema._min && length < schema._min) throw message.get(language, messages, 'object', 'min', schema._min);
+  if (schema._max && length > schema._max) throw message.get(language, messages, 'object', 'max', schema._max);
+  if (schema._length && length !== schema._length) throw message.get(language, messages, 'object', 'length', schema._length);
 
   const errors = {};
-  for (const key in privates.object) {
+  for (const key in schema._object) {
     try {
-      const result = await privates.object[key].validate(value[key], options);
+      const result = await schema._object[key].validate(value[key]);
       if (!_.isNil(result)) value[key] = result;
     } catch (err) {
       errors[key] = err;
     }
   }
 
-  if (options.noUndefinedKeys) {
+  if (schema._noUndefinedKeys) {
     for (const key in value) {
-      if (!_.has(privates.object, key)) {
-        errors[key] = message.get(options.language, options.type, 'object', 'unknown', key);
+      if (!_.has(schema._object, key)) {
+        errors[key] = message.get(language, messages, 'object', 'unknown', key);
       }
     }
   }
 
-  if (privates.conditions && _.keys(errors).length === 0) {
-    for (const key in privates.conditions) {
+  if (schema._conditions && _.keys(errors).length === 0) {
+    for (const key in schema._conditions) {
       try {
-        compare(value, key, privates.conditions[key], options);
+        compare(value, key, schema._conditions[key], language, messages);
       } catch (err) {
         errors[key] = err;
       }
     }
   }
 
-  if (privates.func) {
-    const fn = privates.func.fn;
-    const keys = privates.func.keys;
+  if (schema._func) {
+    const fn = schema._func.fn;
+    const keys = schema._func.keys;
     const values = [];
     for (const key of keys) {
       values.push(_.get(value, key, null));
@@ -82,7 +83,7 @@ const validateObject = async (value, privates, options) => {
   }
 };
 
-const compare = (value, keyA, conditions, options) => {
+const compare = (value, keyA, conditions, language, messages) => {
   const errors = [];
   for (const method in conditions) {
     const keyB = conditions[method];
@@ -99,16 +100,16 @@ const compare = (value, keyA, conditions, options) => {
       } else {
         switch (method) {
           case 'gt':
-            if (!(a > b)) errors.push(message.get(options.language, options.type, 'object', 'gt', keyB, keyA));
+            if (!(a > b)) errors.push(message.get(language, messages, 'object', 'gt', keyB, keyA));
             break;
           case 'gte':
-            if (!(a >= b)) errors.push(message.get(options.language, options.type, 'object', 'gte', keyB, keyA));
+            if (!(a >= b)) errors.push(message.get(language, messages, 'object', 'gte', keyB, keyA));
             break;
           case 'lt':
-            if (!(a < b)) errors.push(message.get(options.language, options.type, 'object', 'lt', keyB, keyA));
+            if (!(a < b)) errors.push(message.get(language, messages, 'object', 'lt', keyB, keyA));
             break;
           case 'lte':
-            if (!(a <= b)) errors.push(message.get(options.language, options.type, 'object', 'lte', keyB, keyA));
+            if (!(a <= b)) errors.push(message.get(language, messages, 'object', 'lte', keyB, keyA));
             break;
         }
         continue;
@@ -117,16 +118,16 @@ const compare = (value, keyA, conditions, options) => {
 
     switch (method) {
       case 'equals':
-        if (!_.isEqual(a, b)) errors.push(message.get(options.language, options.type, 'object', 'equals', keyB, keyA));
+        if (!_.isEqual(a, b)) errors.push(message.get(language, messages, 'object', 'equals', keyB, keyA));
         break;
       case 'notEquals':
-        if (_.isEqual(a, b)) errors.push(message.get(options.language, options.type, 'object', 'not_equals', keyB, keyA));
+        if (_.isEqual(a, b)) errors.push(message.get(language, messages, 'object', 'not_equals', keyB, keyA));
         break;
       case 'xor':
-        errors.push(message.get(options.language, options.type, 'object', 'xor', keyB, keyA));
+        errors.push(message.get(language, messages, 'object', 'xor', keyB, keyA));
         break;
       case 'dependsOn':
-        if (a && !b) errors.push(message.get(options.language, options.type, 'object', 'depends_on', keyB, keyA));
+        if (a && !b) errors.push(message.get(language, messages, 'object', 'depends_on', keyB, keyA));
         break;
     }
   }
@@ -136,9 +137,9 @@ const compare = (value, keyA, conditions, options) => {
   }
 };
 
-class OBJECT extends BASE {
+class OBJECT extends ANY {
   constructor(object, options) {
-    super();
+    super(options);
 
     if (object === undefined) {
       throw new Error('Missing object.');
@@ -148,44 +149,31 @@ class OBJECT extends BASE {
       throw new Error('Invalid object.');
     }
 
-    this[_private] = {};
-    this[_private].object = object;
-    this[_private].options = options || {};
+    this._object = object;
+    this._conditions = {};
+    this._empty = !options.noEmptyObjects;
+    this._noUndefinedKeys = options.noUndefinedKeys;
   }
 
-  async validate(value, options = {}) {
-    options = _.defaults(this[_private].options, options);
-
-    const func = validateObject(value, {
-      required: this.isRequired(options),
-      default: this[_private].default,
-      empty: this[_private].empty,
-      min: this[_private].min,
-      max: this[_private].max,
-      length: this[_private].length,
-      object: this[_private].object,
-      conditions: this[_private].conditions,
-      func: this[_private].func
-    }, options);
-
-    return helper.validate(options.type, func);
+  async validate(value) {
+    return helper.validate(this._options.type, validateObject(value, this));
   }
 
   empty(boolean) {
-    this[_private].empty = boolean;
+    this._empty = boolean;
     return this;
   }
 
   conditions(options) {
     let conditions = {};
-    if (this[_private].conditions) {
-      conditions = this[_private].conditions;
+    if (this._conditions) {
+      conditions = this._conditions;
     }
     for (const key in options) {
-      if (!_.has(this[_private].object, key)) throw `Object has no key '${key}'.`;
+      if (!_.has(this._object, key)) throw `Object has no key '${key}'.`;
       for (const method in options[key]) {
         if (ALLOWED_CONDITIONS.indexOf(method) === -1) throw `Object has no condition method '${method}'.`;
-        if (!_.has(this[_private].object, options[key][method])) throw `Object has no key '${options[key][method]}'.`;
+        if (!_.has(this._object, options[key][method])) throw `Object has no key '${options[key][method]}'.`;
         if (_.has(conditions, key)) {
           _.merge(conditions[key], options[key]);
         } else {
@@ -193,7 +181,7 @@ class OBJECT extends BASE {
         }
       }
     }
-    this[_private].conditions = conditions;
+    this._conditions = conditions;
     return this;
   }
 
@@ -234,7 +222,7 @@ class OBJECT extends BASE {
       throw new Error('Is not a function.');
     }
 
-    this[_private].func = {
+    this._func = {
       fn,
       keys
     };
@@ -242,17 +230,17 @@ class OBJECT extends BASE {
   }
 
   min(length) {
-    this[_private].min = length;
+    this._min = length;
     return this;
   }
 
   max(length) {
-    this[_private].max = length;
+    this._max = length;
     return this;
   }
 
   length(length) {
-    this[_private].length = length;
+    this._length = length;
     return this;
   }
 
@@ -260,40 +248,13 @@ class OBJECT extends BASE {
     if (!_.isPlainObject(value)) {
       throw new Error('Must be an object.');
     }
-    this[_private].default = value;
+    this._default = value;
     return this;
   }
 
   toObject() {
-    const object = {
-      type: 'object',
-      required: this.isRequired(this[_private].options)
-    };
-
-    if (this.name()) object.displayName = this.name();
-    if (this.description()) object.description = this.description();
-    if (this.examples()) {
-      object.examples = this.examples();
-    } else if (this.example()) {
-      object.example = this.example();
-    }
-    if (this[_private].default) object.default = this[_private].default;
-
-    if (this[_private].min) object.minProperties = this[_private].min;
-    if (this[_private].max) object.maxProperties = this[_private].max;
-
-    if (_.keys(this[_private].object).length > 0) {
-      object.properties = {};
-      for (const key in this[_private].object) {
-        object.properties[key] = this[_private].object[key].toObject();
-      }
-    }
-
-    return object;
+    throw new Error('Not Implemented');
   }
 }
 
-function ObjectFactory(object, options) {
-  return new OBJECT(object, options);
-}
-module.exports = ObjectFactory;
+exports.ObjectFactory = (options = {}) => new OBJECT(options);

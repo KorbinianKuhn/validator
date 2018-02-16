@@ -1,18 +1,19 @@
 const _ = require('lodash');
-const BASE = require('./base');
+const ANY = require('./any').ANY;
 const helper = require('../helper');
 const message = require('../message');
 
-const _private = Symbol('Private variables');
+const validateArray = async (value, schema) => {
+  const language = schema._options.language;
+  const messages = schema._options.messages;
 
-const validateArray = async (value, privates, options) => {
   if (_.isNil(value)) {
-    if (privates.default) return privates.default;
-    if (privates.required) throw message.required(options.language, options.type, value);
+    if (schema._default) return schema._default;
+    if (schema._required) throw message.required(language, messages, value);
     return value;
   }
 
-  if (options.parseToType && _.isString(value)) {
+  if (schema._parse && _.isString(value)) {
     try {
       value = JSON.parse(value);
     } catch (err) {
@@ -20,34 +21,34 @@ const validateArray = async (value, privates, options) => {
     }
   }
 
-  if (!_.isArray(value)) throw message.wrongType(options.language, options.type, 'array', typeof value);
+  if (!_.isArray(value)) throw message.wrongType(language, messages, 'array', typeof value);
 
-  if (value.length === 0 && (privates.empty === false || (privates.empty === undefined && options.noEmptyArrays))) {
-    throw message.get(options.language, options.type, 'array', 'empty');
+  if (schema._empty === false && value.length === 0) {
+    throw message.get(language, messages, 'array', 'empty');
   }
 
-  if (privates.min && value.length < privates.min) {
-    throw message.get(options.language, options.type, 'array', 'min', privates.min);
+  if (schema._min && value.length < schema._min) {
+    throw message.get(language, messages, 'array', 'min', schema._min);
   }
 
-  if (privates.max && value.length > privates.max) {
-    throw message.get(options.language, options.type, 'array', 'max', privates.max);
+  if (schema._max && value.length > schema._max) {
+    throw message.get(language, messages, 'array', 'max', schema._max);
   }
 
-  if (privates.length && value.length !== privates.length) {
-    throw message.get(options.language, options.type, 'array', 'length', privates.length);
+  if (schema._length && value.length !== schema._length) {
+    throw message.get(language, messages, 'array', 'length', schema._length);
   }
 
-  if (privates.unique && _.uniqWith(value, _.isEqual).length !== value.length) {
-    throw message.get(options.language, options.type, 'array', 'unique');
+  if (schema._unique && _.uniqWith(value, _.isEqual).length !== value.length) {
+    throw message.get(language, messages, 'array', 'unique');
   }
 
-  if (privates.type !== undefined) {
+  if (schema._type !== undefined) {
     const errors = {};
 
     for (const index in value) {
       try {
-        value[index] = await privates.type.validate(value[index], options);
+        value[index] = await schema._type.validate(value[index]);
       } catch (err) {
         errors[index] = err;
       }
@@ -63,48 +64,34 @@ const validateArray = async (value, privates, options) => {
   }
 };
 
-class ARRAY extends BASE {
+class ARRAY extends ANY {
   constructor(type, options) {
-    super();
-    this[_private] = {};
-    this[_private].type = type;
-    this[_private].options = options || {};
+    super(options);
+    this._type = type;
+    this._empty = options.noEmptyArrays;
   }
 
-  async validate(value, options = {}) {
-    options = _.defaults(this[_private].options, options);
-
-    const func = validateArray(value, {
-      required: this.isRequired(options),
-      default: this[_private].default,
-      empty: this[_private].empty,
-      min: this[_private].min,
-      max: this[_private].max,
-      length: this[_private].length,
-      unique: this[_private].unique,
-      type: this[_private].type,
-    }, options);
-
-    return helper.validate(options.type, func);
+  async validate(value) {
+    return helper.validate(this._options.type, validateArray(value, this));
   }
 
   min(length) {
-    this[_private].min = length;
+    this._min = length;
     return this;
   }
 
   max(length) {
-    this[_private].max = length;
+    this._max = length;
     return this;
   }
 
   length(length) {
-    this[_private].length = length;
+    this._length = length;
     return this;
   }
 
   empty(boolean) {
-    this[_private].empty = boolean;
+    this._empty = boolean;
     return this;
   }
 
@@ -112,43 +99,32 @@ class ARRAY extends BASE {
     if (!_.isArray(value)) {
       throw new Error('Must be array.');
     }
-    this[_private].default = value;
+    this._default = value;
     return this;
   }
 
   unique(boolean) {
-    this[_private].unique = boolean;
+    this._unique = boolean;
     return this;
   }
 
   toObject() {
-    const object = {
-      type: 'string',
-      required: this.isRequired(this[_private].options)
-    };
-
-    if (this.name()) object.displayName = this.name();
-    if (this.description()) object.description = this.description();
-    if (this.examples()) {
-      object.examples = this.examples();
-    } else if (this.example()) {
-      object.example = this.example();
-    }
-    if (this[_private].default) object.default = this[_private].default;
-
-    if (this[_private].unique) object.uniqueItems = this[_private].unique;
-    if (this[_private].min) object.minItems = this[_private].min;
-    if (this[_private].max) object.maxItems = this[_private].max;
-
-    if (this[_private].type) {
-      object.items = this[_private].type.toObject();
-    }
-
-    return object;
+    const items = this._type ? this._type.toObject() : undefined;
+    return _.pickBy({
+      type: 'array',
+      required: this._required,
+      name: this._name,
+      description: this._description,
+      default: this._default,
+      example: this._example,
+      examples: this._examples,
+      min: this._min,
+      max: this._max,
+      unique: this._unique,
+      empty: this._empty,
+      items
+    }, helper.isNotNil);
   }
 }
 
-function ArrayFactory(type, options) {
-  return new ARRAY(type, options);
-}
-module.exports = ArrayFactory;
+exports.ArrayFactory = (type, options = {}) => new ARRAY(type, options);

@@ -1,39 +1,40 @@
-const assert = require('assert');
 const should = require('should');
 const helper = require('./helper');
-const BOOLEAN = require('../../src/types/boolean');
+const Validator = require('../../index').Validator;
 
-describe('BOOLEAN()', () => {
+const validator = Validator();
+
+describe('Boolean()', () => {
   it('required but null should fail', helper.mochaAsync(async () => {
-    const result = await helper.shouldThrow(async () => BOOLEAN().validate(null, helper.DEFAULT_OPTIONS));
+    const result = await helper.shouldThrow(async () => validator.Boolean().validate(null));
     result.should.equal('Required but is null.');
   }));
 
   it('null and undefined should verify', helper.mochaAsync(async () => {
-    let result = await BOOLEAN().validate(null);
+    let result = await validator.Boolean().validate(null);
     should.equal(result, null);
 
-    result = await BOOLEAN().validate(undefined);
+    result = await validator.Boolean().validate(undefined);
     should.equal(result, undefined);
   }));
 
   it('invalid type should fail', helper.mochaAsync(async () => {
     for (const value of ['true', 1, 0]) {
-      const result = await helper.shouldThrow(async () => BOOLEAN().validate(value));
+      const result = await helper.shouldThrow(async () => validator.Boolean().validate(value));
       result.should.equal(`Must be boolean but is ${typeof value}.`);
     }
   }));
 
   it('valid type should verify', helper.mochaAsync(async () => {
     for (const value of [true, false]) {
-      const result = await BOOLEAN().validate(value);
+      const result = await validator.Boolean().validate(value);
       result.should.equal(value);
     }
   }));
 
   it('parsed strings should fail', helper.mochaAsync(async () => {
     for (const value of ['1', '2']) {
-      const result = await helper.shouldThrow(async () => BOOLEAN().validate(value, {
+      const result = await helper.shouldThrow(async () => validator.Boolean().validate(value, {
         parseToType: true
       }));
       result.should.equal(`Must be boolean but is ${typeof value}.`);
@@ -41,32 +42,32 @@ describe('BOOLEAN()', () => {
   }));
 
   it('parsed strings should verify', helper.mochaAsync(async () => {
-    let result = await BOOLEAN().validate('true', {
+    let result = await validator.Boolean().validate('true', {
       parseToType: true
     });
     result.should.equal(true);
 
-    result = await BOOLEAN().validate('false', {
+    result = await validator.Boolean().validate('false', {
       parseToType: true
     });
     result.should.equal(false);
   }));
 
   it('invalid default value should throw', helper.mochaAsync(async () => {
-    const result = await helper.shouldThrow(async () => BOOLEAN().default('invalid'));
+    const result = await helper.shouldThrow(async () => validator.Boolean().default('invalid'));
     result.message.should.equal('Must be boolean.');
   }));
 
   it('valid default value should verify', helper.mochaAsync(async () => {
-    let result = await BOOLEAN().default(true).validate();
+    let result = await validator.Boolean().default(true).validate();
     result.should.deepEqual(true);
 
-    result = await BOOLEAN().default(true).validate(false);
+    result = await validator.Boolean().default(true).validate(false);
     result.should.deepEqual(false);
   }));
 
-  it.only('toObject() should verify', async () => {
-    const schema = BOOLEAN().name('My Boolean').description('A very nice boolean.').example(true);
+  it.skip('toObject() should verify', async () => {
+    const schema = validator.Boolean().name('My Boolean').description('A very nice boolean.').example(true);
     console.log(schema.toObject());
   });
 });

@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const messages = {
+const MESSAGES = {
   array: require('./array.json'),
   date: require('./date.json'),
   enum: require('./enum.json'),
@@ -13,10 +13,10 @@ const messages = {
   string: require('./string.json')
 };
 
-const get = (language, validatorType, schemaType, error, ...replaceValues) => {
+const get = (language, messages, schemaType, error, ...replaceValues) => {
   language = language || 'en';
-  validatorType = validatorType || 'default';
-  let message = _.clone(_.get(messages, `${schemaType}.${error}.${validatorType}.${language}`));
+  messages = messages || 'default';
+  let message = _.clone(_.get(MESSAGES, `${schemaType}.${error}.${messages}.${language}`));
   for (const replacer of replaceValues) {
     message = message.replace('$', replacer);
   }
@@ -24,5 +24,5 @@ const get = (language, validatorType, schemaType, error, ...replaceValues) => {
 };
 exports.get = get;
 
-exports.required = (language, validatorType, value) => get(language, validatorType, 'generic', 'required', value);
-exports.wrongType = (language, validatorType, schemaType, value) => get(language, validatorType, 'generic', 'wrong_type', schemaType, value);
+exports.required = (language, messages, value) => get(language, messages, 'generic', 'required', value);
+exports.wrongType = (language, messages, schemaType, value) => get(language, messages, 'generic', 'wrong_type', schemaType, value);

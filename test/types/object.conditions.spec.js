@@ -1,15 +1,13 @@
-const assert = require('assert');
-const should = require('should');
 const helper = require('./helper');
-const OBJECT = require('../../src/types/object');
-const STRING = require('../../src/types/string');
-const INTEGER = require('../../src/types/integer');
 const _ = require('lodash');
+const Validator = require('../../index').Validator;
 
-describe('OBJECT(): conditions', () => {
+const validator = Validator();
+
+describe('Object(): conditions', () => {
   it('invalid key in condition should fail', helper.mochaAsync(async () => {
-    let message = await helper.shouldThrow(async () => OBJECT({
-      name: STRING()
+    let message = await helper.shouldThrow(async () => validator.Object({
+      name: validator.String()
     }).conditions({
       age: {
         gt: 'name'
@@ -17,8 +15,8 @@ describe('OBJECT(): conditions', () => {
     }));
     message.should.equal(`Object has no key 'age'.`);
 
-    message = await helper.shouldThrow(async () => OBJECT({
-      name: STRING()
+    message = await helper.shouldThrow(async () => validator.Object({
+      name: validator.String()
     }).conditions({
       name: {
         gt: 'age'
@@ -28,8 +26,8 @@ describe('OBJECT(): conditions', () => {
   }));
 
   it('invalid condition method should fail', helper.mochaAsync(async () => {
-    const message = await helper.shouldThrow(async () => OBJECT({
-      name: STRING()
+    const message = await helper.shouldThrow(async () => validator.Object({
+      name: validator.String()
     }).conditions({
       name: {
         invalid: 'name'
@@ -39,9 +37,9 @@ describe('OBJECT(): conditions', () => {
   }));
 
   it('test greater than condition', helper.mochaAsync(async () => {
-    const object = OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    const object = validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).conditions({
       smaller: {
         gt: 'bigger'
@@ -64,25 +62,25 @@ describe('OBJECT(): conditions', () => {
     result = await object.validate(valid);
     result.should.deepEqual(valid);
 
-    result = await helper.shouldThrow(async () => OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    result = await helper.shouldThrow(async () => validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).gt('smaller', 'bigger').validate(invalid));
     result.should.deepEqual({
       smaller: `Must be greater than bigger.`
     });
 
-    result = await OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    result = await validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).gt('smaller', 'bigger').validate(valid);
     result.should.deepEqual(valid);
   }));
 
   it('test greater or equal than condition', helper.mochaAsync(async () => {
-    const object = OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    const object = validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).conditions({
       smaller: {
         gte: 'bigger'
@@ -112,25 +110,25 @@ describe('OBJECT(): conditions', () => {
     result = await object.validate(equal);
     result.should.deepEqual(equal);
 
-    result = await helper.shouldThrow(async () => OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    result = await helper.shouldThrow(async () => validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).gte('smaller', 'bigger').validate(invalid));
     result.should.deepEqual({
       smaller: `Must be greater or equal than bigger.`
     });
 
-    result = await OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    result = await validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).gte('smaller', 'bigger').validate(valid);
     result.should.deepEqual(valid);
   }));
 
   it('test less than condition', helper.mochaAsync(async () => {
-    const object = OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    const object = validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).conditions({
       smaller: {
         lt: 'bigger'
@@ -153,25 +151,25 @@ describe('OBJECT(): conditions', () => {
     result = await object.validate(valid);
     result.should.deepEqual(valid);
 
-    result = await helper.shouldThrow(async () => OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    result = await helper.shouldThrow(async () => validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).lt('smaller', 'bigger').validate(invalid));
     result.should.deepEqual({
       smaller: `Must be less than bigger.`
     });
 
-    result = await OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    result = await validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).lt('smaller', 'bigger').validate(valid);
     result.should.deepEqual(valid);
   }));
 
   it('test less or equal than condition', helper.mochaAsync(async () => {
-    const object = OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    const object = validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).conditions({
       smaller: {
         lte: 'bigger'
@@ -201,25 +199,25 @@ describe('OBJECT(): conditions', () => {
     result = await object.validate(equal);
     result.should.deepEqual(equal);
 
-    result = await helper.shouldThrow(async () => OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    result = await helper.shouldThrow(async () => validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).lte('smaller', 'bigger').validate(invalid));
     result.should.deepEqual({
       smaller: `Must be less or equal than bigger.`
     });
 
-    result = await OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    result = await validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).lte('smaller', 'bigger').validate(valid);
     result.should.deepEqual(valid);
   }));
 
   it('test equals condition', helper.mochaAsync(async () => {
-    const object = OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    const object = validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).conditions({
       smaller: {
         equals: 'bigger'
@@ -242,25 +240,25 @@ describe('OBJECT(): conditions', () => {
     result = await object.validate(valid);
     result.should.deepEqual(valid);
 
-    result = await helper.shouldThrow(async () => OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    result = await helper.shouldThrow(async () => validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).equals('smaller', 'bigger').validate(invalid));
     result.should.deepEqual({
       smaller: `Must equal bigger.`
     });
 
-    result = await OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    result = await validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).equals('smaller', 'bigger').validate(valid);
     result.should.deepEqual(valid);
   }));
 
   it('test multiple conditions', helper.mochaAsync(async () => {
-    const object = OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    const object = validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).equals('bigger', 'smaller').gte('bigger', 'smaller');
 
     const invalid = {
@@ -281,12 +279,12 @@ describe('OBJECT(): conditions', () => {
   }));
 
   it('conditions with objects and array should skip', helper.mochaAsync(async () => {
-    const object = OBJECT({
-      bigger: OBJECT({
-        a: INTEGER()
+    const object = validator.Object({
+      bigger: validator.Object({
+        a: validator.Integer()
       }),
-      smaller: OBJECT({
-        b: INTEGER()
+      smaller: validator.Object({
+        b: validator.Integer()
       })
     }).lt('bigger', 'smaller');
 
@@ -301,9 +299,9 @@ describe('OBJECT(): conditions', () => {
   }));
 
   it('test notEquals than condition', helper.mochaAsync(async () => {
-    const object = OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    const object = validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).conditions({
       smaller: {
         notEquals: 'bigger'
@@ -326,26 +324,26 @@ describe('OBJECT(): conditions', () => {
     result = await object.validate(valid);
     result.should.deepEqual(valid);
 
-    result = await helper.shouldThrow(async () => OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    result = await helper.shouldThrow(async () => validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).notEquals('smaller', 'bigger').validate(invalid));
     result.should.deepEqual({
       smaller: `Must not equal bigger.`
     });
 
-    result = await OBJECT({
-      bigger: INTEGER(),
-      smaller: INTEGER()
+    result = await validator.Object({
+      bigger: validator.Integer(),
+      smaller: validator.Integer()
     }).notEquals('smaller', 'bigger').validate(valid);
     result.should.deepEqual(valid);
   }));
 
   it('test dependsOn condition', helper.mochaAsync(async () => {
     // Object with conditions function
-    let object = OBJECT({
-      bigger: INTEGER().required(false),
-      smaller: INTEGER().required(false)
+    let object = validator.Object({
+      bigger: validator.Integer().required(false),
+      smaller: validator.Integer().required(false)
     }).conditions(_.set({}, 'smaller.dependsOn', 'bigger'));
 
     const invalid = _.set({}, 'smaller', 10);
@@ -357,9 +355,9 @@ describe('OBJECT(): conditions', () => {
     result.should.deepEqual(valid);
 
     // Object with dependsOn function
-    object = OBJECT({
-      bigger: INTEGER().required(false),
-      smaller: INTEGER().required(false)
+    object = validator.Object({
+      bigger: validator.Integer().required(false),
+      smaller: validator.Integer().required(false)
     }).dependsOn('smaller', 'bigger');
     result = await helper.shouldThrow(async () => object.validate(invalid));
     result.should.deepEqual(_.set({}, 'smaller', `Depends on bigger.`));
@@ -374,9 +372,9 @@ describe('OBJECT(): conditions', () => {
 
   it('test xor condition', helper.mochaAsync(async () => {
     // Object with conditions function
-    let object = OBJECT({
-      bigger: INTEGER().required(false),
-      smaller: INTEGER().required(false)
+    let object = validator.Object({
+      bigger: validator.Integer().required(false),
+      smaller: validator.Integer().required(false)
     }).conditions(_.set({}, 'smaller.xor', 'bigger'));
 
     const invalid = _.set(_.set({}, 'bigger', 10), 'smaller', 5);
@@ -393,9 +391,9 @@ describe('OBJECT(): conditions', () => {
 
 
     // Object with xor function
-    object = OBJECT({
-      bigger: INTEGER().required(false),
-      smaller: INTEGER().required(false)
+    object = validator.Object({
+      bigger: validator.Integer().required(false),
+      smaller: validator.Integer().required(false)
     }).xor('smaller', 'bigger');
 
     result = await helper.shouldThrow(async () => object.validate(invalid));

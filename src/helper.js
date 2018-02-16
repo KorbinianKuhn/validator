@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 const validateAngular = async (func) => {
   try {
     await func;
@@ -15,4 +17,5 @@ exports.validate = async (type, func) => {
       return func;
   }
 };
-exports.validate();
+
+exports.isNotNil = value => !_.isNil(value);

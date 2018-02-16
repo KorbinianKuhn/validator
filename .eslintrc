@@ -51,7 +51,8 @@
     "no-await-in-loop": "off",
     "no-continue": "off",
     "global-require": "off",
-    "newline-per-chained-call": "off"
+    "newline-per-chained-call": "off",
+    "no-useless-constructor": "off"
   },
   "env": {
     "mocha": true

@@ -1,58 +1,53 @@
 const _ = require('lodash');
-const BASE = require('./base');
+const ANY = require('./any').ANY;
 const OBJECT = require('./object');
 const defaults = require('../defaults');
-
 const message = require('../message');
 const helper = require('../helper');
 
-const _private = Symbol('Private variables');
+const validateRequest = async (req, schema) => {
+  const language = schema._options.language;
+  const messages = schema._options.messages;
 
-const validateRequest = async (req, privates, options) => {
   if (!_.every(['params', 'query', 'body'], _.partial(_.has, req))) {
     throw new Error('Invalid express req object.');
   }
 
   const errors = {};
 
-  if (privates.params) {
-    const opt = _.defaults(privates.params.options, options);
+  if (schema._params) {
     try {
-      req.params = await privates.params.schema.validate(req.params, opt);
+      req.params = await schema._params.validate(req.params);
     } catch (err) {
       errors.params = err;
     }
-  } else if (options.noUndefinedKeys) {
+  } else if (schema._noUndefinedKeys) {
     if (_.keys(req.params).length > 0) {
-      errors.params = message.get(options.language, options.type, 'request', 'no_uri');
+      errors.params = message.get(language, messages, 'request', 'no_uri');
     }
   }
 
-  if (privates.query) {
-    const opt = _.defaults(privates.query.options, options);
+  if (schema._query) {
     try {
-      req.query = await privates.query.schema.validate(req.query, opt);
+      req.query = await schema._query.validate(req.query);
     } catch (err) {
       errors.query = err;
     }
-  } else if (options.noUndefinedKeys) {
+  } else if (schema._noUndefinedKeys) {
     if (_.keys(req.query).length > 0) {
-      errors.query = message.get(options.language, options.type, 'request', 'no_query');
+      errors.query = message.get(language, messages, 'request', 'no_query');
     }
   }
 
-  if (privates.body) {
-    if (privates.body.schema.isRequired() || _.keys(req.body).length !== 0) {
-      const opt = _.defaults(privates.body.options, options);
-      try {
-        req.body = await privates.body.schema.validate(req.body, opt);
-      } catch (err) {
-        errors.body = err;
-      }
+  if (schema._body) {
+    try {
+      req.body = await schema._body.schema.validate(req.body);
+    } catch (err) {
+      errors.body = err;
     }
-  } else if (options.noUndefinedKeys) {
+  } else if (schema._noUndefinedKeys) {
     if (_.keys(req.body).length > 0) {
-      errors.body = message.get(options.language, options.type, 'request', 'no_body');
+      errors.body = message.get(language, messages, 'request', 'no_body');
     }
   }
 
@@ -63,7 +58,7 @@ const validateRequest = async (req, privates, options) => {
   }
 };
 
-const validateSchema = (schema, required) => {
+const validateSchema = (schema, options) => {
   if (!_.hasIn(schema, 'constructor.name')) {
     throw new Error('Invalid schema.');
   }
@@ -76,78 +71,39 @@ const validateSchema = (schema, required) => {
     }
   }
 
-  if (required && !schema.hasRequiredProperty()) {
-    schema.required(required);
-  }
+  console.log("TODO overwrite options?");
 
   return schema;
 };
 
-class REQUEST extends BASE {
+class REQUEST extends ANY {
   constructor(options) {
-    super();
-    this[_private] = {};
-    this[_private].options = options || {};
+    super(options);
+    this._noUndefinedKeys = options.noUndefinedKeys;
   }
 
-  async validate(req, options = {}) {
-    options = _.defaults(this[_private].options, options);
-
-    const func = validateRequest(req, {
-      params: this[_private].params,
-      query: this[_private].query,
-      body: this[_private].body,
-    }, options);
-
-    return helper.validate(options.type, func);
+  async validate(value) {
+    return helper.validate(this._options.type, validateRequest(value, this));
   }
 
   params(schema, options = {}) {
-    schema = validateSchema(schema, true);
-
-    this[_private].params = {
-      schema,
-      options: _.defaults(options, this[_private].options, defaults.URI_OPTIONS)
-    };
+    this._params = validateSchema(schema, _.defaults(options, this._options, defaults.URI_OPTIONS));
     return this;
   }
 
   query(schema, options = {}) {
-    schema = validateSchema(schema, false);
-
-    this[_private].query = {
-      schema,
-      options: _.defaults(options, this[_private].options, defaults.QUERY_OPTIONS)
-    };
+    this._query = validateSchema(schema, _.defaults(options, this._options, defaults.QUERY_OPTIONS));
     return this;
   }
 
   body(schema, options = {}) {
-    schema = validateSchema(schema, true);
-
-    this[_private].body = {
-      schema,
-      options: _.defaults(options, this[_private].options, defaults.BODY_OPTIONS)
-    };
+    this._body = validateSchema(schema, _.defaults(options, this._options, defaults.BODY_OPTIONS));
     return this;
   }
 
   toObject() {
-    const object = {
-      type: 'request',
-    };
-
-    if (this.description()) object.description = this.description();
-
-    if (this[_private].params) object.uriParameters = this[_private].params.schema.toObject().properties;
-    if (this[_private].query) object.queryParameters = this[_private].query.schema.toObject().properties;
-    if (this[_private].body) object.body = this[_private].body.schema.toObject().properties;
-
-    return object;
+    throw new Error('Not Implemented');
   }
 }
 
-function RequestFactory(options) {
-  return new REQUEST(options);
-}
-module.exports = RequestFactory;
+exports.RequestFactory = (options = {}) => new REQUEST(options);
