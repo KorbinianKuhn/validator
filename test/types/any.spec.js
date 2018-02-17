@@ -1,18 +1,10 @@
 const should = require('should');
-const helper = require('./helper');
+const helper = require('../helper');
 const Validator = require('../../index').Validator;
 
 const validator = Validator();
 
 describe('Any()', () => {
-  describe('constructor()', () => {
-    it('undefined with default options should throw', async () => {
-      const promise = validator.Any({ requiredAsDefault: true })
-        .validate();
-      await helper.throw(promise, 'Required but is undefined.');
-    });
-  });
-
   describe('required()', () => {
     it('undefined should throw', async () => {
       const promise = validator.Any()
@@ -53,7 +45,8 @@ describe('Any()', () => {
       actual.should.deepEqual({
         type: 'any',
         default: 'test',
-        required: true
+        required: true,
+        parse: false
       });
     });
 
@@ -65,6 +58,7 @@ describe('Any()', () => {
         .example('test')
         .examples('test', 'hello')
         .required(true)
+        .parse(true)
         .toObject();
       actual.should.deepEqual({
         type: 'any',
@@ -73,7 +67,8 @@ describe('Any()', () => {
         default: 'test',
         example: 'test',
         examples: ['test', 'hello'],
-        required: true
+        required: true,
+        parse: true
       });
     });
   });

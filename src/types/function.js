@@ -4,12 +4,9 @@ const message = require('../message');
 const helper = require('../helper');
 
 const validateFunction = async (value, schema) => {
-  const language = schema._options.language;
-  const messages = schema._options.messages;
-
   if (_.isNil(value)) {
     if (schema._default) return schema._default;
-    if (schema._required) throw message.required(language, messages, value);
+    if (schema.isRequired()) throw message.required(schema._language, schema._messages, value);
     return value;
   }
 
@@ -21,8 +18,8 @@ const validateFunction = async (value, schema) => {
 };
 
 class FUNCTION extends ANY {
-  constructor(func, options) {
-    super(options);
+  constructor(func, options, defaults) {
+    super(options, defaults);
     if (func === undefined) {
       throw new Error('Missing function.');
     }
@@ -41,7 +38,7 @@ class FUNCTION extends ANY {
   toObject() {
     return _.pickBy({
       type: 'function',
-      required: this._required,
+      required: this.isRequired(),
       name: this._name,
       description: this._description,
       default: this._default,
@@ -51,4 +48,4 @@ class FUNCTION extends ANY {
   }
 }
 
-exports.FunctionFactory = (func, options = {}) => new FUNCTION(func, options);
+exports.FunctionFactory = (func, options, defaults) => new FUNCTION(func, options, defaults);

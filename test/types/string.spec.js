@@ -1,111 +1,158 @@
 const should = require('should');
-const helper = require('./helper');
+const helper = require('../helper');
 
 const Validator = require('../../index').Validator;
 
 const validator = Validator();
 
 describe('String()', () => {
-  it('required but null should fail', helper.mochaAsync(async () => {
-    const message = await helper.shouldThrow(async () => validator.String().validate(null, helper.DEFAULT_OPTIONS));
-    message.should.equal(`Required but is null.`);
-  }));
+  describe('required()', () => {
+    it('undefined should throw', async () => {
+      const promise = validator.String()
+        .required(true)
+        .validate();
+      await helper.throw(promise, 'Required but is undefined.');
+    });
 
-  it('null and undefined should verify', helper.mochaAsync(async () => {
-    let result = await validator.String().validate(null);
-    should.equal(result, null);
+    it('undefined should verify', async () => {
+      const actual = await validator.String()
+        .required(false)
+        .validate();
+      should.equal(actual, undefined);
+    });
+  });
 
-    result = await validator.String().validate(undefined);
-    should.equal(result, undefined);
-  }));
-
-  it('invalid type should fail', helper.mochaAsync(async () => {
+  it('invalid type should fail', async () => {
     for (const value of [0, [], {}]) {
-      const message = await helper.shouldThrow(async () => validator.String().validate(value));
-      message.should.equal(`Must be string but is ${typeof value}.`);
+      await helper.throw(validator.String().validate(value), `Must be string but is ${typeof value}.`);
     }
-  }));
+  });
 
-  it('valid type should verify', helper.mochaAsync(async () => {
+  it('valid type should verify', async () => {
     for (const value of ['1234', 'test']) {
       const result = await validator.String().validate(value);
       result.should.equal(value);
     }
-  }));
+  });
 
-  it('invalid length should fail', helper.mochaAsync(async () => {
-    let message = await helper.shouldThrow(async () => validator.String().min(5).validate('test', helper.DEFAULT_OPTIONS));
-    message.should.equal(`Must have at least 5 characters.`);
-
-    message = await helper.shouldThrow(async () => validator.String().max(3).validate('test', helper.DEFAULT_OPTIONS));
-    message.should.equal('Must have at most 3 characters.');
-
-    message = await helper.shouldThrow(async () => validator.String().length(3).validate('test', helper.DEFAULT_OPTIONS));
-    message.should.equal('Must have exactly 3 characters.');
-  }));
-
-  it('valid length should verify', helper.mochaAsync(async () => {
-    let value = await validator.String().min(3).validate('test', helper.DEFAULT_OPTIONS);
-    value.should.equal('test');
-
-    value = await validator.String().max(5).validate('test', helper.DEFAULT_OPTIONS);
-    value.should.equal('test');
-
-    value = await validator.String().length(4).validate('test', helper.DEFAULT_OPTIONS);
-    value.should.equal('test');
-  }));
-
-
-  it('empty string should fail', helper.mochaAsync(async () => {
-    const message = await helper.shouldThrow(async () => validator.String().validate('', helper.DEFAULT_OPTIONS));
-    message.should.equal('String is empty.');
-  }));
-
-  it('empty string allowed should verify', helper.mochaAsync(async () => {
-    const string = validator.String();
-    const result = await string.validate('', {
-      noEmptyStrings: false
+  describe('min()', () => {
+    it('invalid length should fail', async () => {
+      await helper.throw(validator.String().min(5).validate('test'), `Must have at least 5 characters.`);
     });
-    result.should.equal('');
-  }));
 
-  it('invalid default value should throw', helper.mochaAsync(async () => {
-    const result = await helper.shouldThrow(async () => validator.String().default(1234));
-    result.message.should.equal('Must be string.');
-  }));
+    it('valid length should verify', async () => {
+      const value = await validator.String().min(3).validate('test');
+      value.should.equal('test');
+    });
+  });
 
-  it('valid default value should verify', helper.mochaAsync(async () => {
-    let result = await validator.String().default('default').validate();
-    result.should.equal('default');
+  describe('max()', () => {
+    it('invalid length should fail', async () => {
+      await helper.throw(validator.String().max(3).validate('test'), 'Must have at most 3 characters.');
+    });
 
-    result = await validator.String().default('default').validate('test');
-    result.should.equal('test');
-  }));
+    it('valid length should verify', async () => {
+      const value = await validator.String().max(5).validate('test');
+      value.should.equal('test');
+    });
+  });
 
-  it('empty should verify', helper.mochaAsync(async () => {
-    let result = await helper.shouldThrow(async () => validator.String({
-      noEmptyStrings: true
-    }).empty(false).validate(''));
-    result.should.equal('String is empty.');
+  describe('length()', () => {
+    it('invalid length should fail', async () => {
+      await helper.throw(validator.String().length(3).validate('test'), 'Must have exactly 3 characters.');
+    });
 
-    result = await validator.String({
-      noEmptyStrings: true
-    }).empty(true).validate('');
-    result.should.equal('');
-  }));
+    it('valid length should verify', async () => {
+      const value = await validator.String().length(4).validate('test');
+      value.should.equal('test');
+    });
+  });
 
-  it('trim should verify', helper.mochaAsync(async () => {
-    const result = await validator.String().trim(true).validate(' test ');
-    result.should.equal('test');
-  }));
+  describe('empt()', () => {
+    it('empty string should fail', async () => {
+      await helper.throw(validator.String().validate(''), 'String is empty.');
+    });
 
-  it('trim should result in empty string', helper.mochaAsync(async () => {
-    const result = await helper.shouldThrow(async () => validator.String(helper.DEFAULT_OPTIONS).validate(' '));
-    result.should.equal('String is empty.');
-  }));
+    it('empty string allowed should verify', async () => {
+      const result = await validator.String().empty(true).validate('');
+      result.should.equal('');
+    });
+  });
 
-  it.skip('toObject() should verify', async () => {
-    const schema = validator.String().min(2).max(20).name('My String').description('A very nice string.').example('test');
-    console.log(schema.toObject());
+  describe('default()', () => {
+    it('invalid default value should throw', async () => {
+      const func = () => validator.String().default(1234);
+      await helper.throw(func, 'Must be string.');
+    });
+
+    it('valid default value should verify', async () => {
+      const result = await validator.String().default('default').validate();
+      result.should.equal('default');
+    });
+
+    it('valid default value should return given value', async () => {
+      const result = await validator.String().default('default').validate('test');
+      result.should.equal('test');
+    });
+  });
+
+  describe('trim()', () => {
+    it('trim should verify', async () => {
+      const result = await validator.String().trim(true).validate('  test ');
+      result.should.equal('test');
+    });
+
+    it('trim should result in empty string and throw', async () => {
+      await helper.throw(validator.String().validate(' '), 'String is empty.');
+    });
+
+    it('should not trim', async () => {
+      const result = await validator.String().trim(false).validate(' test ');
+      result.should.equal(' test ');
+    });
+  });
+
+  describe('toObject()', () => {
+    it('should return object small description', async () => {
+      const actual = validator.String()
+        .default('test')
+        .toObject();
+      actual.should.deepEqual({
+        type: 'string',
+        default: 'test',
+        required: true,
+        empty: false,
+        trim: true
+      });
+    });
+
+    it('should return object full description', async () => {
+      const actual = validator.String()
+        .name('name')
+        .description('description')
+        .default('test')
+        .example('test')
+        .examples('test', 'hello')
+        .required(true)
+        .min(0)
+        .max(10)
+        .length(10)
+        .trim(true)
+        .toObject();
+      actual.should.deepEqual({
+        type: 'string',
+        name: 'name',
+        description: 'description',
+        default: 'test',
+        example: 'test',
+        examples: ['test', 'hello'],
+        required: true,
+        empty: false,
+        length: 10,
+        min: 0,
+        max: 10,
+        trim: true
+      });
+    });
   });
 });

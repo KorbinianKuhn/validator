@@ -12,7 +12,7 @@ class ExpressValidator extends Validator {
   }
 
   Request(options = {}) {
-    return TYPES.Request(_.defaults(options, _.pick(this._options, ...REQUEST_OPTION_KEYS)));
+    return TYPES.Request(options, _.pick(this._options, ...REQUEST_OPTION_KEYS));
   }
 }
 

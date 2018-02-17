@@ -4,12 +4,9 @@ const message = require('../message');
 const helper = require('../helper');
 
 const validateInteger = async (value, schema) => {
-  const language = schema._options.language;
-  const messages = schema._options.messages;
-
   if (_.isNil(value)) {
     if (schema._default) return schema._default;
-    if (schema._required) throw message.required(language, messages, value);
+    if (schema.isRequired()) throw message.required(schema._language, schema._messages, value);
     return value;
   }
 
@@ -17,20 +14,20 @@ const validateInteger = async (value, schema) => {
     value = parseInt(value);
   }
 
-  if (!_.isInteger(value)) throw message.wrongType(language, messages, 'integer', typeof value);
-  if (schema._min && value < schema._min) throw message.get(language, messages, 'integer', 'min', schema._min);
-  if (schema._max && value > schema._max) throw message.get(language, messages, 'integer', 'max', schema._max);
-  if (schema._less && value >= schema._less) throw message.get(language, messages, 'integer', 'less', schema._less);
-  if (schema._greater && value <= schema._greater) throw message.get(language, messages, 'integer', 'greater', schema._greater);
-  if (schema._positive && value <= 0) throw message.get(language, messages, 'integer', 'positive');
-  if (schema._negative && value >= 0) throw message.get(language, messages, 'integer', 'negative');
+  if (!_.isInteger(value)) throw message.wrongType(schema._language, schema._messages, 'integer', typeof value);
+  if (schema._min && value < schema._min) throw message.get(schema._language, schema._messages, 'integer', 'min', schema._min);
+  if (schema._max && value > schema._max) throw message.get(schema._language, schema._messages, 'integer', 'max', schema._max);
+  if (schema._less && value >= schema._less) throw message.get(schema._language, schema._messages, 'integer', 'less', schema._less);
+  if (schema._greater && value <= schema._greater) throw message.get(schema._language, schema._messages, 'integer', 'greater', schema._greater);
+  if (schema._positive && value <= 0) throw message.get(schema._language, schema._messages, 'integer', 'positive');
+  if (schema._negative && value >= 0) throw message.get(schema._language, schema._messages, 'integer', 'negative');
 
   return value;
 };
 
 class INTEGER extends ANY {
-  constructor(options) {
-    super(options);
+  constructor(options, defaults) {
+    super(options, defaults);
   }
 
   async validate(value) {
@@ -78,7 +75,7 @@ class INTEGER extends ANY {
   toObject() {
     return _.pickBy({
       type: 'integer',
-      required: this._required,
+      required: this.isRequired(),
       name: this._name,
       description: this._description,
       default: this._default,
@@ -94,4 +91,4 @@ class INTEGER extends ANY {
   }
 }
 
-exports.IntegerFactory = (options = {}) => new INTEGER(options);
+exports.IntegerFactory = (options, defaults) => new INTEGER(options, defaults);

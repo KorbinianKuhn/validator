@@ -1,5 +1,5 @@
 const should = require('should');
-const helper = require('./helper');
+const helper = require('../helper');
 const Validator = require('../../index').Validator;
 
 const validator = Validator();
@@ -21,128 +21,117 @@ describe('Integer()', () => {
     });
   });
 
-  it('invalid type should fail', helper.mochaAsync(async () => {
-    for (const value of ['10', 10.5]) {
-      const message = await helper.shouldThrow(async () => validator.Integer().validate(value));
-      message.should.equal(`Must be integer but is ${typeof value}.`);
-    }
-  }));
-
-  it('valid type should verify', helper.mochaAsync(async () => {
-    for (const value of [10, -20, 0, 1238412]) {
-      const result = await validator.Integer().validate(value);
-      result.should.equal(value);
-    }
-  }));
-
-  it('invalid value should fail', helper.mochaAsync(async () => {
-    let message = await helper.shouldThrow(async () => validator.Integer().min(10).validate(5));
-    message.should.equal('Must be at minimum 10.');
-
-    message = await helper.shouldThrow(async () => validator.Integer().max(10).validate(15));
-    message.should.equal('Must be at maximum 10.');
-  }));
-
-  it('valid value should verify', helper.mochaAsync(async () => {
-    let value = await validator.Integer().min(10).validate(15);
-    value.should.equal(15);
-
-    value = await validator.Integer().max(20).validate(15);
-    value.should.equal(15);
-  }));
-
-  it('parsed values should fail', helper.mochaAsync(async () => {
-    const integer = validator.Integer({
-      parseToType: true
-    });
-    for (const value of ['10.0', true, '-0.9']) {
-      const message = await helper.shouldThrow(async () => integer.validate(value));
-      message.should.equal(`Must be integer but is ${typeof value}.`);
-    }
-  }));
-
-  it('parsed values should verify', helper.mochaAsync(async () => {
-    const integer = validator.Integer({
-      parseToType: true
+  describe('validate()', () => {
+    it('invalid type should fail', async () => {
+      for (const value of ['10', 10.5]) {
+        await helper.throw(validator.Integer().validate(value), `Must be integer but is ${typeof value}.`);
+      }
     });
 
-    const values = ['10', '-10', '0', '+20'];
-    const parsed = [10, -10, 0, 20];
-
-    for (const index in values) {
-      const value = await integer.validate(values[index]);
-      value.should.equal(parsed[index]);
-    }
-  }));
-
-  it('invalid default value should throw', helper.mochaAsync(async () => {
-    const result = await helper.shouldThrow(async () => validator.Integer().default('invalid'));
-    result.message.should.equal('Must be integer.');
-  }));
-
-  it('valid default value should verify', helper.mochaAsync(async () => {
-    let result = await validator.Integer().default(1).validate();
-    result.should.equal(1);
-
-    result = await validator.Integer().default(1).validate(2);
-    result.should.equal(2);
-  }));
-
-  it('test less function', helper.mochaAsync(async () => {
-    let error;
-    await validator.Integer().less(1).validate(2).catch((err) => {
-      error = err;
+    it('valid type should verify', async () => {
+      for (const value of [10, -20, 0, 1238412]) {
+        const result = await validator.Integer().validate(value);
+        result.should.equal(value);
+      }
     });
-    error.should.equal('Must be less than 1.');
+  });
 
-    const result = await validator.Integer().less(1).validate(0);
-    result.should.equal(0);
-  }));
-
-  it('test greater function', helper.mochaAsync(async () => {
-    let error;
-    await validator.Integer().greater(2).validate(1).catch((err) => {
-      error = err;
+  describe('min()', () => {
+    it('invalid value should fail', async () => {
+      await helper.throw(validator.Integer().min(10).validate(5), 'Must be at minimum 10.');
     });
-    error.should.equal('Must be greater than 2.');
 
-    const result = await validator.Integer().greater(2).validate(3);
-    result.should.equal(3);
-  }));
-
-  it('test positive function', helper.mochaAsync(async () => {
-    let error;
-    await validator.Integer().positive().validate(0).catch((err) => {
-      error = err;
+    it('valid value should verify', async () => {
+      const value = await validator.Integer().min(10).validate(15);
+      value.should.equal(15);
     });
-    error.should.equal('Must be a positive integer.');
+  });
 
-    error = undefined;
-    await validator.Integer().positive().validate(-1).catch((err) => {
-      error = err;
+  describe('max()', () => {
+    it('invalid value should fail', async () => {
+      await helper.throw(validator.Integer().max(10).validate(15), 'Must be at maximum 10.');
     });
-    error.should.equal('Must be a positive integer.');
 
-    const result = await validator.Integer().positive().validate(3);
-    result.should.equal(3);
-  }));
-
-  it('test negative function', helper.mochaAsync(async () => {
-    let error;
-    await validator.Integer().negative().validate(0).catch((err) => {
-      error = err;
+    it('valid value should verify', async () => {
+      const value = await validator.Integer().max(20).validate(15);
+      value.should.equal(15);
     });
-    error.should.equal('Must be a negative integer.');
+  });
 
-    error = undefined;
-    await validator.Integer().negative().validate(1).catch((err) => {
-      error = err;
+  describe('parse()', () => {
+    it('parsed values should fail', async () => {
+      const integer = validator.Integer().parse(true);
+      for (const value of ['10.0', true, '-0.9']) {
+        await helper.throw(integer.validate(value), `Must be integer but is ${typeof value}.`);
+      }
     });
-    error.should.equal('Must be a negative integer.');
 
-    const result = await validator.Integer().negative().validate(-3);
-    result.should.equal(-3);
-  }));
+    it('parsed values should verify', async () => {
+      const integer = validator.Integer().parse(true);
+
+      const values = ['10', '-10', '0', '+20'];
+      const parsed = [10, -10, 0, 20];
+
+      for (const index in values) {
+        const value = await integer.validate(values[index]);
+        value.should.equal(parsed[index]);
+      }
+    });
+  });
+
+  describe('default()', () => {
+    it('invalid default value should throw', async () => {
+      await helper.throw(() => validator.Integer().default('invalid'), 'Must be integer.');
+    });
+
+    it('should return default value', async () => {
+      const result = await validator.Integer().default(1).validate();
+      result.should.equal(1);
+    });
+
+    it('should return value', async () => {
+      const result = await validator.Integer().default(1).validate(2);
+      result.should.equal(2);
+    });
+  });
+
+  describe('less()', () => {
+    it('test less function', async () => {
+      helper.throw(validator.Integer().less(1).validate(2), 'Must be less than 1.');
+
+      const result = await validator.Integer().less(1).validate(0);
+      result.should.equal(0);
+    });
+  });
+
+  describe('greater()', () => {
+    it('test greater function', async () => {
+      helper.throw(validator.Integer().greater(2).validate(1), 'Must be greater than 2.');
+
+      const result = await validator.Integer().greater(2).validate(3);
+      result.should.equal(3);
+    });
+  });
+
+  describe('positive()', () => {
+    it('test positive function', async () => {
+      helper.throw(validator.Integer().positive().validate(0), 'Must be a positive integer.');
+      helper.throw(validator.Integer().positive().validate(-1), 'Must be a positive integer.');
+
+      const result = await validator.Integer().positive().validate(3);
+      result.should.equal(3);
+    });
+  });
+
+  describe('negative()', () => {
+    it('test negative function', async () => {
+      helper.throw(validator.Integer().negative().validate(0), 'Must be a negative integer.');
+      helper.throw(validator.Integer().negative().validate(1), 'Must be a negative integer.');
+
+      const result = await validator.Integer().negative().validate(-3);
+      result.should.equal(-3);
+    });
+  });
 
   describe('toObject()', () => {
     it('should return object small description', async () => {

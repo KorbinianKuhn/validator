@@ -5,32 +5,29 @@ const helper = require('../helper');
 const message = require('../message');
 
 const validateDate = async (value, schema) => {
-  const language = schema._options.language;
-  const messages = schema._options.messages;
-
   if (_.isNil(value)) {
     if (schema._default) return schema._default;
-    if (schema._required) throw message.required(language, messages, value);
+    if (schema.isRequired()) throw message.required(schema._language, schema._messages, value);
     return value;
   }
 
   let date;
-  if (this._utc) {
-    date = moment.utc(value, this._format, this._strict);
+  if (schema._utc) {
+    date = moment.utc(value, schema._format, schema._strict);
   } else {
-    date = moment(value, this._format, this._strict);
+    date = moment(value, schema._format, schema._strict);
   }
 
   if (!date.isValid()) {
-    throw message.get(language, messages, 'date', 'invalid', this._format);
+    throw message.get(schema._language, schema._messages, 'date', 'invalid', schema._format);
   }
 
   if (schema._min && date.toDate() < schema._min) {
-    throw message.get(language, messages, 'date', 'minimum', schema._min.toISOString());
+    throw message.get(schema._language, schema._messages, 'date', 'minimum', schema._min.toISOString());
   }
 
   if (schema._max && date.toDate() > schema._max) {
-    throw message.get(language, messages, 'date', 'maximum', schema._max.toISOString());
+    throw message.get(schema._language, schema._messages, 'date', 'maximum', schema._max.toISOString());
   }
 
   if (schema._parse) {
@@ -41,11 +38,11 @@ const validateDate = async (value, schema) => {
 };
 
 class DATE extends ANY {
-  constructor(options) {
-    super(options);
-    this._format = options.dateFormat;
-    this._utc = options.utc;
-    this._strict = options.strictDateValidation;
+  constructor(options, defaults) {
+    super(options, defaults);
+    this._format = _.defaultTo(options.dateFormat, defaults.dateFormat);
+    this._utc = _.defaultTo(options.utc, defaults.utc);
+    this._strict = _.defaultTo(options.strictDateValidation, defaults.strictDateValidation);
   }
 
   async validate(value) {
@@ -89,7 +86,7 @@ class DATE extends ANY {
   toObject() {
     return _.pickBy({
       type: 'date',
-      required: this._required,
+      required: this.isRequired(),
       name: this._name,
       description: this._description,
       default: this._default,
@@ -104,4 +101,4 @@ class DATE extends ANY {
   }
 }
 
-exports.DateFactory = (options = {}) => new DATE(options);
+exports.DateFactory = (options, defaults) => new DATE(options, defaults);

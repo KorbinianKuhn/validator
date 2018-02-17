@@ -1,14 +1,15 @@
 const _ = require('lodash');
 const ANY = require('./any').ANY;
-const OBJECT = require('./object');
-const defaults = require('../defaults');
+const ObjectFactory = require('./object').ObjectFactory;
+const {
+  BODY_OPTIONS,
+  QUERY_OPTIONS,
+  URI_OPTIONS
+} = require('../defaults');
 const message = require('../message');
 const helper = require('../helper');
 
 const validateRequest = async (req, schema) => {
-  const language = schema._options.language;
-  const messages = schema._options.messages;
-
   if (!_.every(['params', 'query', 'body'], _.partial(_.has, req))) {
     throw new Error('Invalid express req object.');
   }
@@ -23,7 +24,7 @@ const validateRequest = async (req, schema) => {
     }
   } else if (schema._noUndefinedKeys) {
     if (_.keys(req.params).length > 0) {
-      errors.params = message.get(language, messages, 'request', 'no_uri');
+      errors.params = message.get(schema._language, schema._messages, 'request', 'no_uri');
     }
   }
 
@@ -35,19 +36,19 @@ const validateRequest = async (req, schema) => {
     }
   } else if (schema._noUndefinedKeys) {
     if (_.keys(req.query).length > 0) {
-      errors.query = message.get(language, messages, 'request', 'no_query');
+      errors.query = message.get(schema._language, schema._messages, 'request', 'no_query');
     }
   }
 
   if (schema._body) {
     try {
-      req.body = await schema._body.schema.validate(req.body);
+      req.body = await schema._body.validate(req.body);
     } catch (err) {
       errors.body = err;
     }
   } else if (schema._noUndefinedKeys) {
     if (_.keys(req.body).length > 0) {
-      errors.body = message.get(language, messages, 'request', 'no_body');
+      errors.body = message.get(schema._language, schema._messages, 'request', 'no_body');
     }
   }
 
@@ -65,21 +66,19 @@ const validateSchema = (schema, options) => {
 
   if (['OBJECT', 'ARRAY'].indexOf(schema.constructor.name) === -1) {
     if (_.isPlainObject(schema)) {
-      schema = OBJECT(schema);
+      schema = ObjectFactory(schema, options);
     } else {
-      throw new Error('Must be OBJECT or ARRAY Schema.');
+      throw new Error('Must be Object or Array Schema.');
     }
   }
-
-  console.log("TODO overwrite options?");
 
   return schema;
 };
 
 class REQUEST extends ANY {
-  constructor(options) {
-    super(options);
-    this._noUndefinedKeys = options.noUndefinedKeys;
+  constructor(options, defaults) {
+    super(options, defaults);
+    this._noUndefinedKeys = _.defaultTo(options.noUndefinedKeys, defaults.noUndefinedKeys);
   }
 
   async validate(value) {
@@ -87,17 +86,17 @@ class REQUEST extends ANY {
   }
 
   params(schema, options = {}) {
-    this._params = validateSchema(schema, _.defaults(options, this._options, defaults.URI_OPTIONS));
+    this._params = validateSchema(schema, _.defaults(options, _.pick(this._options, 'schema._language', 'type', 'schema._messages'), URI_OPTIONS));
     return this;
   }
 
   query(schema, options = {}) {
-    this._query = validateSchema(schema, _.defaults(options, this._options, defaults.QUERY_OPTIONS));
+    this._query = validateSchema(schema, _.defaults(options, _.pick(this._options, 'schema._language', 'type', 'schema._messages'), QUERY_OPTIONS));
     return this;
   }
 
   body(schema, options = {}) {
-    this._body = validateSchema(schema, _.defaults(options, this._options, defaults.BODY_OPTIONS));
+    this._body = validateSchema(schema, _.defaults(options, _.pick(this._options, 'schema._language', 'type', 'schema._messages'), BODY_OPTIONS));
     return this;
   }
 
@@ -106,4 +105,4 @@ class REQUEST extends ANY {
   }
 }
 
-exports.RequestFactory = (options = {}) => new REQUEST(options);
+exports.RequestFactory = (options, defaults) => new REQUEST(options, defaults);

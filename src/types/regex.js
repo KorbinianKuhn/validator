@@ -4,40 +4,44 @@ const message = require('../message');
 const helper = require('../helper');
 
 const validateRegex = async (value, schema) => {
-  const language = schema._options.language;
-  const messages = schema._options.messages;
-
   if (_.isNil(value)) {
     if (schema._default) return schema._default;
-    if (schema._required) throw message.required(language, messages, value);
+    if (schema.isRequired()) throw message.required(schema._language, schema._messages, value);
     return value;
   }
 
-  if (!_.isString(value)) throw message.wrongType(language, messages, 'string', typeof value);
+  if (!_.isString(value)) throw message.wrongType(schema._language, schema._messages, 'string', typeof value);
 
-  if (value === '' && schema._empty) {
-    return value;
+  if (value === '') {
+    if (schema._empty) {
+      return value;
+    } else {
+      throw message.get(schema._language, schema._messages, 'regex', 'empty');
+    }
   }
 
   if (!value.match(schema._regex)) {
-    throw schema._message[language];
+    throw schema._message[schema._language];
   }
 
-  if (schema._min && value.length < schema._min) throw message.get(language, messages, 'regex', 'min', schema._min);
-  if (schema._max && value.length > schema._max) throw message.get(language, messages, 'regex', 'max', schema._max);
-  if (schema._length && value.length !== schema._length) throw message.get(language, messages, 'regex', 'length', schema._length);
+  if (schema._min && value.length < schema._min) throw message.get(schema._language, schema._messages, 'regex', 'min', schema._min);
+  if (schema._max && value.length > schema._max) throw message.get(schema._language, schema._messages, 'regex', 'max', schema._max);
+  if (schema._length && value.length !== schema._length) throw message.get(schema._language, schema._messages, 'regex', 'length', schema._length);
 
   return value;
 };
 
 class REGEX extends ANY {
-  constructor(regex, options) {
-    super(options);
+  constructor(regex, options, defaults) {
+    super(options, defaults);
+
     if (!_.isRegExp(regex)) throw new Error('Invalid regular expression');
     this._regex = regex;
+    this._empty = !_.defaultTo(options.noEmptyStrings, defaults.noEmptyStrings);
+    this._trim = _.defaultTo(options.trimStrings, defaults.trimStrings);
     this._message = {
-      en: message.get('en', this._options.messages, 'regex', 'invalid'),
-      de: message.get('de', this._options.messages, 'regex', 'invalid'),
+      en: message.get('en', this._messages, 'regex', 'invalid'),
+      de: message.get('de', this._messages, 'regex', 'invalid'),
     };
   }
 
@@ -79,8 +83,21 @@ class REGEX extends ANY {
   }
 
   toObject() {
-    throw new Error('Not Implemented');
+    return _.pickBy({
+      type: 'regex',
+      required: this.isRequired(),
+      name: this._name,
+      description: this._description,
+      default: this._default,
+      example: this._example,
+      examples: this._examples,
+      min: this._min,
+      max: this._max,
+      length: this._length,
+      empty: this._empty,
+      pattern: this._regex
+    }, helper.isNotNil);
   }
 }
 
-exports.RegexFactory = (options = {}) => new REGEX(options);
+exports.RegexFactory = (regex, options, defaults) => new REGEX(regex, options, defaults);

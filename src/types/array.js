@@ -4,12 +4,9 @@ const helper = require('../helper');
 const message = require('../message');
 
 const validateArray = async (value, schema) => {
-  const language = schema._options.language;
-  const messages = schema._options.messages;
-
   if (_.isNil(value)) {
     if (schema._default) return schema._default;
-    if (schema._required) throw message.required(language, messages, value);
+    if (schema.isRequired()) throw message.required(schema._language, schema._messages, value);
     return value;
   }
 
@@ -21,26 +18,26 @@ const validateArray = async (value, schema) => {
     }
   }
 
-  if (!_.isArray(value)) throw message.wrongType(language, messages, 'array', typeof value);
+  if (!_.isArray(value)) throw message.wrongType(schema._language, schema._messages, 'array', typeof value);
 
   if (schema._empty === false && value.length === 0) {
-    throw message.get(language, messages, 'array', 'empty');
+    throw message.get(schema._language, schema._messages, 'array', 'empty');
   }
 
   if (schema._min && value.length < schema._min) {
-    throw message.get(language, messages, 'array', 'min', schema._min);
+    throw message.get(schema._language, schema._messages, 'array', 'min', schema._min);
   }
 
   if (schema._max && value.length > schema._max) {
-    throw message.get(language, messages, 'array', 'max', schema._max);
+    throw message.get(schema._language, schema._messages, 'array', 'max', schema._max);
   }
 
   if (schema._length && value.length !== schema._length) {
-    throw message.get(language, messages, 'array', 'length', schema._length);
+    throw message.get(schema._language, schema._messages, 'array', 'length', schema._length);
   }
 
   if (schema._unique && _.uniqWith(value, _.isEqual).length !== value.length) {
-    throw message.get(language, messages, 'array', 'unique');
+    throw message.get(schema._language, schema._messages, 'array', 'unique');
   }
 
   if (schema._type !== undefined) {
@@ -65,10 +62,10 @@ const validateArray = async (value, schema) => {
 };
 
 class ARRAY extends ANY {
-  constructor(type, options) {
-    super(options);
+  constructor(type, options, defaults) {
+    super(options, defaults);
     this._type = type;
-    this._empty = options.noEmptyArrays;
+    this._empty = !_.defaultTo(options.noEmptyArrays, defaults.noEmptyArrays);
   }
 
   async validate(value) {
@@ -112,7 +109,7 @@ class ARRAY extends ANY {
     const items = this._type ? this._type.toObject() : undefined;
     return _.pickBy({
       type: 'array',
-      required: this._required,
+      required: this.isRequired(),
       name: this._name,
       description: this._description,
       default: this._default,
@@ -127,4 +124,4 @@ class ARRAY extends ANY {
   }
 }
 
-exports.ArrayFactory = (type, options = {}) => new ARRAY(type, options);
+exports.ArrayFactory = (type, options, defaults) => new ARRAY(type, options, defaults);

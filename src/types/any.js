@@ -3,22 +3,22 @@ const message = require('../message');
 const helper = require('../helper');
 
 const validateAny = async (value, schema) => {
-  const language = schema._options.language;
-  const messages = schema._options.messages;
-
   if (_.isNil(value)) {
     if (schema._default) return schema._default;
-    if (schema._required) throw message.required(language, messages, value);
+    if (schema.isRequired()) throw message.required(schema._language, schema._messages, value);
   }
 
   return value;
 };
 
 class ANY {
-  constructor(options) {
+  constructor(options, defaults) {
     this._options = options;
-    this._required = options.requiredAsDefault;
-    this._parse = options.parseToType;
+    this._defaults = defaults;
+    this._required = _.defaultTo(options.requiredAsDefault, undefined);
+    this._parse = _.defaultTo(options.parseToType, defaults.parseToType);
+    this._language = _.defaultTo(options.language, defaults.language);
+    this._messages = _.defaultTo(options.messages, defaults.messages);
   }
 
   async validate(value) {
@@ -28,6 +28,10 @@ class ANY {
   required(required) {
     this._required = required;
     return this;
+  }
+
+  isRequired() {
+    return _.defaultTo(this._required, this._defaults.requiredAsDefault);
   }
 
   name(name) {
@@ -63,15 +67,16 @@ class ANY {
   toObject() {
     return _.pickBy({
       type: 'any',
-      required: this._required,
+      required: this.isRequired(),
       name: this._name,
       description: this._description,
       default: this._default,
       example: this._example,
-      examples: this._examples
+      examples: this._examples,
+      parse: this._parse
     }, helper.isNotNil);
   }
 }
 
 exports.ANY = ANY;
-exports.AnyFactory = (options = {}) => new ANY(options);
+exports.AnyFactory = (options, defaults) => new ANY(options, defaults);

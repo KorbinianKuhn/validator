@@ -1,8 +1,7 @@
-const assert = require('assert');
 const should = require('should');
-const ValidationError = require('../src/error');
+const ValidationError = require('../index').ValidationError;
 
-describe('ValidationError()', function () {
+describe('ValidationError()', () => {
   it('should have no message and details', () => {
     const error = new ValidationError();
     should.equal(error.name, 'ExpressInputValidationError');

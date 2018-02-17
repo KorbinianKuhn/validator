@@ -4,12 +4,9 @@ const message = require('../message');
 const helper = require('../helper');
 
 const validateBoolean = async (value, schema) => {
-  const language = schema._options.language;
-  const messages = schema._options.messages;
-
   if (_.isNil(value)) {
     if (schema._default) return schema._default;
-    if (schema._required) throw message.required(language, messages, value);
+    if (schema.isRequired()) throw message.required(schema._language, schema._messages, value);
     return value;
   }
 
@@ -18,14 +15,14 @@ const validateBoolean = async (value, schema) => {
     if (value === 'false') value = false;
   }
 
-  if (!_.isBoolean(value)) throw message.wrongType(language, messages, 'boolean', typeof value);
+  if (!_.isBoolean(value)) throw message.wrongType(schema._language, schema._messages, 'boolean', typeof value);
 
   return value;
 };
 
 class BOOLEAN extends ANY {
-  constructor(options) {
-    super(options);
+  constructor(options, defaults) {
+    super(options, defaults);
   }
 
   async validate(value) {
@@ -43,7 +40,7 @@ class BOOLEAN extends ANY {
   toObject() {
     return _.pickBy({
       type: 'boolean',
-      required: this._required,
+      required: this.isRequired(),
       name: this._name,
       description: this._description,
       default: this._default,
@@ -53,5 +50,5 @@ class BOOLEAN extends ANY {
   }
 }
 
-exports.BooleanFactory = (options = {}) => new BOOLEAN(options);
+exports.BooleanFactory = (options, defaults) => new BOOLEAN(options, defaults);
 

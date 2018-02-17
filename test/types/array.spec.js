@@ -1,10 +1,10 @@
 const should = require('should');
-const helper = require('./helper');
+const helper = require('../helper');
 const Validator = require('../../index').Validator;
 
 const validator = Validator();
 
-describe.skip('Array()', () => {
+describe('Array()', () => {
   describe('required()', () => {
     it('undefined should throw', async () => {
       const promise = validator.Array()
@@ -21,141 +21,151 @@ describe.skip('Array()', () => {
     });
   });
 
-  it('invalid type should fail', helper.mochaAsync(async () => {
-    const result = await helper.shouldThrow(async () => validator.Array().validate(1234));
-    result.should.equal('Must be array but is number.');
-  }));
+  it('invalid type should fail', async () => {
+    await helper.throw(validator.Array().validate(1234), 'Must be array but is number.');
+  });
 
-  it('valid type should verify', helper.mochaAsync(async () => {
+  it('valid type should verify', async () => {
     const value = await validator.Array().validate(['test']);
     should.deepEqual(value, ['test']);
-  }));
+  });
 
-  it('invalid length should fail', helper.mochaAsync(async () => {
-    let result = await helper.shouldThrow(async () => validator.Array().min(5).validate(['test']));
-    result.should.equal(`Must have at least 5 items.`);
+  describe('min()', () => {
+    it('invalid length should fail', async () => {
+      await helper.throw(validator.Array().min(5).validate(['test']), `Must have at least 5 items.`);
+    });
 
-    result = await helper.shouldThrow(async () => validator.Array().max(5).validate([1, 2, 3, 4, 5, 6]));
-    result.should.equal(`Must have at most 5 items.`);
+    it('valid length should verify', async () => {
+      const value = await validator.Array().min(1).validate(['test']);
+      value.should.deepEqual(['test']);
+    });
+  });
 
-    result = await helper.shouldThrow(async () => validator.Array().length(3).validate(['test']));
-    result.should.equal(`Must have exactly 3 items.`);
-  }));
+  describe('max()', () => {
+    it('invalid length should fail', async () => {
+      await helper.throw(validator.Array().max(5).validate([1, 2, 3, 4, 5, 6]), `Must have at most 5 items.`);
+    });
 
-  it('valid length should verify', helper.mochaAsync(async () => {
-    let value = await validator.Array().min(1).validate(['test']);
-    value.should.deepEqual(['test']);
+    it('valid length should verify', async () => {
+      const value = await validator.Array().max(1).validate(['test']);
+      value.should.deepEqual(['test']);
+    });
+  });
 
-    value = await validator.Array().max(1).validate(['test']);
-    value.should.deepEqual(['test']);
+  describe('length()', () => {
+    it('invalid length should fail', async () => {
+      await helper.throw(validator.Array().length(3).validate(['test']), `Must have exactly 3 items.`);
+    });
 
-    value = await validator.Array().length(1).validate(['test']);
-    value.should.deepEqual(['test']);
-  }));
+    it('valid length should verify', async () => {
+      const value = await validator.Array().length(1).validate(['test']);
+      value.should.deepEqual(['test']);
+    });
+  });
 
-  it('array with invalid types should fail', helper.mochaAsync(async () => {
-    const result = await helper.shouldThrow(async () => validator.Array(validator.Integer()).validate(['test']));
-    result.should.deepEqual({
+
+  it('array with invalid types should fail', async () => {
+    await helper.throw(validator.Array(validator.Integer()).validate(['test']), {
       0: 'Must be integer but is string.'
     });
-  }));
+  });
 
-  it('array with valid types should verify', helper.mochaAsync(async () => {
+  it('array with valid types should verify', async () => {
     const value = await validator.Array(validator.Integer()).validate([1, 2, 3]);
     value.should.deepEqual([1, 2, 3]);
-  }));
+  });
 
-  it('empty array should fail', helper.mochaAsync(async () => {
-    const result = await helper.shouldThrow(async () => validator.Array().validate([]));
-    result.should.equal('Array is empty.');
-  }));
-
-  it('empty array allowed should verify', helper.mochaAsync(async () => {
-    let value = await validator.Array().empty(true).validate([]);
-    value.should.deepEqual([]);
-
-    value = await validator.Array({
-      noEmptyArrays: false
-    }).validate([]);
-    value.should.deepEqual([]);
-  }));
-
-  it('parsed strings should verify', helper.mochaAsync(async () => {
-    let result = await validator.Array().validate('a,b,c', {
-      parseToType: true
+  describe('empty()', () => {
+    it('empty array should fail', async () => {
+      await helper.throw(validator.Array().validate([]), 'Array is empty.');
     });
 
-    result.should.deepEqual(['a', 'b', 'c']);
+    it('empty array should verify', async () => {
+      const value = await validator.Array().empty(true).validate([]);
+      value.should.deepEqual([]);
+    });
+  });
 
-    result = await validator.Array().validate('["a","b","c"]', {
-      parseToType: true
+  describe('parse()', () => {
+    it('comma separated should verify', async () => {
+      const result = await validator.Array().parse(true).validate('a,b,c');
+      result.should.deepEqual(['a', 'b', 'c']);
     });
 
-    result.should.deepEqual(['a', 'b', 'c']);
-  }));
+    it('json should verify', async () => {
+      const result = await validator.Array().parse(true).validate('["a","b","c"]');
+      result.should.deepEqual(['a', 'b', 'c']);
+    });
+  });
 
-  it('invalid default value should throw', helper.mochaAsync(async () => {
-    const result = await helper.shouldThrow(async () => validator.Array().default('invalid'));
-    result.message.should.equal('Must be array.');
-  }));
+  describe('default()', () => {
+    it('invalid default value should throw', async () => {
+      const func = () => validator.Array().default('invalid');
+      await helper.throw(func, 'Must be array.');
+    });
 
-  it('valid default value should verify', helper.mochaAsync(async () => {
-    let result = await validator.Array().default([1, 2, 3]).validate();
-    result.should.deepEqual([1, 2, 3]);
+    it('valid default value should verify', async () => {
+      const result = await validator.Array().default([1, 2, 3]).validate();
+      result.should.deepEqual([1, 2, 3]);
+    });
 
-    result = await validator.Array().default([1, 2, 3]).validate([1, 2]);
-    result.should.deepEqual([1, 2]);
-  }));
+    it('valid default value should return value', async () => {
+      const result = await validator.Array().default([1, 2, 3]).validate([1, 2]);
+      result.should.deepEqual([1, 2]);
+    });
+  });
 
-  it('empty should verify', helper.mochaAsync(async () => {
-    const promise = validator.Array(undefined, {
-      noEmptyArrays: true
-    }).empty(false).validate([]);
+  describe('empty()', () => {
+    it('empty should throw', async () => {
+      await helper.throw(validator.Array().empty(false).validate([]), 'Array is empty.');
+    });
 
-    await helper.throw(promise, 'Array is empty.');
+    it('empty should verify', async () => {
+      const result = await validator.Array().empty(true).validate([]);
+      result.should.deepEqual([]);
+    });
+  });
 
-    const result = await validator.Array(undefined, {
-      noEmptyArrays: true
-    }).empty(true).validate([]);
-    result.should.deepEqual([]);
-  }));
+  describe('unique()', () => {
+    it('duplicate items should fail', async () => {
+      await helper.throw(validator.Array().unique(true).validate(['a', 'b', 'a']), 'Values must be unique.');
+    });
 
-  it('duplicate items should fail', helper.mochaAsync(async () => {
-    let result = await helper.shouldThrow(async () => validator.Array().unique(true).validate(['a', 'b', 'a']));
-    result.should.equal('Values must be unique.');
+    it('duplicate objects should fail', async () => {
+      const promise = validator.Array(validator.Object({
+        id: validator.Integer()
+      })).unique(true).validate([{ id: 1 }, { id: 2 }, { id: 1 }]);
+      await helper.throw(promise, 'Values must be unique.');
+    });
 
-    result = await helper.shouldThrow(async () => validator.Array(validator.Object({
-      id: validator.Integer()
-    })).unique(true).validate([{ id: 1 }, { id: 2 }, { id: 1 }]));
-    result.should.equal('Values must be unique.');
-  }));
+    it('duplicate items should verify', async () => {
+      let result = await await validator.Array().validate(['a', 'b', 'a']);
+      result.should.deepEqual(['a', 'b', 'a']);
 
-  it('duplicate items should verify', helper.mochaAsync(async () => {
-    let result = await await validator.Array().validate(['a', 'b', 'a']);
-    result.should.deepEqual(['a', 'b', 'a']);
-
-    const array = [{
-      id: 1
-    }, {
-      id: 2
-    }, {
-      id: 1
-    }];
-    result = await validator.Array(validator.Object({
-      id: validator.Integer()
-    })).validate(array);
-    result.should.deepEqual(array);
-  }));
+      const array = [{
+        id: 1
+      }, {
+        id: 2
+      }, {
+        id: 1
+      }];
+      result = await validator.Array(validator.Object({
+        id: validator.Integer()
+      })).validate(array);
+      result.should.deepEqual(array);
+    });
+  });
 
   describe('toObject()', () => {
     it('should return object small description', async () => {
       const actual = validator.Array()
-        .default(2)
+        .default([2])
         .toObject();
       actual.should.deepEqual({
         type: 'array',
-        default: 2,
-        required: true
+        default: [2],
+        required: true,
+        empty: false
       });
     });
 

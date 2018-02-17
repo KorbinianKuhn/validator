@@ -1,5 +1,5 @@
 const should = require('should');
-const helper = require('./helper');
+const helper = require('../helper');
 
 const Validator = require('../../index').Validator;
 
@@ -11,46 +11,82 @@ const throwFunction = () => {
 };
 
 describe('Function()', () => {
-  it('no function should throw', () => {
-    (() => {
-      validator.Function();
-    }).should.throw('Missing function.');
+  describe('constructor()', () => {
+    it('no function should throw', () => {
+      (() => {
+        validator.Function();
+      }).should.throw('Missing function.');
+    });
+
+    it('invalid function should throw', () => {
+      (() => {
+        validator.Function('invalid');
+      }).should.throw('Not a function.');
+    });
   });
 
-  it('invalid function should throw', () => {
-    (() => {
-      validator.Function('invalid');
-    }).should.throw('Not a function.');
+  describe('required()', () => {
+    it('undefined should throw', async () => {
+      const promise = validator.Function(testFunction)
+        .required(true)
+        .validate();
+      await helper.throw(promise, 'Required but is undefined.');
+    });
+
+    it('undefined should verify', async () => {
+      const actual = await validator.Function(testFunction)
+        .required(false)
+        .validate();
+      should.equal(actual, undefined);
+    });
   });
 
-  it('required but null should fail', helper.mochaAsync(async () => {
-    const message = await helper.shouldThrow(async () => validator.Function(testFunction).validate(null));
-    message.should.equal('Required but is null.');
-  }));
+  describe('validate()', () => {
+    it('function should verify', async () => {
+      let result = await validator.Function(testFunction).validate('test');
+      result.should.equal('test');
 
-  it('null and undefined should verify', helper.mochaAsync(async () => {
-    let result = await validator.Function(testFunction).validate(null);
-    should.equal(result, null);
+      result = await validator.Function(testFunction).validate('test');
+      result.should.equal('test');
+    });
 
-    result = await validator.Function(testFunction).validate(undefined);
-    should.equal(result, undefined);
-  }));
+    it('function should throw custom error message', async () => {
+      const promise = validator.Function(throwFunction).validate('test');
+      await helper.throw(promise, 'Custom error message.');
+    });
+  });
 
-  it('function should verify', helper.mochaAsync(async () => {
-    let result = await validator.Function(testFunction).validate('test');
-    result.should.equal('test');
+  describe('default()', () => {
+    it('should return default value', async () => {
+      const result = await validator.Function(testFunction).default('test').validate();
+      result.should.equal('test');
+    });
 
-    result = await validator.Function(testFunction).validate('test');
-    result.should.equal('test');
-  }));
+    it('should return value', async () => {
+      const result = await validator.Function(testFunction).default('test').validate('hello');
+      result.should.equal('hello');
+    });
+  });
 
-  it('function should throw custom error message', helper.mochaAsync(async () => {
-    const message = await helper.shouldThrow(async () => validator.Function(throwFunction).validate('test'));
-    message.should.equal('Custom error message.');
-  }));
-
-  it('valid default value should verify', helper.mochaAsync(async () => {
-    const result = await validator.Function(testFunction).default('test').validate();
-    result.should.equal('test');
-  }));
+  describe('toObject()', () => {
+    it('should return object full description', async () => {
+      const actual = validator.Function(testFunction)
+        .name('name')
+        .description('description')
+        .default('a')
+        .example('a')
+        .examples('a', 'b')
+        .required(true)
+        .toObject();
+      actual.should.deepEqual({
+        type: 'function',
+        name: 'name',
+        description: 'description',
+        default: 'a',
+        example: 'a',
+        examples: ['a', 'b'],
+        required: true,
+      });
+    });
+  });
 });

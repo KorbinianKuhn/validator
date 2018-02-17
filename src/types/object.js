@@ -6,12 +6,9 @@ const helper = require('../helper');
 const ALLOWED_CONDITIONS = ['gt', 'equals', 'lt', 'gte', 'lte', 'notEquals', 'dependsOn', 'xor'];
 
 const validateObject = async (value, schema) => {
-  const language = schema._options.language;
-  const messages = schema._options.messages;
-
   if (_.isNil(value)) {
     if (schema._default) return schema._default;
-    if (schema._required) throw message.required(language, messages, value);
+    if (schema.isRequired()) throw message.required(schema._language, schema._messages, value);
     return value;
   }
 
@@ -23,16 +20,16 @@ const validateObject = async (value, schema) => {
     }
   }
 
-  if (!_.isPlainObject(value)) throw message.get(language, messages, 'object', 'wrong_type');
+  if (!_.isPlainObject(value)) throw message.get(schema._language, schema._messages, 'object', 'wrong_type');
 
   const length = _.keys(value).length;
-  if (length === 0 && schema._empty) {
-    throw message.get(language, messages, 'object', 'empty');
+  if (length === 0 && schema._empty === false) {
+    throw message.get(schema._language, schema._messages, 'object', 'empty');
   }
 
-  if (schema._min && length < schema._min) throw message.get(language, messages, 'object', 'min', schema._min);
-  if (schema._max && length > schema._max) throw message.get(language, messages, 'object', 'max', schema._max);
-  if (schema._length && length !== schema._length) throw message.get(language, messages, 'object', 'length', schema._length);
+  if (schema._min && length < schema._min) throw message.get(schema._language, schema._messages, 'object', 'min', schema._min);
+  if (schema._max && length > schema._max) throw message.get(schema._language, schema._messages, 'object', 'max', schema._max);
+  if (schema._length && length !== schema._length) throw message.get(schema._language, schema._messages, 'object', 'length', schema._length);
 
   const errors = {};
   for (const key in schema._object) {
@@ -47,7 +44,7 @@ const validateObject = async (value, schema) => {
   if (schema._noUndefinedKeys) {
     for (const key in value) {
       if (!_.has(schema._object, key)) {
-        errors[key] = message.get(language, messages, 'object', 'unknown', key);
+        errors[key] = message.get(schema._language, schema._messages, 'object', 'unknown', key);
       }
     }
   }
@@ -55,7 +52,7 @@ const validateObject = async (value, schema) => {
   if (schema._conditions && _.keys(errors).length === 0) {
     for (const key in schema._conditions) {
       try {
-        compare(value, key, schema._conditions[key], language, messages);
+        compare(value, key, schema._conditions[key], schema._language, schema._messages);
       } catch (err) {
         errors[key] = err;
       }
@@ -138,8 +135,8 @@ const compare = (value, keyA, conditions, language, messages) => {
 };
 
 class OBJECT extends ANY {
-  constructor(object, options) {
-    super(options);
+  constructor(object, options, defaults) {
+    super(options, defaults);
 
     if (object === undefined) {
       throw new Error('Missing object.');
@@ -151,8 +148,8 @@ class OBJECT extends ANY {
 
     this._object = object;
     this._conditions = {};
-    this._empty = !options.noEmptyObjects;
-    this._noUndefinedKeys = options.noUndefinedKeys;
+    this._empty = !_.defaultTo(options.noEmptyObjects, defaults.noEmptyObjects);
+    this._noUndefinedKeys = _.defaultTo(options.noUndefinedKeys, defaults.noUndefinedKeys);
   }
 
   async validate(value) {
@@ -165,23 +162,18 @@ class OBJECT extends ANY {
   }
 
   conditions(options) {
-    let conditions = {};
-    if (this._conditions) {
-      conditions = this._conditions;
-    }
     for (const key in options) {
       if (!_.has(this._object, key)) throw `Object has no key '${key}'.`;
       for (const method in options[key]) {
         if (ALLOWED_CONDITIONS.indexOf(method) === -1) throw `Object has no condition method '${method}'.`;
         if (!_.has(this._object, options[key][method])) throw `Object has no key '${options[key][method]}'.`;
-        if (_.has(conditions, key)) {
-          _.merge(conditions[key], options[key]);
+        if (_.has(this._conditions, key)) {
+          _.merge(this._conditions[key], options[key]);
         } else {
-          conditions[key] = options[key];
+          this._conditions[key] = options[key];
         }
       }
     }
-    this._conditions = conditions;
     return this;
   }
 
@@ -253,8 +245,25 @@ class OBJECT extends ANY {
   }
 
   toObject() {
-    throw new Error('Not Implemented');
+    const properties = {};
+    for (const key in this._object) {
+      properties[key] = this._object[key].toObject();
+    }
+    return _.pickBy({
+      type: 'object',
+      required: this.isRequired(),
+      name: this._name,
+      description: this._description,
+      default: this._default,
+      example: this._example,
+      examples: this._examples,
+      min: this._min,
+      max: this._max,
+      length: this._unique,
+      empty: this._empty,
+      properties
+    }, helper.isNotNil);
   }
 }
 
-exports.ObjectFactory = (options = {}) => new OBJECT(options);
+exports.ObjectFactory = (schema, options, defaults) => new OBJECT(schema, options, defaults);

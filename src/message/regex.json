@@ -38,5 +38,15 @@
       "en": "Value does not match regular expression.",
       "de": "Wert erfüllt nicht den regulären Ausdruck."
     }
+  },
+  "empty": {
+    "default": {
+      "en": "String is empty.",
+      "de": "String ist leer."
+    },
+    "angular": {
+      "en": "Must not be empty.",
+      "de": "Darf nicht leer sein."
+    }
   }
 }

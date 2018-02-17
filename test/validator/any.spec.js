@@ -1,7 +1,6 @@
-const assert = require('assert');
 const should = require('should');
-const helper = require('./../types/helper');
-const Validator = require('./../../src/validator').Validator;
+const helper = require('./../helper');
+const Validator = require('./../../index').Validator;
 const defaults = require('../../src/defaults');
 
 const OVERWRITE_OPTIONS = {
@@ -21,33 +20,45 @@ const OVERWRITE_OPTIONS = {
 };
 
 describe('Validator()', () => {
+  it('constructor()', () => {
+    const validator = Validator();
+    validator._options.type.should.equal('any');
+    validator._options.messages.should.equal('default');
+  });
+
   it('all types should be created with the validator', () => {
-    const VALIDATOR = Validator();
-    VALIDATOR.Array().constructor.name.should.equal('ARRAY');
-    VALIDATOR.Boolean().constructor.name.should.equal('BOOLEAN');
-    VALIDATOR.Date().constructor.name.should.equal('DATE');
-    VALIDATOR.Enum([]).constructor.name.should.equal('ENUM');
-    VALIDATOR.Function(() => {}).constructor.name.should.equal('FUNCTION');
-    VALIDATOR.Integer().constructor.name.should.equal('INTEGER');
-    VALIDATOR.Number().constructor.name.should.equal('NUMBER');
-    VALIDATOR.Object({}).constructor.name.should.equal('OBJECT');
-    VALIDATOR.Regex(/A-Z/).constructor.name.should.equal('REGEX');
-    VALIDATOR.Request().constructor.name.should.equal('REQUEST');
-    VALIDATOR.String().constructor.name.should.equal('STRING');
+    const validator = Validator();
+    validator.Any().constructor.name.should.equal('ANY');
+    validator.Array().constructor.name.should.equal('ARRAY');
+    validator.Boolean().constructor.name.should.equal('BOOLEAN');
+    validator.Date().constructor.name.should.equal('DATE');
+    validator.Enum([]).constructor.name.should.equal('ENUM');
+    validator.Function(() => {}).constructor.name.should.equal('FUNCTION');
+    validator.Integer().constructor.name.should.equal('INTEGER');
+    validator.Number().constructor.name.should.equal('NUMBER');
+    validator.Object({}).constructor.name.should.equal('OBJECT');
+    validator.Regex(/A-Z/).constructor.name.should.equal('REGEX');
+    validator.String().constructor.name.should.equal('STRING');
   });
 
-  it('default options should get set', () => {
-    const VALIDATOR = Validator();
-    VALIDATOR.getOptions().should.eql(defaults.VALIDATOR_OPTIONS);
+  it('default options should be set', () => {
+    const validator = Validator();
+    validator._options.should.eql(defaults.VALIDATOR_OPTIONS);
   });
 
-  it('options should be overwritten', () => {
-    Validator(OVERWRITE_OPTIONS).getOptions().should.eql(OVERWRITE_OPTIONS);
-    Validator({
+  it('overwrite options should be set', () => {
+    const validator = Validator(OVERWRITE_OPTIONS);
+    validator._options.should.eql(OVERWRITE_OPTIONS);
+  });
+
+  it('mixed options should be set', () => {
+    const validator = Validator({
       requiredAsDefault: false
-    }).getOptions().should.eql({
-      type: 'default',
+    });
+    validator._options.should.eql({
+      type: 'any',
       language: 'en',
+      messages: 'default',
       requiredAsDefault: false,
       throwValidationErrors: true,
       parseToType: false,
@@ -63,86 +74,71 @@ describe('Validator()', () => {
     });
   });
 
-  it('duplicate custom type should fail', () => {
-    const VALIDATOR = Validator();
-    const type = VALIDATOR.Boolean();
+  it('duplicate custom type should fail', async () => {
+    const validator = Validator();
+    const type = validator.Boolean();
 
-    VALIDATOR.addType('test', type);
+    validator.addType('test', type);
 
-    (() => {
-      VALIDATOR.addType('test', type);
-    }).should.throw('Identifier test already set.');
+    await helper.throw(() => validator.addType('test', type), 'Identifier test already set.');
   });
 
-  it('invalid custom type should fail', () => {
-    (() => {
-      Validator().addType('test', {});
-    }).should.throw('Unknown type.');
+  it('invalid custom type should fail', async () => {
+    await helper.throw(() => Validator().addType('test', {}), 'Unknown type.');
   });
 
-  it('unknown custom type should fail', () => {
-    (() => {
-      Validator().Custom('test');
-    }).should.throw('Unknown custom type.');
+  it('unknown custom type should fail', async () => {
+    await helper.throw(() => Validator().Custom('test'), 'Unknown custom type.');
   });
 
   it('valid custom type should verify', () => {
-    const VALIDATOR = Validator();
-    const type = VALIDATOR.Boolean();
+    const validator = Validator();
+    const type = validator.Boolean();
 
-    VALIDATOR.addType('test', type);
+    validator.addType('test', type);
 
-    VALIDATOR.Custom('test').should.deepEqual(type);
+    validator.Custom('test').should.deepEqual(type);
   });
 
-  it('unknown schema should throw', helper.mochaAsync(async () => {
-    try {
-      await Validator().validate({
-        constructor: {
-          name: 'unknown'
-        }
-      }, {});
-      should.equal(true, false, 'Did not throw error.');
-    } catch (err) {
-      err.message.should.equal('Unknown schema.');
-    }
-  }));
+  it('unknown schema should throw', async () => {
+    const schema = {
+      constructor: {
+        name: 'unknown'
+      }
+    };
+    await helper.throw(Validator().validate({}, {}), 'Unknown schema.');
+  });
 
-  it('invalid schema should throw', helper.mochaAsync(async () => {
-    try {
-      await Validator().validate(null, {});
-      should.equal(true, false, 'Did not throw error.');
-    } catch (err) {
-      err.message.should.equal('Invalid schema.');
-    }
-  }));
+  it('invalid schema should throw', async () => {
+    await helper.throw(Validator().validate(null, {}), 'Invalid schema.');
+  });
 
-  it('invalid data should fail', helper.mochaAsync(async () => {
-    const VALIDATOR = Validator();
+  it('invalid data should fail', async () => {
+    const validator = Validator();
 
     try {
-      await VALIDATOR.validate(VALIDATOR.Boolean(), 'true');
+      await validator.validate(validator.Boolean(), 'true');
       should.equal(true, false, 'Did not throw error.');
     } catch (err) {
       err.name.should.equal('ExpressInputValidationError');
       err.message.should.equal('Bad Request. Input parameters and/or values are wrong.');
       err.details.should.equal('Must be boolean but is string.');
     }
-  }));
+  });
 
-  it('valid data and schema should verify', helper.mochaAsync(async () => {
-    const VALIDATOR = Validator();
+  it('valid data and schema should verify', async () => {
+    const validator = Validator();
 
-    const value = await VALIDATOR.validate(VALIDATOR.Boolean(), true);
+    const value = await validator.validate(validator.Boolean(), true);
     value.should.equal(true);
-  }));
+  });
 
-  it('should not throw', helper.mochaAsync(async () => {
-    const VALIDATOR = Validator({
+  it('should not throw', async () => {
+    const validator = Validator({
       throwValidationErrors: false
     });
 
-    const err = await VALIDATOR.validate(VALIDATOR.Boolean(), 'true');
+    const err = await validator.validate(validator.Boolean(), 'true');
     err.details.should.equal('Must be boolean but is string.');
-  }));
+  });
 });

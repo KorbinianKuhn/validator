@@ -4,12 +4,9 @@ const message = require('../message');
 const helper = require('../helper');
 
 const validateNumber = async (value, schema) => {
-  const language = schema._options.language;
-  const messages = schema._options.messages;
-
   if (_.isNil(value)) {
     if (schema._default) return schema._default;
-    if (schema._required) throw message.required(language, messages, value);
+    if (schema.isRequired()) throw message.required(schema._language, schema._messages, value);
     return value;
   }
 
@@ -17,20 +14,20 @@ const validateNumber = async (value, schema) => {
     value = parseFloat(value);
   }
 
-  if (!_.isNumber(value)) throw message.wrongType(language, messages, 'number', typeof value);
-  if (schema._min && value < schema._min) throw message.get(language, messages, 'number', 'min', schema._min);
-  if (schema._max && value > schema._max) throw message.get(language, messages, 'number', 'max', schema._max);
-  if (schema._less && value >= schema._less) throw message.get(language, messages, 'number', 'less', schema._less);
-  if (schema._greater && value <= schema._greater) throw message.get(language, messages, 'number', 'greater', schema._greater);
-  if (schema._positive && value <= 0) throw message.get(language, messages, 'number', 'positive');
-  if (schema._negative && value >= 0) throw message.get(language, messages, 'number', 'negative');
+  if (!_.isNumber(value)) throw message.wrongType(schema._language, schema._messages, 'number', typeof value);
+  if (schema._min && value < schema._min) throw message.get(schema._language, schema._messages, 'number', 'min', schema._min);
+  if (schema._max && value > schema._max) throw message.get(schema._language, schema._messages, 'number', 'max', schema._max);
+  if (schema._less && value >= schema._less) throw message.get(schema._language, schema._messages, 'number', 'less', schema._less);
+  if (schema._greater && value <= schema._greater) throw message.get(schema._language, schema._messages, 'number', 'greater', schema._greater);
+  if (schema._positive && value <= 0) throw message.get(schema._language, schema._messages, 'number', 'positive');
+  if (schema._negative && value >= 0) throw message.get(schema._language, schema._messages, 'number', 'negative');
 
   return value;
 };
 
 class NUMBER extends ANY {
-  constructor(options) {
-    super(options);
+  constructor(options, defaults) {
+    super(options, defaults);
   }
 
   async validate(value) {
@@ -78,7 +75,7 @@ class NUMBER extends ANY {
   toObject() {
     return _.pickBy({
       type: 'number',
-      required: this._required,
+      required: this.isRequired(),
       name: this._name,
       description: this._description,
       default: this._default,
@@ -94,4 +91,4 @@ class NUMBER extends ANY {
   }
 }
 
-exports.NumberFactory = (options = {}) => new NUMBER(options);
+exports.NumberFactory = (options, defaults) => new NUMBER(options, defaults);
