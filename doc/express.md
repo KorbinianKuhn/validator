@@ -49,11 +49,12 @@ options:
 - `next (boolean)`: Next the error after sending the response. Default false.
 
 ``` javascript
-const eiv = require('@korbiniankuhn/validator');
+const { ExpressValidator } = require('@korbiniankuhn/validator');
+const validator = ExpressValidator();
 
-app.use(eiv.middleware());
+app.use(validator.middleware());
 
-app.use(eiv.middleware({
+app.use(validator.middleware({
   message: 'The input validation failed.',
   details: false,
   next: true
@@ -66,7 +67,7 @@ This example shows how easy input validation gets. Due to the async middleware n
 
 ```javascript
 const express = require('express');
-const eiv = require('@korbiniankuhn/validator');
+const { ExpressValidator } = require('@korbiniankuhn/validator');
 const app = express();
 
 // Middleware to next all exception
@@ -75,7 +76,7 @@ const asyncMiddleware = fn => (req, res, next) => {
 };
 
 // Initialize the validator object
-const validator = eiv.Validator();
+const validator = ExpressValidator();
 
 // Define a schema for login data
 const loginSchema = validator.Request()
@@ -95,7 +96,7 @@ app.post('/login', asyncMiddleware(async (req, res) => {
 }));
 
 // Sent response on validation errors
-app.use(eiv.middleware());
+app.use(validator.middleware());
 
 // Error handler
 app.use((err, req, res) => {

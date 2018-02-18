@@ -19,7 +19,7 @@
 All types created by a validator get the validators options as default options. These options can get overwritten for every type:
 
 ```javascript
-const validator = eiv.Validator({noEmptyStrings: true});
+const {validator = Validator({noEmptyStrings: true});
 const schema = validator.Object({
   empty: validator.String({noEmptyStrings: false}),
   notEmpty: validator.String()

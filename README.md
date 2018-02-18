@@ -49,8 +49,8 @@ $ git clone https://github.com/KorbinianKuhn/validator
 Initialize a new Validator:
 
 ``` javascript
-const eiv = require('@korbiniankuhn/validator');
-const validator = eiv.Validator();
+const { Validator } = require('@korbiniankuhn/validator');
+const validator = Validator();
 ```
 
 Create a new Schema:
