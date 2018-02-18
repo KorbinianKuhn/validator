@@ -6,7 +6,7 @@ const message = require('../message');
 const validateArray = async (value, schema) => {
   if (_.isNil(value)) {
     if (schema._default) return schema._default;
-    if (schema.isRequired()) throw message.required(schema._language, schema._messages, value);
+    if (schema._required) throw message.required(schema._language, schema._messages, value);
     return value;
   }
 
@@ -111,7 +111,7 @@ class ARRAY extends ANY {
       case 'raml': {
         return _.pickBy({
           type: 'array',
-          required: this.isRequired(),
+          required: this._required,
           displayName: this._name,
           description: this._description,
           default: this._default,
@@ -126,7 +126,7 @@ class ARRAY extends ANY {
       default: {
         return _.pickBy({
           type: 'array',
-          required: this.isRequired(),
+          required: this._required,
           name: this._name,
           description: this._description,
           default: this._default,

@@ -11,7 +11,7 @@ const helper = require('../helper');
 
 const validateSchema = async (requestSchema, values, schema, messageKey) => {
   if (schema) {
-    if (schema.isRequired() || _.keys(values).length > 0) {
+    if (schema._required || _.keys(values).length > 0) {
       try {
         await schema.validate(values);
       } catch (err) {
@@ -65,6 +65,7 @@ const toSchema = (schema, options, defaults) => {
 class REQUEST extends ANY {
   constructor(options, defaults) {
     super(options, defaults);
+    this._defaults = defaults;
     this._noUndefinedKeys = _.defaultTo(options.noUndefinedKeys, defaults.noUndefinedKeys);
   }
 
@@ -103,7 +104,7 @@ class REQUEST extends ANY {
       default: {
         return _.pickBy({
           type: 'request',
-          required: this.isRequired(),
+          required: this._required,
           name: this._name,
           description: this._description,
           default: this._default,
