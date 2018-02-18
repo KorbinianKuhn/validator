@@ -46,7 +46,7 @@ describe('Any()', () => {
         type: 'any',
         default: 'test',
         required: true,
-        parse: false
+        parse: true
       });
     });
 
@@ -70,6 +70,11 @@ describe('Any()', () => {
         required: true,
         parse: true
       });
+    });
+
+    it('type raml should verify', async () => {
+      const object = validator.Any().toObject({ type: 'raml' });
+      object.should.be.type('object');
     });
   });
 });

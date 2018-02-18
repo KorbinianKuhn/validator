@@ -23,7 +23,7 @@ describe('Number()', () => {
 
   it('invalid type should fail', async () => {
     for (const value of ['10', 'test']) {
-      await helper.throw(validator.Number().validate(value), `Must be number but is ${typeof value}.`);
+      await helper.throw(validator.Number().parse(false).validate(value), `Must be number but is ${typeof value}.`);
     }
   });
 
@@ -145,6 +145,11 @@ describe('Number()', () => {
         less: 10,
         greater: -5
       });
+    });
+
+    it('type raml should verify', async () => {
+      const object = validator.Number().toObject({ type: 'raml' });
+      object.should.be.type('object');
     });
   });
 });

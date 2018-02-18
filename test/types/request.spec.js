@@ -5,7 +5,7 @@ const Validator = require('../../index').ExpressValidator;
 
 const validator = Validator();
 
-describe.skip('Request()', () => {
+describe('Request()', () => {
   it('invalid schema should throw', async () => {
     await helper.throw(() => validator.Request().params(null), 'Invalid schema.');
     await helper.throw(() => validator.Request().query(null), 'Invalid schema.');
@@ -50,9 +50,9 @@ describe.skip('Request()', () => {
     };
 
     const result = await validator.Request()
-      .params(validator.Object({ id: validator.Integer() }))
-      .body(validator.Object({ name: validator.String() }))
-      .query(validator.Object({ deleted: validator.Boolean() }))
+      .params(validator.Params({ id: validator.Integer() }))
+      .body(validator.Body({ name: validator.String() }))
+      .query(validator.Query({ deleted: validator.Boolean() }))
       .validate(req);
 
     result.should.deepEqual({
@@ -64,114 +64,99 @@ describe.skip('Request()', () => {
 
   it('optional body should verify', async () => {
     const schema = validator.Request()
-      .body(validator.Object({
-        names: validator.Array(validator.Object({}))
-      }).required(false));
+      .body(validator.Body({ names: validator.Array(validator.Object({})) }).required(false));
 
-    const req = {
-      params: {},
-      query: {},
-      body: {},
-    };
-
-    const result = await schema.validate(req, helper.DEFAULT_OPTIONS);
+    const req = { params: {},query: {},body: {}, };
+    const result = await schema.validate(req);
   });
 
   it('body should be required by default', async () => {
     const schema = validator.Request()
-      .body({
-        names: validator.Array(validator.Object({}))
-      });
+      .body({ names: validator.Array(validator.Object({})) });
 
-    const req = {
-      params: {},
-      query: {},
-      body: {},
-    };
+    const req = { params: {},query: {},body: {}, };
 
-    let error;
-    const result = await schema.validate(req, helper.DEFAULT_OPTIONS).catch((err) => {
-      error = err;
-    });
-    error.should.have.property('body', 'Object is empty.');
+    await helper.throw(schema.validate(req), { body: 'Object is empty.' });
   });
 
   it('body object should be required by default', async () => {
     const schema = validator.Request()
-      .body(validator.Object({
-        names: validator.Array(validator.Object({}))
-      }));
+      .body(validator.Body({ names: validator.Array(validator.Object({})) }));
 
-    const req = {
-      params: {},
-      query: {},
-      body: {},
-    };
+    const req = { params: {}, query: {}, body: {}, };
 
-    let error;
-    const result = await schema.validate(req, helper.DEFAULT_OPTIONS).catch((err) => {
-      error = err;
-    });
-    error.should.have.property('body', 'Object is empty.');
+    await helper.throw(schema.validate(req), { body: 'Object is empty.' });
   });
 
   it('params data without schema definition should fail', async () => {
-    const req = {
-      params: {
-        name: 'test'
-      },
-      query: {},
-      body: {}
-    };
-    let error;
-    const result = await validator.Request().validate(req, helper.DEFAULT_OPTIONS).catch((err) => {
-      error = err;
-    });
-    error.should.have.property('params', 'URI parameters are not allowed.');
+    const req = { params: { name: 'test' }, query: {}, body: {} };
+    await helper.throw(validator.Request().validate(req), { params: 'URI parameters are not allowed.' });
   });
 
   it('query data without schema definition should fail', async () => {
-    const req = {
-      params: {},
-      query: {
-        name: 'test'
-      },
-      body: {}
-    };
-    let error;
-    const result = await validator.Request().validate(req, helper.DEFAULT_OPTIONS).catch((err) => {
-      error = err;
-    });
-    error.should.have.property('query', 'Query parameters are not allowed.');
+    const req = { params: {}, query: { name: 'test' }, body: {} };
+    await helper.throw(validator.Request().validate(req), { query: 'Query parameters are not allowed.' });
   });
 
   it('body data without schema definition should fail', async () => {
-    const req = {
-      params: {},
-      query: {},
-      body: {
-        name: 'test'
-      },
-    };
-    let error;
-    const result = await validator.Request().validate(req, helper.DEFAULT_OPTIONS).catch((err) => {
-      error = err;
-    });
-    error.should.have.property('body', 'Body parameters are not allowed.');
+    const req = { params: {}, query: {}, body: { name: 'test' }, };
+    await helper.throw(validator.Request().validate(req), { body: 'Body parameters are not allowed.' });
   });
 
-  it.skip('toObject() should verify', async () => {
+  it('toObject() should verify', async () => {
     const schema = validator.Request()
-      .params({
-        userid: validator.Integer()
-      })
-      .query({
-        deleted: validator.Boolean()
-      })
-      .body({
-        name: validator.String()
-      })
+      .params({ userid: validator.Integer() })
+      .query({ deleted: validator.Boolean() })
+      .body({ name: validator.String() })
       .description('A very nice route.');
-    console.log(schema.toObject());
+    schema.toObject().should.deepEqual({
+      type: 'request',
+      required: true,
+      description: 'A very nice route.',
+      params:
+     {
+       type: 'object',
+       required: true,
+       empty: false,
+       properties: {
+         userid: {
+           required: true,
+           type: "integer"
+         }
+       }
+     },
+      query:
+     {
+       type: 'object',
+       required: false,
+       empty: false,
+       properties: {
+         deleted: {
+           required: true,
+           type: "boolean"
+         }
+       }
+     },
+      body:
+     {
+       type: 'object',
+       required: true,
+       empty: false,
+       properties: {
+         name: {
+           empty: false, required: true, trim: true, type: "string"
+         }
+       }
+     }
+    });
+  });
+
+  it('toObject() type raml should verify', async () => {
+    const schema = validator.Request()
+      .params({ userid: validator.Integer() })
+      .query({ deleted: validator.Boolean() })
+      .body({ name: validator.String() })
+      .description('A very nice route.');
+    schema.toObject({ type: 'raml' }).should.be.type('object');
   });
 });

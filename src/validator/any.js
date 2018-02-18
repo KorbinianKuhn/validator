@@ -3,18 +3,6 @@ const TYPES = require('./../types');
 const ValidationError = require('./../error');
 const defaults = require('./../defaults');
 
-const ANY_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationError', 'parseToType'];
-const ARRAY_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType', 'noEmptyArrays'];
-const BOOLEAN_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType'];
-const DATE_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType', 'dateFormat', 'parseDates', 'strictDateValidation', 'utc'];
-const ENUM_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType'];
-const FUNCTION_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType'];
-const INTEGER_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType'];
-const NUMBER_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType'];
-const OBJECT_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType', 'noEmptyObjects', 'noUndefinedKeys'];
-const REGEX_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType', 'noEmptyStrings', 'trimStrings'];
-const STRING_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType', 'noEmptyStrings', 'trimStrings'];
-
 class Validator {
   constructor(options) {
     this._options = _.defaults(options, defaults.VALIDATOR_OPTIONS);
@@ -65,47 +53,47 @@ class Validator {
   }
 
   Any(type, options = {}) {
-    return TYPES.Any(options, _.pick(this._options, ...ANY_OPTION_KEYS));
+    return TYPES.Any(options, _.pick(this._options, ...defaults.ANY_OPTION_KEYS));
   }
 
   Array(type, options = {}) {
-    return TYPES.Array(type, options, _.pick(this._options, ...ARRAY_OPTION_KEYS));
+    return TYPES.Array(type, options, _.pick(this._options, ...defaults.ARRAY_OPTION_KEYS));
   }
 
   Boolean(options = {}) {
-    return TYPES.Boolean(options, _.pick(this._options, ...BOOLEAN_OPTION_KEYS));
+    return TYPES.Boolean(options, _.pick(this._options, ...defaults.BOOLEAN_OPTION_KEYS));
   }
 
   Date(options = {}) {
-    return TYPES.Date(options, _.pick(this._options, ...DATE_OPTION_KEYS));
+    return TYPES.Date(options, _.pick(this._options, ...defaults.DATE_OPTION_KEYS));
   }
 
   Enum(values, options = {}) {
-    return TYPES.Enum(values, options, _.pick(this._options, ...ENUM_OPTION_KEYS));
+    return TYPES.Enum(values, options, _.pick(this._options, ...defaults.ENUM_OPTION_KEYS));
   }
 
   Function(func, options = {}) {
-    return TYPES.Function(func, options, _.pick(this._options, ...FUNCTION_OPTION_KEYS));
+    return TYPES.Function(func, options, _.pick(this._options, ...defaults.FUNCTION_OPTION_KEYS));
   }
 
   Integer(options = {}) {
-    return TYPES.Integer(options, _.pick(this._options, ...INTEGER_OPTION_KEYS));
+    return TYPES.Integer(options, _.pick(this._options, ...defaults.INTEGER_OPTION_KEYS));
   }
 
   Number(options = {}) {
-    return TYPES.Number(options, _.pick(this._options, ...NUMBER_OPTION_KEYS));
+    return TYPES.Number(options, _.pick(this._options, ...defaults.NUMBER_OPTION_KEYS));
   }
 
   Object(schema, options = {}) {
-    return TYPES.Object(schema, options, _.pick(this._options, ...OBJECT_OPTION_KEYS));
+    return TYPES.Object(schema, options, _.pick(this._options, ...defaults.OBJECT_OPTION_KEYS));
   }
 
   Regex(regex, options = {}) {
-    return TYPES.Regex(regex, options, _.pick(this._options, ...REGEX_OPTION_KEYS));
+    return TYPES.Regex(regex, options, _.pick(this._options, ...defaults.REGEX_OPTION_KEYS));
   }
 
   String(options = {}) {
-    return TYPES.String(options, _.pick(this._options, ...STRING_OPTION_KEYS));
+    return TYPES.String(options, _.pick(this._options, ...defaults.STRING_OPTION_KEYS));
   }
 }
 

@@ -154,5 +154,10 @@ describe('String()', () => {
         trim: true
       });
     });
+
+    it('type raml should verify', async () => {
+      const object = validator.String().default('test').toObject({ type: 'raml' });
+      object.should.be.type('object');
+    });
   });
 });

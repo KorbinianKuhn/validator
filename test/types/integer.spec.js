@@ -24,7 +24,7 @@ describe('Integer()', () => {
   describe('validate()', () => {
     it('invalid type should fail', async () => {
       for (const value of ['10', 10.5]) {
-        await helper.throw(validator.Integer().validate(value), `Must be integer but is ${typeof value}.`);
+        await helper.throw(validator.Integer().parse(false).validate(value), `Must be integer but is ${typeof value}.`);
       }
     });
 
@@ -175,6 +175,11 @@ describe('Integer()', () => {
         less: 10,
         greater: -5
       });
+    });
+
+    it('type raml should verify', async () => {
+      const object = validator.Integer().toObject({ type: 'raml' });
+      object.should.be.type('object');
     });
   });
 });

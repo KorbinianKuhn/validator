@@ -1,16 +1,16 @@
 const _ = require('lodash');
 
 const MESSAGES = {
-  array: require('./array.json'),
-  date: require('./date.json'),
-  enum: require('./enum.json'),
-  generic: require('./generic.json'),
-  integer: require('./integer.json'),
-  number: require('./number.json'),
-  object: require('./object.json'),
-  regex: require('./regex.json'),
-  request: require('./request.json'),
-  string: require('./string.json')
+  array: require('./locales/array.json'),
+  date: require('./locales/date.json'),
+  enum: require('./locales/enum.json'),
+  generic: require('./locales/generic.json'),
+  integer: require('./locales/integer.json'),
+  number: require('./locales/number.json'),
+  object: require('./locales/object.json'),
+  regex: require('./locales/regex.json'),
+  request: require('./locales/request.json'),
+  string: require('./locales/string.json')
 };
 
 const get = (language, messages, schemaType, error, ...replaceValues) => {

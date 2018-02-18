@@ -72,22 +72,39 @@ class NUMBER extends ANY {
     return this;
   }
 
-  toObject() {
-    return _.pickBy({
-      type: 'number',
-      required: this.isRequired(),
-      name: this._name,
-      description: this._description,
-      default: this._default,
-      example: this._example,
-      examples: this._examples,
-      min: this._min,
-      max: this._max,
-      less: this._less,
-      greater: this._greater,
-      positive: this._positive,
-      negative: this._negative
-    }, helper.isNotNil);
+  toObject(options = {}) {
+    switch (options.type) {
+      case 'raml': {
+        return _.pickBy({
+          type: 'number',
+          required: this.isRequired(),
+          displayName: this._name,
+          description: this._description,
+          default: this._default,
+          example: this._example,
+          examples: this._examples,
+          minimum: this._min,
+          maximum: this._max
+        }, helper.isNotNil);
+      }
+      default: {
+        return _.pickBy({
+          type: 'number',
+          required: this.isRequired(),
+          name: this._name,
+          description: this._description,
+          default: this._default,
+          example: this._example,
+          examples: this._examples,
+          min: this._min,
+          max: this._max,
+          less: this._less,
+          greater: this._greater,
+          positive: this._positive,
+          negative: this._negative
+        }, helper.isNotNil);
+      }
+    }
   }
 }
 

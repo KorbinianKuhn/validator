@@ -42,17 +42,32 @@ class ENUM extends ANY {
     return this;
   }
 
-  toObject() {
-    return _.pickBy({
-      type: 'enum',
-      required: this.isRequired(),
-      name: this._name,
-      description: this._description,
-      default: this._default,
-      example: this._example,
-      examples: this._examples,
-      enum: this._values
-    }, helper.isNotNil);
+  toObject(options = {}) {
+    switch (options.type) {
+      case 'raml': {
+        return _.pickBy({
+          required: this.isRequired(),
+          displayName: this._name,
+          description: this._description,
+          default: this._default,
+          example: this._example,
+          examples: this._examples,
+          enum: this._values
+        }, helper.isNotNil);
+      }
+      default: {
+        return _.pickBy({
+          type: 'enum',
+          required: this.isRequired(),
+          name: this._name,
+          description: this._description,
+          default: this._default,
+          example: this._example,
+          examples: this._examples,
+          enum: this._values
+        }, helper.isNotNil);
+      }
+    }
   }
 }
 

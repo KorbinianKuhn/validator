@@ -1,8 +1,11 @@
 const _ = require('lodash');
 const Validator = require('./any').Validator;
 const TYPES = require('./../types');
-
-const REQUEST_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType'];
+const {
+  BODY_OPTIONS,
+  QUERY_OPTIONS,
+  URI_OPTIONS
+} = require('../defaults');
 
 class ExpressValidator extends Validator {
   constructor(options) {
@@ -12,7 +15,19 @@ class ExpressValidator extends Validator {
   }
 
   Request(options = {}) {
-    return TYPES.Request(options, _.pick(this._options, ...REQUEST_OPTION_KEYS));
+    return TYPES.Request(options, this._options);
+  }
+
+  Params(schema, options = {}) {
+    return TYPES.Object(schema, options, _.defaults(URI_OPTIONS, this._options, this._defaults));
+  }
+
+  Query(schema, options = {}) {
+    return TYPES.Object(schema, options, _.defaults(QUERY_OPTIONS, this._options, this._defaults));
+  }
+
+  Body(schema, options = {}) {
+    return TYPES.Object(schema, options, _.defaults(BODY_OPTIONS, this._options, this._defaults));
   }
 }
 

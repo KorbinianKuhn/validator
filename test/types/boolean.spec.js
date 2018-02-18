@@ -23,7 +23,7 @@ describe('Boolean()', () => {
 
   it('invalid type should fail', async () => {
     for (const value of ['true', 1, 0]) {
-      await helper.throw(validator.Boolean().validate(value),`Must be boolean but is ${typeof value}.`);
+      await helper.throw(validator.Boolean().parse(false).validate(value),`Must be boolean but is ${typeof value}.`);
     }
   });
 
@@ -95,6 +95,11 @@ describe('Boolean()', () => {
         examples: [true, false],
         required: true,
       });
+    });
+
+    it('type raml should verify', async () => {
+      const object = validator.Boolean().toObject({ type: 'raml' });
+      object.should.be.type('object');
     });
   });
 });

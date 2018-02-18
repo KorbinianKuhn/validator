@@ -29,8 +29,9 @@ describe('Date()', () => {
   });
 
   it('valid type should verify', async () => {
-    const result = await validator.Date().validate('2018-10-20T00:00:00.000Z');
-    result.should.equal('2018-10-20T00:00:00.000Z');
+    const date = moment.utc();
+    const result = await validator.Date().validate(date.toISOString());
+    result.should.deepEqual(date.toDate());
   });
 
   describe('default()', () => {
@@ -40,16 +41,16 @@ describe('Date()', () => {
     });
 
     it('valid default value should verify', async () => {
-      let result = await validator.Date().default('2018-01-01T00:00:00.000Z').validate();
+      let result = await validator.Date().parse(false).default('2018-01-01T00:00:00.000Z').validate();
       result.should.equal('2018-01-01T00:00:00.000Z');
 
-      result = await validator.Date().default('2018-01-01T00:00:00.000Z').validate('2019-01-01T00:00:00.000Z');
+      result = await validator.Date().parse(false).default('2018-01-01T00:00:00.000Z').validate('2019-01-01T00:00:00.000Z');
       result.should.equal('2019-01-01T00:00:00.000Z');
     });
   });
 
   it('valid format and value should verify', async () => {
-    const result = await validator.Date().format('YYYY-MM-DD').validate('2018-01-01');
+    const result = await validator.Date().parse(false).format('YYYY-MM-DD').validate('2018-01-01');
     result.should.equal('2018-01-01');
   });
 
@@ -66,7 +67,7 @@ describe('Date()', () => {
 
   describe('min()', () => {
     it('test minimum date', async () => {
-      const date = validator.Date().min(moment.utc('2018-01-01').toDate());
+      const date = validator.Date().parse(false).min(moment.utc('2018-01-01').toDate());
 
       await helper.throw(date.validate('2017-01-01T00:00:00.000Z'), `Must be at minimum '2018-01-01T00:00:00.000Z'.`);
 
@@ -77,7 +78,7 @@ describe('Date()', () => {
 
   describe('max()', () => {
     it('test maximum date', async () => {
-      const date = validator.Date().max(moment.utc('2018-01-01').toDate());
+      const date = validator.Date().parse(false).max(moment.utc('2018-01-01').toDate());
 
       await helper.throw(date.validate('2019-01-01T00:00:00.000Z'), `Must be at maximum '2018-01-01T00:00:00.000Z'.`);
 
@@ -88,7 +89,7 @@ describe('Date()', () => {
 
   describe('strict()', () => {
     it('test no strict date validation', async () => {
-      const date = validator.Date().strict(false);
+      const date = validator.Date().parse(false).strict(false);
       const result = await date.validate('2017-01-01');
       result.should.equal('2017-01-01');
     });
@@ -96,7 +97,7 @@ describe('Date()', () => {
 
   describe('utc()', () => {
     it('test no utc date parsing', async () => {
-      const date = validator.Date().utc(false);
+      const date = validator.Date().utc(false).parse(false);
       const datestring = moment().toISOString();
       const result = await date.validate(datestring);
       result.should.equal(datestring);
@@ -142,6 +143,11 @@ describe('Date()', () => {
         min: '2017-01-01T00:00:00.000Z',
         max: '2017-01-01T00:00:00.000Z'
       });
+    });
+
+    it('type raml should verify', async () => {
+      const object = validator.Date().toObject({ type: 'raml' });
+      object.should.be.type('object');
     });
   });
 });

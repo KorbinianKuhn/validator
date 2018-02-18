@@ -197,5 +197,10 @@ describe('Array()', () => {
         items: validator.Any().toObject()
       });
     });
+
+    it('type raml should verify', async () => {
+      const object = validator.Array().toObject({ type: 'raml' });
+      object.should.be.type('object');
+    });
   });
 });

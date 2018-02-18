@@ -83,5 +83,10 @@ describe('validator.Enum()', () => {
         enum: ['a','b','c']
       });
     });
+
+    it('type raml should verify', async () => {
+      const object = validator.Enum(['a', 'b', 'c']).toObject({ type: 'raml' });
+      object.should.be.type('object');
+    });
   });
 });

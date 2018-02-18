@@ -71,21 +71,38 @@ class STRING extends ANY {
     return this;
   }
 
-  toObject() {
-    return _.pickBy({
-      type: 'string',
-      required: this.isRequired(),
-      name: this._name,
-      description: this._description,
-      default: this._default,
-      example: this._example,
-      examples: this._examples,
-      min: this._min,
-      max: this._max,
-      length: this._length,
-      empty: this._empty,
-      trim: this._trim
-    }, helper.isNotNil);
+  toObject(options = {}) {
+    switch (options.type) {
+      case 'raml': {
+        return _.pickBy({
+          type: 'string',
+          required: this.isRequired(),
+          name: this._name,
+          description: this._description,
+          default: this._default,
+          example: this._example,
+          examples: this._examples,
+          minLength: this._min,
+          maxLength: this._max,
+        }, helper.isNotNil);
+      }
+      default: {
+        return _.pickBy({
+          type: 'string',
+          required: this.isRequired(),
+          name: this._name,
+          description: this._description,
+          default: this._default,
+          example: this._example,
+          examples: this._examples,
+          min: this._min,
+          max: this._max,
+          length: this._length,
+          empty: this._empty,
+          trim: this._trim
+        }, helper.isNotNil);
+      }
+    }
   }
 }
 

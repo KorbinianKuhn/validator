@@ -35,16 +35,31 @@ class FUNCTION extends ANY {
     return helper.validate(this._options.type, validateFunction(value, this));
   }
 
-  toObject() {
-    return _.pickBy({
-      type: 'function',
-      required: this.isRequired(),
-      name: this._name,
-      description: this._description,
-      default: this._default,
-      example: this._example,
-      examples: this._examples
-    }, helper.isNotNil);
+  toObject(options = {}) {
+    switch (options.type) {
+      case 'raml': {
+        return _.pickBy({
+          type: 'any',
+          required: this.isRequired(),
+          displayName: this._name,
+          description: this._description,
+          default: this._default,
+          example: this._example,
+          examples: this._examples
+        }, helper.isNotNil);
+      }
+      default: {
+        return _.pickBy({
+          type: 'function',
+          required: this.isRequired(),
+          name: this._name,
+          description: this._description,
+          default: this._default,
+          example: this._example,
+          examples: this._examples
+        }, helper.isNotNil);
+      }
+    }
   }
 }
 

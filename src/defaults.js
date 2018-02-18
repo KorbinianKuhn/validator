@@ -10,7 +10,7 @@ exports.VALIDATOR_OPTIONS = {
   type: 'any',
   requiredAsDefault: true,
   throwValidationErrors: true,
-  parseToType: false,
+  parseToType: true,
   noEmptyStrings: true,
   trimStrings: true,
   noEmptyArrays: true,
@@ -23,43 +23,25 @@ exports.VALIDATOR_OPTIONS = {
 };
 
 exports.URI_OPTIONS = {
-  requiredAsDefault: true,
-  parseToType: true,
-  noEmptyStrings: true,
-  trimStrings: true,
-  noEmptyArrays: true,
-  noEmptyObjects: true,
-  noUndefinedKeys: true,
-  dateFormat: DATE_FORMAT,
-  parseDates: true,
-  utc: true,
-  strictDateValidation: true
+  requiredAsDefault: true
 };
 
 exports.QUERY_OPTIONS = {
-  requiredAsDefault: false,
-  parseToType: true,
-  noEmptyStrings: true,
-  trimStrings: true,
-  noEmptyArrays: true,
-  noEmptyObjects: false,
-  noUndefinedKeys: true,
-  dateFormat: DATE_FORMAT,
-  parseDates: true,
-  utc: true,
-  strictDateValidation: true
+  requiredAsDefault: false
 };
 
 exports.BODY_OPTIONS = {
-  requiredAsDefault: true,
-  parseToType: false,
-  noEmptyStrings: true,
-  trimStrings: true,
-  noEmptyArrays: true,
-  noEmptyObjects: true,
-  noUndefinedKeys: true,
-  dateFormat: DATE_FORMAT,
-  parseDates: true,
-  utc: true,
-  strictDateValidation: true
+  requiredAsDefault: true
 };
+
+exports.ANY_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationError', 'parseToType'];
+exports.ARRAY_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType', 'noEmptyArrays'];
+exports.BOOLEAN_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType'];
+exports.DATE_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType', 'dateFormat', 'parseDates', 'strictDateValidation', 'utc'];
+exports.ENUM_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType'];
+exports.FUNCTION_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType'];
+exports.INTEGER_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType'];
+exports.NUMBER_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType'];
+exports.OBJECT_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType', 'noEmptyObjects', 'noUndefinedKeys'];
+exports.REGEX_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType', 'noEmptyStrings', 'trimStrings'];
+exports.STRING_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType', 'noEmptyStrings', 'trimStrings'];

@@ -244,25 +244,43 @@ class OBJECT extends ANY {
     return this;
   }
 
-  toObject() {
+  toObject(options = {}) {
     const properties = {};
     for (const key in this._object) {
-      properties[key] = this._object[key].toObject();
+      properties[key] = this._object[key].toObject(options);
     }
-    return _.pickBy({
-      type: 'object',
-      required: this.isRequired(),
-      name: this._name,
-      description: this._description,
-      default: this._default,
-      example: this._example,
-      examples: this._examples,
-      min: this._min,
-      max: this._max,
-      length: this._unique,
-      empty: this._empty,
-      properties
-    }, helper.isNotNil);
+    switch (options.type) {
+      case 'raml': {
+        return _.pickBy({
+          type: 'object',
+          required: this.isRequired(),
+          displayName: this._name,
+          description: this._description,
+          default: this._default,
+          example: this._example,
+          examples: this._examples,
+          minProperties: this._min,
+          maxProperties: this._max,
+          properties
+        }, helper.isNotNil);
+      }
+      default: {
+        return _.pickBy({
+          type: 'object',
+          required: this.isRequired(),
+          name: this._name,
+          description: this._description,
+          default: this._default,
+          example: this._example,
+          examples: this._examples,
+          min: this._min,
+          max: this._max,
+          length: this._unique,
+          empty: this._empty,
+          properties
+        }, helper.isNotNil);
+      }
+    }
   }
 }
 

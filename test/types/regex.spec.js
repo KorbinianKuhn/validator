@@ -55,7 +55,7 @@ describe('Regex()', () => {
     });
 
     it('valid length should verify', async () => {
-      const value = await validator.Regex(/[A-Z]/).min(3).validate('ABC', helper.DEFAULT_OPTIONS);
+      const value = await validator.Regex(/[A-Z]/).min(3).validate('ABC');
       value.should.equal('ABC');
     });
   });
@@ -66,7 +66,7 @@ describe('Regex()', () => {
     });
 
     it('valid length should verify', async () => {
-      const value = await validator.Regex(/[A-Z]/).max(3).validate('ABC', helper.DEFAULT_OPTIONS);
+      const value = await validator.Regex(/[A-Z]/).max(3).validate('ABC');
       value.should.equal('ABC');
     });
   });
@@ -77,7 +77,7 @@ describe('Regex()', () => {
     });
 
     it('valid length should verify', async () => {
-      const value = await validator.Regex(/[A-Z]/).length(3).validate('ABC', helper.DEFAULT_OPTIONS);
+      const value = await validator.Regex(/[A-Z]/).length(3).validate('ABC');
       value.should.equal('ABC');
     });
   });
@@ -147,6 +147,11 @@ describe('Regex()', () => {
         pattern: /A-Z/,
         empty: true
       });
+    });
+
+    it('type raml should verify', async () => {
+      const object = validator.Regex(/A-Z/).default('test').toObject({ type: 'raml' });
+      object.should.be.type('object');
     });
   });
 });

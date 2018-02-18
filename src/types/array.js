@@ -105,22 +105,41 @@ class ARRAY extends ANY {
     return this;
   }
 
-  toObject() {
-    const items = this._type ? this._type.toObject() : undefined;
-    return _.pickBy({
-      type: 'array',
-      required: this.isRequired(),
-      name: this._name,
-      description: this._description,
-      default: this._default,
-      example: this._example,
-      examples: this._examples,
-      min: this._min,
-      max: this._max,
-      unique: this._unique,
-      empty: this._empty,
-      items
-    }, helper.isNotNil);
+  toObject(options = {}) {
+    const items = this._type ? this._type.toObject(options) : undefined;
+    switch (options.type) {
+      case 'raml': {
+        return _.pickBy({
+          type: 'array',
+          required: this.isRequired(),
+          displayName: this._name,
+          description: this._description,
+          default: this._default,
+          example: this._example,
+          examples: this._examples,
+          minItems: this._min,
+          maxItems: this._max,
+          uniqueItems: this._unique,
+          items
+        }, helper.isNotNil);
+      }
+      default: {
+        return _.pickBy({
+          type: 'array',
+          required: this.isRequired(),
+          name: this._name,
+          description: this._description,
+          default: this._default,
+          example: this._example,
+          examples: this._examples,
+          min: this._min,
+          max: this._max,
+          unique: this._unique,
+          empty: this._empty,
+          items
+        }, helper.isNotNil);
+      }
+    }
   }
 }
 

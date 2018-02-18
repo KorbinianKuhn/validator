@@ -88,5 +88,10 @@ describe('Function()', () => {
         required: true,
       });
     });
+
+    it('type raml should verify', async () => {
+      const object = validator.Function(() => {}).toObject({ type: 'raml' });
+      object.should.be.type('object');
+    });
   });
 });

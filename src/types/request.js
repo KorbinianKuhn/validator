@@ -9,6 +9,20 @@ const {
 const message = require('../message');
 const helper = require('../helper');
 
+const validateSchema = async (requestSchema, values, schema, messageKey) => {
+  if (schema) {
+    if (schema.isRequired() || _.keys(values).length > 0) {
+      try {
+        await schema.validate(values);
+      } catch (err) {
+        return err;
+      }
+    }
+  } else if (requestSchema._noUndefinedKeys && _.keys(values).length > 0) {
+    return message.get(requestSchema._language, requestSchema._messages, 'request', messageKey);
+  }
+  return null;
+};
 const validateRequest = async (req, schema) => {
   if (!_.every(['params', 'query', 'body'], _.partial(_.has, req))) {
     throw new Error('Invalid express req object.');
@@ -16,41 +30,14 @@ const validateRequest = async (req, schema) => {
 
   const errors = {};
 
-  if (schema._params) {
-    try {
-      req.params = await schema._params.validate(req.params);
-    } catch (err) {
-      errors.params = err;
-    }
-  } else if (schema._noUndefinedKeys) {
-    if (_.keys(req.params).length > 0) {
-      errors.params = message.get(schema._language, schema._messages, 'request', 'no_uri');
-    }
-  }
+  const params = await validateSchema(schema, req.params, schema._params, 'no_uri', schema._noUndefinedKeys);
+  if (params) errors.params = params;
 
-  if (schema._query) {
-    try {
-      req.query = await schema._query.validate(req.query);
-    } catch (err) {
-      errors.query = err;
-    }
-  } else if (schema._noUndefinedKeys) {
-    if (_.keys(req.query).length > 0) {
-      errors.query = message.get(schema._language, schema._messages, 'request', 'no_query');
-    }
-  }
+  const query = await validateSchema(schema, req.query, schema._query, 'no_query', schema._noUndefinedKeys);
+  if (query) errors.query = query;
 
-  if (schema._body) {
-    try {
-      req.body = await schema._body.validate(req.body);
-    } catch (err) {
-      errors.body = err;
-    }
-  } else if (schema._noUndefinedKeys) {
-    if (_.keys(req.body).length > 0) {
-      errors.body = message.get(schema._language, schema._messages, 'request', 'no_body');
-    }
-  }
+  const body = await validateSchema(schema, req.body, schema._body, 'no_body', schema._noUndefinedKeys);
+  if (body) errors.body = body;
 
   if (_.keys(errors).length > 0) {
     throw errors;
@@ -59,14 +46,14 @@ const validateRequest = async (req, schema) => {
   }
 };
 
-const validateSchema = (schema, options) => {
+const toSchema = (schema, options, defaults) => {
   if (!_.hasIn(schema, 'constructor.name')) {
     throw new Error('Invalid schema.');
   }
 
   if (['OBJECT', 'ARRAY'].indexOf(schema.constructor.name) === -1) {
     if (_.isPlainObject(schema)) {
-      schema = ObjectFactory(schema, options);
+      schema = ObjectFactory(schema, options, defaults);
     } else {
       throw new Error('Must be Object or Array Schema.');
     }
@@ -86,22 +73,48 @@ class REQUEST extends ANY {
   }
 
   params(schema, options = {}) {
-    this._params = validateSchema(schema, _.defaults(options, _.pick(this._options, 'schema._language', 'type', 'schema._messages'), URI_OPTIONS));
+    this._params = toSchema(schema, options, _.defaults(URI_OPTIONS, this._options, this._defaults));
     return this;
   }
 
   query(schema, options = {}) {
-    this._query = validateSchema(schema, _.defaults(options, _.pick(this._options, 'schema._language', 'type', 'schema._messages'), QUERY_OPTIONS));
+    this._query = toSchema(schema, options, _.defaults(QUERY_OPTIONS, this._options, this._defaults));
     return this;
   }
 
   body(schema, options = {}) {
-    this._body = validateSchema(schema, _.defaults(options, _.pick(this._options, 'schema._language', 'type', 'schema._messages'), BODY_OPTIONS));
+    this._body = toSchema(schema, options, _.defaults(BODY_OPTIONS, this._options, this._defaults));
     return this;
   }
 
-  toObject() {
-    throw new Error('Not Implemented');
+  toObject(options = {}) {
+    const params = this._params ? this._params.toObject(options) : undefined;
+    const query = this._query ? this._query.toObject(options) : undefined;
+    const body = this._body ? this._body.toObject(options) : undefined;
+    switch (options.type) {
+      case 'raml': {
+        return _.pickBy({
+          description: this._description,
+          uriParameters: params,
+          queryParameters: query,
+          body
+        }, helper.isNotNil);
+      }
+      default: {
+        return _.pickBy({
+          type: 'request',
+          required: this.isRequired(),
+          name: this._name,
+          description: this._description,
+          default: this._default,
+          example: this._example,
+          examples: this._examples,
+          params,
+          query,
+          body
+        }, helper.isNotNil);
+      }
+    }
   }
 }
 

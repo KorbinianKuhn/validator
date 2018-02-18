@@ -82,21 +82,39 @@ class REGEX extends ANY {
     return this;
   }
 
-  toObject() {
-    return _.pickBy({
-      type: 'regex',
-      required: this.isRequired(),
-      name: this._name,
-      description: this._description,
-      default: this._default,
-      example: this._example,
-      examples: this._examples,
-      min: this._min,
-      max: this._max,
-      length: this._length,
-      empty: this._empty,
-      pattern: this._regex
-    }, helper.isNotNil);
+  toObject(options = {}) {
+    switch (options.type) {
+      case 'raml': {
+        return _.pickBy({
+          type: 'string',
+          required: this.isRequired(),
+          displayName: this._name,
+          description: this._description,
+          default: this._default,
+          example: this._example,
+          examples: this._examples,
+          minLength: this._min,
+          maxLength: this._max,
+          pattern: this._regex
+        }, helper.isNotNil);
+      }
+      default: {
+        return _.pickBy({
+          type: 'regex',
+          required: this.isRequired(),
+          name: this._name,
+          description: this._description,
+          default: this._default,
+          example: this._example,
+          examples: this._examples,
+          min: this._min,
+          max: this._max,
+          length: this._length,
+          empty: this._empty,
+          pattern: this._regex
+        }, helper.isNotNil);
+      }
+    }
   }
 }
 

@@ -61,7 +61,7 @@ describe('Validator()', () => {
       messages: 'default',
       requiredAsDefault: false,
       throwValidationErrors: true,
-      parseToType: false,
+      parseToType: true,
       noEmptyStrings: true,
       trimStrings: true,
       noEmptyArrays: true,
@@ -117,12 +117,12 @@ describe('Validator()', () => {
     const validator = Validator();
 
     try {
-      await validator.validate(validator.Boolean(), 'true');
+      await validator.validate(validator.Boolean(), 20);
       should.equal(true, false, 'Did not throw error.');
     } catch (err) {
       err.name.should.equal('ExpressInputValidationError');
       err.message.should.equal('Bad Request. Input parameters and/or values are wrong.');
-      err.details.should.equal('Must be boolean but is string.');
+      err.details.should.equal('Must be boolean but is number.');
     }
   });
 
@@ -134,11 +134,9 @@ describe('Validator()', () => {
   });
 
   it('should not throw', async () => {
-    const validator = Validator({
-      throwValidationErrors: false
-    });
+    const validator = Validator({ throwValidationErrors: false });
 
-    const err = await validator.validate(validator.Boolean(), 'true');
-    err.details.should.equal('Must be boolean but is string.');
+    const err = await validator.validate(validator.Boolean(), 20);
+    err.details.should.equal('Must be boolean but is number.');
   });
 });

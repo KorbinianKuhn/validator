@@ -1,7 +1,6 @@
 const defaults = require('../src/defaults');
 const _ = require('lodash');
 
-exports.DEFAULT_OPTIONS = defaults.VALIDATOR_OPTIONS;
 exports.DATE_FORMAT = defaults.DATE_FORMAT;
 
 exports.throw = async (func, message) => {
