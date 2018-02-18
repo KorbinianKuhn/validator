@@ -1,6 +1,6 @@
 {
   "name": "@korbiniankuhn/validator",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Validate input parameters for express REST APIs and Angular.",
   "main": "index.js",
   "scripts": {
