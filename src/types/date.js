@@ -4,6 +4,14 @@ const ANY = require('./any').ANY;
 const helper = require('../helper');
 const message = require('../message');
 
+const toMoment = (date, utc, format, strict) => {
+  if (utc) {
+    return moment.utc(date, format, strict);
+  } else {
+    return moment(date, format, strict);
+  }
+};
+
 const validateDate = async (value, schema) => {
   if (_.isNil(value)) {
     if (schema._default) return schema._default;
@@ -11,12 +19,7 @@ const validateDate = async (value, schema) => {
     return value;
   }
 
-  let date;
-  if (schema._utc) {
-    date = moment.utc(value, schema._format, schema._strict);
-  } else {
-    date = moment(value, schema._format, schema._strict);
-  }
+  const date = toMoment(value, schema._utc, schema._format, schema._strict);
 
   if (!date.isValid()) {
     throw message.get(schema._language, schema._messages, 'date', 'invalid', schema._format);
@@ -49,8 +52,8 @@ class DATE extends ANY {
     return helper.validate(this._options.type, validateDate(value, this));
   }
 
-  format(format) {
-    this._format = format;
+  format(string) {
+    this._format = string;
     return this;
   }
 
@@ -74,16 +77,18 @@ class DATE extends ANY {
   }
 
   min(date) {
-    this._min = date;
+    this._min = toMoment(date, this._utc, this._format, this._strict).toDate();
     return this;
   }
 
   max(date) {
-    this._max = date;
+    this._max = toMoment(date, this._utc, this._format, this._strict).toDate();
     return this;
   }
 
   toObject(options = {}) {
+    const min = this._min ? this._min.toISOString() : undefined;
+    const max = this._max ? this._max.toISOString() : undefined;
     switch (options.type) {
       case 'raml': {
         return _.pickBy({
@@ -105,8 +110,8 @@ class DATE extends ANY {
           default: this._default,
           example: this._example,
           examples: this._examples,
-          min: this._min,
-          max: this._max,
+          min,
+          max,
           format: this._format,
           utc: this._utc,
           strict: this._strict

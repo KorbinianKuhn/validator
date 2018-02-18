@@ -34,23 +34,23 @@ class INTEGER extends ANY {
     return helper.validate(this._options.type, validateInteger(value, this));
   }
 
-  min(value) {
-    this._min = value;
+  min(integer) {
+    this._min = integer;
     return this;
   }
 
-  max(value) {
-    this._max = value;
+  max(integer) {
+    this._max = integer;
     return this;
   }
 
-  less(value) {
-    this._less = value;
+  less(integer) {
+    this._less = integer;
     return this;
   }
 
-  greater(value) {
-    this._greater = value;
+  greater(integer) {
+    this._greater = integer;
     return this;
   }
 

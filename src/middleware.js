@@ -4,7 +4,7 @@ const DEFAULTS = {
   details: true,
   message: 'Bad request. Invalid input parameters and/or values.',
   next: false,
-}
+};
 module.exports = function (options) {
   const details = _.has(options, 'details') ? options.details : DEFAULTS.details;
   const message = _.has(options, 'message') ? options.message : DEFAULTS.message;
@@ -21,7 +21,7 @@ module.exports = function (options) {
     } else {
       next(err);
     }
-  }
+  };
 
   return middleware;
-}
+};

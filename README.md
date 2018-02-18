@@ -9,18 +9,26 @@
 [![npm-version](https://img.shields.io/npm/v/@korbiniankuhn/validator.svg?style=flat-square)](https://www.npmjs.com/package/@korbiniankuhn/validator)
 ![license](https://img.shields.io/github/license/KorbinianKuhn/validator.svg?style=flat-square)
 
-This package validates variable input parameters. The validation parameters are described by objects as schemas. The goal of this package is easy readability and flexible customization. The validator provides detailed information about invalid input values. All validation will be handled asynchronous and can be extended with custom async functions.
+Validate input values with object schemas.
 
 Features
+
 - completely async validation
 - highly customizable
+- automatic documentation generation (e.g. RAML)
+- reusable custom types
+- short syntax through stacked function calls
+- parse input values to target type
+- special expressjs and Angular support
 
+## API
 
+See the detailed [API Reference](doc/API.md). 
+Additional information for:
 
-It can also parse input string values to target types (e.g. boolean, integer, number, array or object).
-This package validates variable input parameters for express REST APIs.  that can be automatically sent as an error response to the user. 
-
-
+- [expressjs](doc/express.md)
+- [angular](doc/angular.md)
+- [mongoose](doc/mongoose.md)
 
 ## Installation
 
@@ -56,44 +64,14 @@ await schema.validate({name: 'Jane Doe'});
 // returns the given object
 ```
 
-The different Schema types:
-
-``` javascript
-// Simple types
-validator.Boolean();
-validator.Boolean();
-validator.Date();
-validator.Integer();
-validator.Number();
-validator.Regex(\[A-Z]\);
-validator.String();
-
-// Whitelisted inputs
-validator.Enum([1,2,3]);
-
-// Arrays
-validator.Array(validator.String());
-
-// Objects / stacked types
-validator.Object({
-  street: validator.String(),
-  postal: validator.Integer()
-});
-
-// Custom functions
-validator.Function((value, options) => { return true});
-
-// Request to validate express req
-validator.Request(options);
-```
-
 Extend the validator with custom schemas and types to reuse them later:
 
 ``` javascript
 // Create a reusable regular expression
 const myRegex = validator.Regex(\[A-Z]\);
 validator.addType('myRegex', myRegex);
-validator.Custom('myRegex');
+
+await validator.Custom('myRegex').validate(value)
 
 // Create a reusable address schema
 const address = validator.Object({
@@ -102,7 +80,8 @@ const address = validator.Object({
   city: validator.String()
 })
 validator.addType('address', address);
-validator.Custom('address');
+
+await validator.Custom('address').validate(value)
 ```
 
 ## Testing

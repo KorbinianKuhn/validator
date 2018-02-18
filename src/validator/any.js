@@ -9,9 +9,7 @@ class Validator {
     this._customs = {};
   }
 
-  async validate(schema, data, options = {}) {
-    options = _.defaults(options, this._options);
-
+  async validate(schema, data) {
     if (!_.hasIn(schema, 'constructor.name')) {
       throw new Error('Invalid schema.');
     }
@@ -21,10 +19,10 @@ class Validator {
     }
 
     try {
-      return await schema.validate(data, options);
+      return await schema.validate(data);
     } catch (err) {
       const error = new ValidationError('Bad Request. Input parameters and/or values are wrong.', err);
-      if (options.throwValidationErrors) {
+      if (this._options.throwValidationErrors) {
         throw error;
       } else {
         return error;
