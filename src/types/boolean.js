@@ -65,5 +65,5 @@ class BOOLEAN extends ANY {
   }
 }
 
-exports.BooleanFactory = (options, defaults) => new BOOLEAN(options, defaults);
+exports.BooleanFactory = function(options, defaults) { return new BOOLEAN(options, defaults) };
 

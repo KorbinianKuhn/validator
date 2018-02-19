@@ -89,4 +89,4 @@ class ANY {
 }
 
 exports.ANY = ANY;
-exports.AnyFactory = (options, defaults) => new ANY(options, defaults);
+exports.AnyFactory = function(options, defaults) { return new ANY(options, defaults)} ;

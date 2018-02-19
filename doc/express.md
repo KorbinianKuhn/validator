@@ -36,6 +36,14 @@ await validator.validate(schema, req);
 */
 ```
 
+### Response
+
+### Params
+
+### Query
+
+### Body
+
 ## middleware
 
 By default the Validator throws an error if the validation fails. It's recommended to wrap every route with an [async middleware](https://medium.com/@Abazhenov/using-async-await-in-express-with-node-8-b8af872c0016) that catches the error and next it to an error handler middleware. Before this error handling middleware, you can use the provided middleware of this package.

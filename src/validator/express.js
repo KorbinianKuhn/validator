@@ -36,6 +36,10 @@ class ExpressValidator extends Validator {
     return TYPES.Object(schema, options, _.defaults(BODY_OPTIONS, this._options, this._defaults));
   }
 
+  Response(status, object, options = {}) {
+    return TYPES.Response(status, object, options, this._options);
+  }
+
   middleware(options = {}) {
     const details = _.has(options, 'details') ? options.details : DEFAULTS.details;
     const message = _.has(options, 'message') ? options.message : DEFAULTS.message;

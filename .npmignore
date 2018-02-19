@@ -3,3 +3,5 @@ example
 test
 .travis.yml
 .editorconfig
+.nyc-output
+.vscode

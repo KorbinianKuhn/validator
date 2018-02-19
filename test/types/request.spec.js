@@ -113,41 +113,30 @@ describe('Request()', () => {
       type: 'request',
       required: true,
       description: 'A very nice route.',
-      params:
-     {
-       type: 'object',
-       required: true,
-       empty: false,
-       properties: {
-         userid: {
-           required: true,
-           type: "integer"
-         }
-       }
-     },
-      query:
-     {
-       type: 'object',
-       required: false,
-       empty: false,
-       properties: {
-         deleted: {
-           required: true,
-           type: "boolean"
-         }
-       }
-     },
-      body:
-     {
-       type: 'object',
-       required: true,
-       empty: false,
-       properties: {
-         name: {
-           empty: false, required: true, trim: true, type: "string"
-         }
-       }
-     }
+      params: {
+        userid: {
+          required: true,
+          type: "integer"
+        }
+      },
+      query: {
+        deleted: {
+          required: true,
+          type: "boolean"
+        }
+      },
+      body: {
+        "application/json": {
+          type: 'object',
+          required: true,
+          empty: false,
+          properties: {
+            name: {
+              empty: false, required: true, trim: true, type: "string"
+            }
+          }
+        }
+      }
     });
   });
 

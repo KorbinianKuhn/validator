@@ -10,6 +10,7 @@ const TYPES = {
   Object: require('./object').ObjectFactory,
   Regex: require('./regex').RegexFactory,
   Request: require('./request').RequestFactory,
+  Response: require('./response').ResponseFactory,
   String: require('./string').StringFactory
 };
 

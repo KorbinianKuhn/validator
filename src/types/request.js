@@ -89,9 +89,9 @@ class REQUEST extends ANY {
   }
 
   toObject(options = {}) {
-    const params = this._params ? this._params.toObject(options) : undefined;
-    const query = this._query ? this._query.toObject(options) : undefined;
-    const body = this._body ? this._body.toObject(options) : undefined;
+    const params = this._params ? this._params.toObject(options).properties : undefined;
+    const query = this._query ? this._query.toObject(options).properties : undefined;
+    const body = this._body ? { "application/json": this._body.toObject(options) } : undefined;
     switch (options.type) {
       case 'raml': {
         return _.pickBy({
@@ -119,4 +119,4 @@ class REQUEST extends ANY {
   }
 }
 
-exports.RequestFactory = (options, defaults) => new REQUEST(options, defaults);
+exports.RequestFactory = function(options, defaults) { return new REQUEST(options, defaults)};

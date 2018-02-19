@@ -284,4 +284,4 @@ class OBJECT extends ANY {
   }
 }
 
-exports.ObjectFactory = (schema, options, defaults) => new OBJECT(schema, options, defaults);
+exports.ObjectFactory = function(schema, options, defaults) { return new OBJECT(schema, options, defaults) };
