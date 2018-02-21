@@ -1,8 +1,8 @@
 const _ = require('lodash');
-const ANY = require('./any').ANY;
-const ObjectFactory = require('./object').ObjectFactory;
-const message = require('../message');
-const helper = require('../helper');
+const ANY = require('./../any').ANY;
+const ObjectFactory = require('./../object').ObjectFactory;
+const message = require('../../message');
+const helper = require('../../helper');
 
 class RESPONSE {
   constructor(status, object, options, defaults) {
@@ -36,4 +36,4 @@ class RESPONSE {
   }
 }
 
-exports.ResponseFactory = function(status, object, options, defaults) { return new RESPONSE(status, object, options, defaults)};
+exports.ResponseFactory = (status, object, options, defaults) => new RESPONSE(status, object, options, defaults);

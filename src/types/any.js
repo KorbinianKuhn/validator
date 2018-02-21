@@ -14,6 +14,7 @@ const validateAny = async (value, schema) => {
 class ANY {
   constructor(options, defaults) {
     this._options = options;
+    this._type = _.defaultTo(options.type, defaults.type);
     this._required = _.defaultTo(options.requiredAsDefault, defaults.requiredAsDefault);
     this._parse = _.defaultTo(options.parseToType, defaults.parseToType);
     this._language = _.defaultTo(options.language, defaults.language);
@@ -21,7 +22,7 @@ class ANY {
   }
 
   async validate(value) {
-    return helper.validate(this._options.type, validateAny(value, this));
+    return validateAny(value, this);
   }
 
   required(required) {
@@ -88,5 +89,6 @@ class ANY {
   }
 }
 
+exports.validateAny = validateAny;
 exports.ANY = ANY;
-exports.AnyFactory = function(options, defaults) { return new ANY(options, defaults)} ;
+exports.AnyFactory = function (options, defaults) { return new ANY(options, defaults); };

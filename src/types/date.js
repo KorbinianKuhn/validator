@@ -49,7 +49,7 @@ class DATE extends ANY {
   }
 
   async validate(value) {
-    return helper.validate(this._options.type, validateDate(value, this));
+    return validateDate(value, this);
   }
 
   format(string) {
@@ -121,4 +121,6 @@ class DATE extends ANY {
   }
 }
 
+exports.validateDate = validateDate;
+exports.DATE = DATE;
 exports.DateFactory = (options, defaults) => new DATE(options, defaults);

@@ -31,7 +31,7 @@ class INTEGER extends ANY {
   }
 
   async validate(value) {
-    return helper.validate(this._options.type, validateInteger(value, this));
+    return validateInteger(value, this);
   }
 
   min(integer) {
@@ -108,4 +108,6 @@ class INTEGER extends ANY {
   }
 }
 
+exports.validateInteger = validateInteger;
+exports.INTEGER = INTEGER;
 exports.IntegerFactory = (options, defaults) => new INTEGER(options, defaults);

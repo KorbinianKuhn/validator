@@ -1,13 +1,13 @@
 const _ = require('lodash');
-const ANY = require('./any').ANY;
-const ObjectFactory = require('./object').ObjectFactory;
+const ANY = require('./../any').ANY;
+const ObjectFactory = require('./../object').ObjectFactory;
 const {
   BODY_OPTIONS,
   QUERY_OPTIONS,
   URI_OPTIONS
-} = require('../defaults');
-const message = require('../message');
-const helper = require('../helper');
+} = require('../../defaults');
+const message = require('../../message');
+const helper = require('../../helper');
 
 const validateSchema = async (requestSchema, values, schema, messageKey) => {
   if (schema) {
@@ -70,7 +70,7 @@ class REQUEST extends ANY {
   }
 
   async validate(value) {
-    return helper.validate(this._options.type, validateRequest(value, this));
+    return validateRequest(value, this);
   }
 
   params(schema, options = {}) {
@@ -119,4 +119,4 @@ class REQUEST extends ANY {
   }
 }
 
-exports.RequestFactory = function(options, defaults) { return new REQUEST(options, defaults)};
+exports.RequestFactory = (options, defaults) => new REQUEST(options, defaults);

@@ -26,7 +26,7 @@ class BOOLEAN extends ANY {
   }
 
   async validate(value) {
-    return helper.validate(this._options.type, validateBoolean(value, this));
+    return validateBoolean(value, this);
   }
 
   default(value) {
@@ -65,5 +65,7 @@ class BOOLEAN extends ANY {
   }
 }
 
-exports.BooleanFactory = function(options, defaults) { return new BOOLEAN(options, defaults) };
+exports.validateBoolean = validateBoolean;
+exports.BOOLEAN = BOOLEAN;
+exports.BooleanFactory = (options, defaults) => new BOOLEAN(options, defaults);
 

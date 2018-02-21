@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const TYPES = require('./../types');
+const { TYPES, TYPE_NAMES } = require('./../types');
 const ValidationError = require('./../error');
 const defaults = require('./../defaults');
 
@@ -7,6 +7,7 @@ class Validator {
   constructor(options) {
     this._options = _.defaults(options, defaults.VALIDATOR_OPTIONS);
     this._customs = {};
+    this._types = TYPE_NAMES;
   }
 
   async validate(schema, data) {
@@ -14,7 +15,7 @@ class Validator {
       throw new Error('Invalid schema.');
     }
 
-    if (defaults.TYPE_NAMES.indexOf(schema.constructor.name) === -1) {
+    if (this._types.indexOf(schema.constructor.name) === -1) {
       throw new Error('Unknown schema.');
     }
 
@@ -35,7 +36,7 @@ class Validator {
       throw new Error(`Identifier ${name} already set.`);
     }
 
-    if (defaults.TYPE_NAMES.indexOf(type.constructor.name) === -1) {
+    if (this._types.indexOf(type.constructor.name) === -1) {
       throw new Error('Unknown type.');
     }
 

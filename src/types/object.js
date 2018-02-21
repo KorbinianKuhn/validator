@@ -153,7 +153,7 @@ class OBJECT extends ANY {
   }
 
   async validate(value) {
-    return helper.validate(this._options.type, validateObject(value, this));
+    return validateObject(value, this);
   }
 
   empty(boolean) {
@@ -284,4 +284,6 @@ class OBJECT extends ANY {
   }
 }
 
-exports.ObjectFactory = function(schema, options, defaults) { return new OBJECT(schema, options, defaults) };
+exports.validateObject = validateObject;
+exports.OBJECT = OBJECT;
+exports.ObjectFactory = (schema, options, defaults) => new OBJECT(schema, options, defaults);

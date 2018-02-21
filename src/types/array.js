@@ -69,7 +69,7 @@ class ARRAY extends ANY {
   }
 
   async validate(value) {
-    return helper.validate(this._options.type, validateArray(value, this));
+    return validateArray(value, this);
   }
 
   min(length) {
@@ -143,4 +143,6 @@ class ARRAY extends ANY {
   }
 }
 
+exports.validateArray = validateArray;
+exports.ARRAY = ARRAY;
 exports.ArrayFactory = (type, options, defaults) => new ARRAY(type, options, defaults);

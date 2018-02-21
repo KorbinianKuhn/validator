@@ -31,7 +31,7 @@ class ENUM extends ANY {
   }
 
   async validate(value) {
-    return helper.validate(this._options.type, validateEnum(value, this));
+    return validateEnum(value, this);
   }
 
   default(value) {
@@ -71,4 +71,6 @@ class ENUM extends ANY {
   }
 }
 
+exports.validateEnum = validateEnum;
+exports.ENUM = ENUM;
 exports.EnumFactory = (values, options, defaults) => new ENUM(values, options, defaults);

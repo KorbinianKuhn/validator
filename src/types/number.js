@@ -31,7 +31,7 @@ class NUMBER extends ANY {
   }
 
   async validate(value) {
-    return helper.validate(this._options.type, validateNumber(value, this));
+    return validateNumber(value, this);
   }
 
   min(value) {
@@ -108,4 +108,6 @@ class NUMBER extends ANY {
   }
 }
 
+exports.validateNumber = validateNumber;
+exports.NUMBER = NUMBER;
 exports.NumberFactory = (options, defaults) => new NUMBER(options, defaults);

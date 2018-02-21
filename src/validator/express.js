@@ -1,11 +1,7 @@
 const _ = require('lodash');
 const Validator = require('./any').Validator;
-const TYPES = require('./../types');
-const {
-  BODY_OPTIONS,
-  QUERY_OPTIONS,
-  URI_OPTIONS
-} = require('../defaults');
+const { TYPES, TYPE_NAMES } = require('../types/express');
+const { BODY_OPTIONS, QUERY_OPTIONS, URI_OPTIONS } = require('../defaults');
 
 const DEFAULTS = {
   details: true,
@@ -18,6 +14,7 @@ class ExpressValidator extends Validator {
     options.messages = 'default';
     options.type = 'express';
     super(options);
+    this._types = TYPE_NAMES;
   }
 
   Request(options = {}) {

@@ -35,7 +35,7 @@ class STRING extends ANY {
   }
 
   async validate(value) {
-    return helper.validate(this._options.type, validateString(value, this));
+    return validateString(value, this);
   }
 
   min(length) {
@@ -106,4 +106,6 @@ class STRING extends ANY {
   }
 }
 
+exports.validateString = validateString;
+exports.STRING = STRING;
 exports.StringFactory = (options, defaults) => new STRING(options, defaults);

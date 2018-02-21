@@ -32,7 +32,7 @@ class FUNCTION extends ANY {
   }
 
   async validate(value) {
-    return helper.validate(this._options.type, validateFunction(value, this));
+    return validateFunction(value, this);
   }
 
   toObject(options = {}) {
@@ -63,4 +63,6 @@ class FUNCTION extends ANY {
   }
 }
 
+exports.validateFunction = validateFunction;
+exports.FUNCTION = FUNCTION;
 exports.FunctionFactory = (func, options, defaults) => new FUNCTION(func, options, defaults);

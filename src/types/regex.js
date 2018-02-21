@@ -46,7 +46,7 @@ class REGEX extends ANY {
   }
 
   async validate(value) {
-    return helper.validate(this._options.type, validateRegex(value, this));
+    return validateRegex(value, this);
   }
 
   min(length) {
@@ -118,4 +118,6 @@ class REGEX extends ANY {
   }
 }
 
+exports.validateRegex = validateRegex;
+exports.REGEX = REGEX;
 exports.RegexFactory = (regex, options, defaults) => new REGEX(regex, options, defaults);

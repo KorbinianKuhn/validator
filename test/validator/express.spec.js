@@ -28,8 +28,20 @@ describe('ExpressValidator()', () => {
     validator._options.messages.should.equal('default');
   });
 
-  it('request type should get created', () => {
+  it('all types should be created with the validator', () => {
+    validator.Any().constructor.name.should.equal('ANY');
+    validator.Array().constructor.name.should.equal('ARRAY');
+    validator.Boolean().constructor.name.should.equal('BOOLEAN');
+    validator.Date().constructor.name.should.equal('DATE');
+    validator.Enum([]).constructor.name.should.equal('ENUM');
+    validator.Function(() => {}).constructor.name.should.equal('FUNCTION');
+    validator.Integer().constructor.name.should.equal('INTEGER');
+    validator.Number().constructor.name.should.equal('NUMBER');
+    validator.Object({}).constructor.name.should.equal('OBJECT');
+    validator.Regex(/A-Z/).constructor.name.should.equal('REGEX');
     validator.Request().constructor.name.should.equal('REQUEST');
+    validator.Response().constructor.name.should.equal('RESPONSE');
+    validator.String().constructor.name.should.equal('STRING');
   });
 
   describe('middleware()', () => {

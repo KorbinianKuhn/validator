@@ -1,6 +1,3 @@
-exports.TYPE_NAMES = ['ANY', 'ARRAY', 'BOOLEAN', 'DATE', 'ENUM', 'FUNCTION', 'INTEGER', 'NUMBER', 'OBJECT', 'REGEX',
-  'REQUEST', 'STRING', 'RESPONSE'
-];
 const DATE_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
 exports.DATE_FORMAT = DATE_FORMAT;
 
@@ -33,15 +30,3 @@ exports.QUERY_OPTIONS = {
 exports.BODY_OPTIONS = {
   requiredAsDefault: true
 };
-
-exports.ANY_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationError', 'parseToType'];
-exports.ARRAY_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType', 'noEmptyArrays'];
-exports.BOOLEAN_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType'];
-exports.DATE_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType', 'dateFormat', 'parseDates', 'strictDateValidation', 'utc'];
-exports.ENUM_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType'];
-exports.FUNCTION_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType'];
-exports.INTEGER_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType'];
-exports.NUMBER_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType'];
-exports.OBJECT_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType', 'noEmptyObjects', 'noUndefinedKeys'];
-exports.REGEX_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType', 'noEmptyStrings', 'trimStrings'];
-exports.STRING_OPTION_KEYS = ['language', 'type', 'requiredAsDefault', 'throwValidationErrors', 'parseToType', 'noEmptyStrings', 'trimStrings'];
