@@ -8,7 +8,8 @@ class INTEGER_ANGULAR extends INTEGER {
   validate() {
     return async (formControl) => {
       try {
-        await validateInteger(formControl.value, this);
+        const value = formControl.value === '' ? null : formControl.value;
+        await validateInteger(value, this);
         return null;
       } catch (err) {
         return { validation: err };

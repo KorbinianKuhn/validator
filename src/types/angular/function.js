@@ -8,7 +8,8 @@ class FUNCTION_ANGULAR extends FUNCTION {
   validate() {
     return async (formControl) => {
       try {
-        await validateFunction(formControl.value, this);
+        const value = formControl.value === '' ? null : formControl.value;
+        await validateFunction(value, this);
         return null;
       } catch (err) {
         return { validation: err };

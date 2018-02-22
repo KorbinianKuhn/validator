@@ -14,7 +14,7 @@ const validateInteger = async (value, schema) => {
     value = parseInt(value);
   }
 
-  if (!_.isInteger(value)) throw message.wrongType(schema._language, schema._messages, 'integer', typeof value);
+  if (!_.isInteger(value)) throw message.get(schema._language, schema._messages, 'integer', 'wrong_type', 'integer', typeof value);
   if (schema._min && value < schema._min) throw message.get(schema._language, schema._messages, 'integer', 'min', schema._min);
   if (schema._max && value > schema._max) throw message.get(schema._language, schema._messages, 'integer', 'max', schema._max);
   if (schema._less && value >= schema._less) throw message.get(schema._language, schema._messages, 'integer', 'less', schema._less);

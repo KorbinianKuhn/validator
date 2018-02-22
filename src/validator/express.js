@@ -30,7 +30,13 @@ class ExpressValidator extends Validator {
   }
 
   Body(schema, options = {}) {
-    return TYPES.Object(schema, options, _.defaults(BODY_OPTIONS, this._options, this._defaults));
+    if (_.isArray(schema)) {
+      return TYPES.Array(schema, options, _.defaults(BODY_OPTIONS, this._options, this._defaults));
+    } else if (_.isPlainObject(schema)) {
+      return TYPES.Object(schema, options, _.defaults(BODY_OPTIONS, this._options, this._defaults));
+    } else {
+      throw new Error('Only plain object or array is allowed');
+    }
   }
 
   Response(status, object, options = {}) {

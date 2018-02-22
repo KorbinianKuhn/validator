@@ -8,7 +8,8 @@ class ARRAY_ANGULAR extends ARRAY {
   validate() {
     return async (formControl) => {
       try {
-        await validateArray(formControl.value, this);
+        const value = formControl.value === '' ? null : formControl.value;
+        await validateArray(value, this);
         return null;
       } catch (err) {
         return { validation: err };

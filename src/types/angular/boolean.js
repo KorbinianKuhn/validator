@@ -8,7 +8,8 @@ class BOOLEAN_ANGULAR extends BOOLEAN {
   validate() {
     return async (formControl) => {
       try {
-        await validateBoolean(formControl.value, this);
+        const value = formControl.value === '' ? null : formControl.value;
+        await validateBoolean(value, this);
         return null;
       } catch (err) {
         return { validation: err };

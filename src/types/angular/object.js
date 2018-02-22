@@ -8,7 +8,8 @@ class OBJECT_ANGULAR extends OBJECT {
   validate() {
     return async (formControl) => {
       try {
-        await validateObject(formControl.value, this);
+        const value = formControl.value === '' ? null : formControl.value;
+        await validateObject(value, this);
         return null;
       } catch (err) {
         return { validation: err };

@@ -14,7 +14,7 @@ const validateNumber = async (value, schema) => {
     value = parseFloat(value);
   }
 
-  if (!_.isNumber(value)) throw message.wrongType(schema._language, schema._messages, 'number', typeof value);
+  if (!_.isNumber(value)) throw message.get(schema._language, schema._messages, 'number', 'wrong_type', 'number', typeof value);
   if (schema._min && value < schema._min) throw message.get(schema._language, schema._messages, 'number', 'min', schema._min);
   if (schema._max && value > schema._max) throw message.get(schema._language, schema._messages, 'number', 'max', schema._max);
   if (schema._less && value >= schema._less) throw message.get(schema._language, schema._messages, 'number', 'less', schema._less);

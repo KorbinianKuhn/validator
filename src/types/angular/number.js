@@ -8,7 +8,8 @@ class NUMBER_ANGULAR extends NUMBER {
   validate() {
     return async (formControl) => {
       try {
-        await validateNumber(formControl.value, this);
+        const value = formControl.value === '' ? null : formControl.value;
+        await validateNumber(value, this);
         return null;
       } catch (err) {
         return { validation: err };

@@ -8,7 +8,8 @@ class ENUM_ANGULAR extends ENUM {
   validate() {
     return async (formControl) => {
       try {
-        await validateEnum(formControl.value, this);
+        const value = formControl.value === '' ? null : formControl.value;
+        await validateEnum(value, this);
         return null;
       } catch (err) {
         return { validation: err };

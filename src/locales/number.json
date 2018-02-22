@@ -58,5 +58,15 @@
       "en": "Must be a negative number.",
       "de": "Muss eine negative Zahl sein."
     }
+  },
+  "wrong_type": {
+    "default": {
+      "en": "Must be $ but is $.",
+      "de": "Muss $ sein aber ist $."
+    },
+    "angular": {
+      "en": "Must be a number.",
+      "de": "Muss eine Zahl sein."
+    }
   }
 }

@@ -8,7 +8,8 @@ class ANY_ANGULAR extends ANY {
   validate() {
     return async (formControl) => {
       try {
-        await validateAny(formControl.value, this);
+        const value = formControl.value === '' ? null : formControl.value;
+        await validateAny(value, this);
         return null;
       } catch (err) {
         return { validation: err };

@@ -8,7 +8,8 @@ class REGEX_ANGULAR extends REGEX {
   validate() {
     return async (formControl) => {
       try {
-        await validateRegex(formControl.value, this);
+        const value = formControl.value === '' ? null : formControl.value;
+        await validateRegex(value, this);
         return null;
       } catch (err) {
         return { validation: err };
