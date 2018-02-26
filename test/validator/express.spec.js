@@ -53,7 +53,7 @@ describe('ExpressValidator()', () => {
 
       validator.middleware()(err, req, res, next);
       res._status.should.equal(400);
-      res._json.should.have.property('error', DEFAULTS.message);
+      res._json.should.have.property('message', DEFAULTS.message);
       res._json.should.have.property('details', 'details');
     });
 
@@ -67,7 +67,7 @@ describe('ExpressValidator()', () => {
         message: 'custom'
       })(err, req, res, next);
       res._status.should.equal(400);
-      res._json.should.have.property('error', 'custom');
+      res._json.should.have.property('message', 'custom');
     });
 
     it('should respond without details', () => {

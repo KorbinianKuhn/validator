@@ -49,9 +49,11 @@ class ExpressValidator extends Validator {
     const nextError = _.has(options, 'next') ? options.next : DEFAULTS.next;
 
     return (err, req, res, next) => {
-      if (err.name === 'ExpressInputValidationError') {
+      if (err.name === 'ValidationError' && err.type === 'validator') {
         const response = {
-          error: message
+          error: true,
+          message,
+          name: err.code
         };
         if (details) response.details = err.details;
         res.status(400).json(response);

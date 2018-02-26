@@ -42,21 +42,21 @@
   "positive": {
     "default": {
       "en": "Must be a positive integer.",
-      "de": "Muss eine positive Ganzzahl sein."
+      "de": "Muss ein positiver numerischer Wert sein."
     },
     "angular": {
       "en": "Must be a positive integer.",
-      "de": "Muss eine positive Ganzzahl sein."
+      "de": "Muss ein positiver numerischer Wert sein."
     }
   },
   "negative": {
     "default": {
       "en": "Must be a negative integer.",
-      "de": "Muss eine negative Ganzzahl sein."
+      "de": "Muss ein negativer numerischer Wert sein."
     },
     "angular": {
       "en": "Must be a negative integer.",
-      "de": "Muss eine negative Ganzzahl sein."
+      "de": "Muss ein negativer numerischer Wert sein."
     }
   },
   "wrong_type": {
@@ -66,7 +66,7 @@
     },
     "angular": {
       "en": "Must be an integer.",
-      "de": "Muss eine Ganzzahl sein."
+      "de": "Darf keine Nachkommastellen haben."
     }
   }
 }
