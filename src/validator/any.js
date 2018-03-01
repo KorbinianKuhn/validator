@@ -33,11 +33,11 @@ class Validator {
 
   addType(name, type) {
     if (_.has(this._customs, name)) {
-      throw new Error(`Identifier ${name} already set.`);
+      throw new Error(`Error adding custom type. Name '${name}' is already set.`);
     }
 
     if (this._types.indexOf(type.constructor.name) === -1) {
-      throw new Error('Unknown type.');
+      throw new Error(`Error adding custom type '${name}'. Unknown type '${type.constructor.name}'.`);
     }
 
     this._customs[name] = _.cloneDeep(type);
@@ -45,7 +45,7 @@ class Validator {
 
   Custom(name) {
     if (!_.has(this._customs, name)) {
-      throw new Error('Unknown custom type.');
+      throw new Error(`Error getting custom type '${name}'. Unknown type.`);
     } else {
       return _.cloneDeep(this._customs[name]);
     }

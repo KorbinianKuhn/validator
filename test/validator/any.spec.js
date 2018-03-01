@@ -80,15 +80,15 @@ describe('Validator()', () => {
 
     validator.addType('test', type);
 
-    await helper.throw(() => validator.addType('test', type), 'Identifier test already set.');
+    await helper.throw(() => validator.addType('test', type), `Error adding custom type. Name 'test' is already set.`);
   });
 
   it('invalid custom type should fail', async () => {
-    await helper.throw(() => Validator().addType('test', {}), 'Unknown type.');
+    await helper.throw(() => Validator().addType('test', {}), `Error adding custom type 'test'. Unknown type 'Object'.`);
   });
 
   it('unknown custom type should fail', async () => {
-    await helper.throw(() => Validator().Custom('test'), 'Unknown custom type.');
+    await helper.throw(() => Validator().Custom('test'), `Error getting custom type 'test'. Unknown type.`);
   });
 
   it('valid custom type should verify', () => {
