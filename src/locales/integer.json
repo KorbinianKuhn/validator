@@ -66,6 +66,16 @@
     },
     "angular": {
       "en": "Must be an integer.",
+      "de": "Muss ein nummerischer Wert sein."
+    }
+  },
+  "is_number": {
+    "default": {
+      "en": "Must be $ but is $.",
+      "de": "Muss $ sein aber ist $."
+    },
+    "angular": {
+      "en": "No decimal places allowed.",
       "de": "Darf keine Nachkommastellen haben."
     }
   }

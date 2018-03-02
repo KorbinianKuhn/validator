@@ -1,5 +1,6 @@
 const Validator = require('./any').Validator;
 const { TYPES, TYPE_NAMES }= require('../types/angular');
+const _ = require('lodash');
 
 class AngularValidator extends Validator {
   constructor(options) {
@@ -7,6 +8,14 @@ class AngularValidator extends Validator {
     options.type = 'angular';
     super(options);
     this._types = TYPE_NAMES;
+  }
+
+  addType(name, type) {
+    if (_.has(this._customs, name)) {
+      throw new Error(`Error adding custom type. Name '${name}' is already set.`);
+    }
+
+    this._customs[name] = _.cloneDeep(type);
   }
 
   Any(type, options = {}) {
