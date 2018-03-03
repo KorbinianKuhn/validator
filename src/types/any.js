@@ -13,7 +13,6 @@ const validateAny = async (value, schema) => {
 
 class ANY {
   constructor(options, defaults) {
-    this._options = options;
     this._type = _.defaultTo(options.type, defaults.type);
     this._required = _.defaultTo(options.requiredAsDefault, defaults.requiredAsDefault);
     this._parse = _.defaultTo(options.parseToType, defaults.parseToType);

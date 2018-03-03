@@ -65,7 +65,7 @@ const toSchema = (schema, options, defaults) => {
 class REQUEST extends ANY {
   constructor(options, defaults) {
     super(options, defaults);
-    this._defaults = defaults;
+    this._defaults = _.defaultTo(options, defaults);
     this._noUndefinedKeys = _.defaultTo(options.noUndefinedKeys, defaults.noUndefinedKeys);
   }
 
@@ -74,17 +74,17 @@ class REQUEST extends ANY {
   }
 
   params(schema, options = {}) {
-    this._params = toSchema(schema, options, _.defaults(URI_OPTIONS, this._options, this._defaults));
+    this._params = toSchema(schema, options, _.defaults(URI_OPTIONS, this._defaults));
     return this;
   }
 
   query(schema, options = {}) {
-    this._query = toSchema(schema, options, _.defaults(QUERY_OPTIONS, this._options, this._defaults));
+    this._query = toSchema(schema, options, _.defaults(QUERY_OPTIONS, this._defaults));
     return this;
   }
 
   body(schema, options = {}) {
-    this._body = toSchema(schema, options, _.defaults(BODY_OPTIONS, this._options, this._defaults));
+    this._body = toSchema(schema, options, _.defaults(BODY_OPTIONS, this._defaults));
     return this;
   }
 

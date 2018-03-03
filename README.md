@@ -23,7 +23,7 @@ Features
 
 ## API
 
-See the detailed [API Reference](doc/API.md). 
+See the detailed [API Reference](doc/api.md). 
 Additional information for:
 
 - [expressjs](doc/express.md)
