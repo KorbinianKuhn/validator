@@ -1,7 +1,5 @@
 # Validator
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/KorbinianKuhn/validator.svg)](https://greenkeeper.io/)
-
 [![Travis](https://img.shields.io/travis/KorbinianKuhn/validator.svg?style=flat-square)](https://travis-ci.org/KorbinianKuhn/validator/builds)
 [![Coverage](http://img.shields.io/coveralls/KorbinianKuhn/validator.svg?style=flat-square&branch=master)](https://coveralls.io/r/KorbinianKuhn/validator)
 [![Known Vulnerabilities](https://snyk.io/test/github/KorbinianKuhn/validator/badge.svg?style=flat-square)](https://snyk.io/test/github/KorbinianKuhn/validator)
@@ -9,6 +7,7 @@
 [![Dev Dependencies](https://img.shields.io/david/dev/KorbinianKuhn/validator.svg?style=flat-square)](https://david-dm.org/KorbinianKuhn/validator)
 [![npm](https://img.shields.io/npm/dt/@korbiniankuhn/validator.svg?style=flat-square)](https://www.npmjs.com/package/@korbiniankuhn/validator)
 [![npm-version](https://img.shields.io/npm/v/@korbiniankuhn/validator.svg?style=flat-square)](https://www.npmjs.com/package/@korbiniankuhn/validator)
+[![Greenkeeper badge](https://badges.greenkeeper.io/KorbinianKuhn/validator.svg?style-flat)](https://greenkeeper.io/)
 ![license](https://img.shields.io/github/license/KorbinianKuhn/validator.svg?style=flat-square)
 
 Validate input values with object schemas.
