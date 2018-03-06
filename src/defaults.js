@@ -24,7 +24,8 @@ exports.URI_OPTIONS = {
 };
 
 exports.QUERY_OPTIONS = {
-  requiredAsDefault: false
+  requiredAsDefault: false,
+  noEmptyObjects: false,
 };
 
 exports.BODY_OPTIONS = {

@@ -14,8 +14,17 @@ const validateSchema = async (requestSchema, values, schema, messageKey) => {
     if (schema._required || _.keys(values).length > 0) {
       try {
         await schema.validate(values);
+        return null;
       } catch (err) {
         return err;
+      }
+    } else {
+      // Try validation to get default values if set
+      try {
+        await schema.validate(values);
+        return null;
+      } catch (err) {
+        return null;
       }
     }
   } else if (requestSchema._noUndefinedKeys && _.keys(values).length > 0) {
@@ -65,7 +74,7 @@ const toSchema = (schema, options, defaults) => {
 class REQUEST extends ANY {
   constructor(options, defaults) {
     super(options, defaults);
-    this._defaults = _.defaultTo(options, defaults);
+    this._defaults = _.defaults(options, defaults);
     this._noUndefinedKeys = _.defaultTo(options.noUndefinedKeys, defaults.noUndefinedKeys);
   }
 
@@ -74,17 +83,17 @@ class REQUEST extends ANY {
   }
 
   params(schema, options = {}) {
-    this._params = toSchema(schema, options, _.defaults(URI_OPTIONS, this._defaults));
+    this._params = toSchema(schema, options, _.defaults({}, URI_OPTIONS, this._defaults));
     return this;
   }
 
   query(schema, options = {}) {
-    this._query = toSchema(schema, options, _.defaults(QUERY_OPTIONS, this._defaults));
+    this._query = toSchema(schema, options, _.defaults({}, QUERY_OPTIONS, this._defaults));
     return this;
   }
 
   body(schema, options = {}) {
-    this._body = toSchema(schema, options, _.defaults(BODY_OPTIONS, this._defaults));
+    this._body = toSchema(schema, options, _.defaults({}, BODY_OPTIONS, this._defaults));
     return this;
   }
 

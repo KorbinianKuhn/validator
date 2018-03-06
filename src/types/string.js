@@ -30,7 +30,7 @@ const validateString = async (value, schema) => {
 class STRING extends ANY {
   constructor(options, defaults) {
     super(options, defaults);
-    this._empty = !_.defaults(options.noEmptyStrings, defaults.noEmptyStrings);
+    this._empty = !_.defaultTo(options.noEmptyStrings, defaults.noEmptyStrings);
     this._trim = _.defaultTo(options.trimStrings, defaults.trimStrings);
   }
 

@@ -76,7 +76,9 @@ describe('Request()', () => {
 
     const req = { params: {},query: {},body: {}, };
 
-    await helper.throw(schema.validate(req), { body: 'Object is empty.' });
+    await helper.throw(schema.validate(req), {
+      body: "Object is empty."
+    });
   });
 
   it('body object should be required by default', async () => {
@@ -147,5 +149,28 @@ describe('Request()', () => {
       .body({ name: validator.String() })
       .description('A very nice route.');
     schema.toObject({ type: 'raml' }).should.be.type('object');
+  });
+
+  it('should return default query parameter', async () => {
+    const req = { params: {}, query: {}, body: {} };
+    const expected = { params: {}, query: { test: true }, body: {} };
+    const schema = validator.Request()
+      .query({
+        test: validator.Boolean().required(false).default(true)
+      });
+    const actual = await schema.validate(req);
+    actual.should.deepEqual(expected);
+  });
+
+  it('should return one default query parameter', async () => {
+    const req = { params: {}, query: {}, body: {} };
+    const expected = { params: {}, query: { optional: true }, body: {} };
+    const actual = await validator.Request()
+      .query({
+        optional: validator.Boolean().required(false).default(true),
+        required: validator.Boolean().required(true)
+      })
+      .validate(req);
+    actual.should.deepEqual(expected);
   });
 });

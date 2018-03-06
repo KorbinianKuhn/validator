@@ -18,29 +18,29 @@ class ExpressValidator extends Validator {
   }
 
   Request(options = {}) {
-    return TYPES.Request(options, this._options);
+    return TYPES.Request(options, _.defaults({}, this._options));
   }
 
   Params(schema, options = {}) {
-    return TYPES.Object(schema, options, _.defaults(URI_OPTIONS, this._options, this._defaults));
+    return TYPES.Object(schema, options, _.defaults({}, URI_OPTIONS, this._options, this._defaults));
   }
 
   Query(schema, options = {}) {
-    return TYPES.Object(schema, options, _.defaults(QUERY_OPTIONS, this._options, this._defaults));
+    return TYPES.Object(schema, options, _.defaults({}, QUERY_OPTIONS, this._options, this._defaults));
   }
 
   Body(schema, options = {}) {
     if (_.isArray(schema)) {
-      return TYPES.Array(schema, options, _.defaults(BODY_OPTIONS, this._options, this._defaults));
+      return TYPES.Array(schema, options, _.defaults({}, BODY_OPTIONS, this._options, this._defaults));
     } else if (_.isPlainObject(schema)) {
-      return TYPES.Object(schema, options, _.defaults(BODY_OPTIONS, this._options, this._defaults));
+      return TYPES.Object(schema, options, _.defaults({}, BODY_OPTIONS, this._options, this._defaults));
     } else {
       throw new Error('Only plain object or array is allowed');
     }
   }
 
   Response(status, object, options = {}) {
-    return TYPES.Response(status, object, options, this._options);
+    return TYPES.Response(status, object, options, _.defaults({}, this._options));
   }
 
   middleware(options = {}) {
