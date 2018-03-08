@@ -1,6 +1,6 @@
 {
   "name": "@korbiniankuhn/validator",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Validate input parameters for expressjs, Angular and mongoose.",
   "main": "index.js",
   "scripts": {
