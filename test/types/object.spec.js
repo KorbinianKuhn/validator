@@ -118,11 +118,26 @@ describe('Object()', () => {
     }).func(throwFunction, 'name', 'nested.age');
 
     const invalid = { name: 'Jane Doe', nested: { age: 25 } };
-    await helper.throw(object.validate(invalid), { 'name, nested.age': 'Custom message' });
+    await helper.throw(object.validate(invalid), { '[name, nested.age]': 'Custom message' });
 
     const valid = { name: 'Jane Doe', nested: { age: 20 } };
     const result = await object.validate(valid);
     result.should.deepEqual(valid);
+  });
+
+  it('test custom function that throws an error', async () => {
+    const throwFunction = (name, age) => {
+      throw new Error('Custom message');
+    };
+    const object = validator.Object({
+      name: validator.String(),
+      nested: validator.Object({
+        age: validator.Integer(),
+      })
+    }).func(throwFunction, 'name', 'nested.age');
+
+    const invalid = { name: 'Jane Doe', nested: { age: 25 } };
+    await helper.throw(object.validate(invalid), { '[name, nested.age]': 'Custom message' });
   });
 
   it('undefined key should throw', async () => {

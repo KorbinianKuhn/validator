@@ -69,7 +69,7 @@ const validateObject = async (value, schema) => {
     try {
       await fn(...values);
     } catch (err) {
-      errors[keys.join(', ')] = err;
+      errors[`[${keys.join(', ')}]`] = err instanceof Error ? err.message : err;
     }
   }
 
