@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const message = require('../message');
 const helper = require('../helper');
+const { toObject } = require('../utils/to-object');
 
 const validateAny = async (value, schema) => {
   if (_.isNil(value)) {
@@ -60,31 +61,14 @@ class ANY {
   }
 
   toObject(options = {}) {
-    switch (options.type) {
-      case 'raml': {
-        return _.pickBy({
-          type: 'any',
-          required: this._required,
-          displayName: this._name,
-          description: this._description,
-          default: this._default,
-          example: this._example,
-          examples: this._examples
-        }, helper.isNotNil);
-      }
-      default: {
-        return _.pickBy({
-          type: 'any',
-          required: this._required,
-          name: this._name,
-          description: this._description,
-          default: this._default,
-          example: this._example,
-          examples: this._examples,
-          parse: this._parse
-        }, helper.isNotNil);
-      }
-    }
+    return toObject({
+      type: 'any',
+      required: this._required,
+      description: this._description,
+      default: this._default,
+      example: this._example,
+      parse: this._parse
+    }, options);
   }
 }
 

@@ -1,7 +1,9 @@
-coverage
-example
-test
-.travis.yml
-.editorconfig
-.nyc-output
+.nyc_output
 .vscode
+coverage
+node_modules
+test
+.eslintrc
+.gitignore
+.travis.yml
+README.md
