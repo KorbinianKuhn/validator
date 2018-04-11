@@ -1,6 +1,6 @@
-const { isBoolean } = require("./../../../utils/lodash");
-const { ANY } = require("./any");
-const { validate, validateSync } = require("./../validation/boolean");
+const { isBoolean } = require('./../../../utils/lodash');
+const { ANY } = require('./any');
+const { validate, validateSync } = require('./../validation/boolean');
 
 class BOOLEAN extends ANY {
   constructor(options, defaults) {
@@ -22,7 +22,7 @@ class BOOLEAN extends ANY {
       });
     } else {
       return Object.assign(settings, {
-        type: "boolean",
+        type: 'boolean',
         description: this._description,
         example: this._example,
         default: this._default
@@ -40,8 +40,8 @@ class BOOLEAN extends ANY {
 
   default(value) {
     if (!isBoolean(value)) {
-      throw this._message.error("invalid_default_value", {
-        expected: "boolean",
+      throw this._message.error('invalid_default_value', {
+        expected: 'boolean',
         actual: value
       });
     }

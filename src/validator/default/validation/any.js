@@ -1,13 +1,20 @@
-const { isNil, isAsyncFunction } = require("./../../../utils/lodash");
+const { isNil, defaultTo } = require('./../../../utils/lodash');
+const { toError } = require('./../../../utils/error');
 
-const validateAny = (value, defaultValue, required, message) => {
-  if (isNil(value)) {
-    if (defaultValue) {
-      return defaultValue;
-    } else if (required) {
-      throw message.get("required", { value });
-    }
+const validateRequired = (value, required, message) => {
+  if (isNil(value) && required) {
+    throw message.error('required', { value });
   }
+};
+
+const validateAny = ({ value, defaultValue, required, message, not, only }) => {
+  if (isNil(value) && !isNil(defaultValue)) {
+    return defaultValue;
+  }
+
+  validateRequired(value, required, message);
+  validateOnly(only, value, message);
+  validateNot(not, value, message);
 
   return value;
 };
@@ -15,12 +22,9 @@ const validateAny = (value, defaultValue, required, message) => {
 const validateFunctionSync = (func, value) => {
   if (func) {
     try {
-      const result = func(value);
-      if (result) {
-        return result;
-      }
+      return defaultTo(func(value), value);
     } catch (err) {
-      return err instanceof Error ? err.message : err;
+      throw toError(err);
     }
   }
 
@@ -29,32 +33,40 @@ const validateFunctionSync = (func, value) => {
 
 const validateFunctionAsync = async (func, value) => {
   if (func) {
-    try {
-      let result;
-      if (isAsyncFunction(func)) {
-        result = await func(value);
-      } else {
-        result = func(value);
-      }
-
-      if (result) {
-        return result;
-      }
-    } catch (err) {
-      return err instanceof Error ? err.message : err;
-    }
+    const result = await Promise.resolve(func(value)).catch(err => {
+      throw toError(err);
+    });
+    return result === undefined ? value : result;
+  } else {
+    return value;
   }
-
-  return value;
 };
 
-const validateSync = (value, { defaultValue, required, message, func }) => {
-  value = validateAny(value, defaultValue, required, message);
+const validateOnly = (only, value, message) => {
+  if (only && only.indexOf(value) === -1) {
+    throw message.error('only', { value, only });
+  }
+};
+
+const validateNot = (not, value, message) => {
+  if (not && not.indexOf(value) !== -1) {
+    throw message.error('not', { value, not });
+  }
+};
+
+const validateSync = (
+  value,
+  { defaultValue, required, message, not, only, func }
+) => {
+  value = validateAny({ value, defaultValue, required, message, not, only });
   return validateFunctionSync(func, value);
 };
 
-const validate = async (value, { defaultValue, required, message, func }) => {
-  value = validateAny(value, defaultValue, required, message);
+const validate = async (
+  value,
+  { defaultValue, required, message, not, only, func }
+) => {
+  value = validateAny({ value, defaultValue, required, message, not, only });
   return validateFunctionAsync(func, value);
 };
 
@@ -62,6 +74,9 @@ module.exports = {
   validate,
   validateSync,
   validateAny,
+  validateRequired,
   validateFunctionSync,
-  validateFunctionAsync
+  validateFunctionAsync,
+  validateOnly,
+  validateNot
 };

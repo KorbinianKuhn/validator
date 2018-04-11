@@ -1,7 +1,7 @@
-const { defaultTo } = require("./../../../utils/lodash");
-const { ANY } = require("./any");
-const { validate, validateSync } = require("./../validation/date");
-const moment = require("moment");
+const { defaultTo } = require('./../../../utils/lodash');
+const { ANY } = require('./any');
+const { validate, validateSync } = require('./../validation/date');
+const moment = require('moment');
 
 const toMoment = (message, date, utc, format, strict) => {
   const momentDate = utc
@@ -47,7 +47,7 @@ class DATE extends ANY {
       });
     } else {
       return Object.assign(settings, {
-        type: "date",
+        type: 'date',
         description: this._description,
         example: this._example,
         default: this._default,

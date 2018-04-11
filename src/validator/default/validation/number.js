@@ -3,7 +3,7 @@ const {
   isNumber,
   isString,
   isInteger
-} = require("./../../../utils/lodash");
+} = require('./../../../utils/lodash');
 
 const validateSync = (exports.validateSync = (
   value,
@@ -25,7 +25,7 @@ const validateSync = (exports.validateSync = (
     if (defaultValue) {
       return defaultValue;
     } else if (required) {
-      throw message.get("required", { value });
+      throw message.error('required', { value });
     } else {
       return value;
     }
@@ -44,54 +44,54 @@ const validateSync = (exports.validateSync = (
   if (integer) {
     if (!isInteger(value)) {
       if (isNumber(value)) {
-        throw message.get("integer_is_number", { value });
+        throw message.error('integer_is_number', { value });
       } else {
-        throw message.get("wrong_type", { actual: value });
+        throw message.error('wrong_type', { actual: value });
       }
     }
   } else if (!isNumber(value)) {
-    throw message.get("wrong_type", {
-      expected: integer ? "integer" : "number",
+    throw message.error('wrong_type', {
+      expected: integer ? 'integer' : 'number',
       actual: value
     });
   }
 
   if (min && value < min) {
-    throw message.get(integer ? "integer_min" : "number_min", {
+    throw message.error(integer ? 'integer_min' : 'number_min', {
       expected: min,
       actual: value
     });
   }
 
   if (max && value > max) {
-    throw message.get(integer ? "integer_max" : "number_max", {
+    throw message.error(integer ? 'integer_max' : 'number_max', {
       expected: max,
       actual: value
     });
   }
 
   if (less && value >= less) {
-    throw message.get(integer ? "integer_less" : "number_less", {
+    throw message.error(integer ? 'integer_less' : 'number_less', {
       expected: less,
       actual: value
     });
   }
 
   if (greater && value <= greater) {
-    throw message.get(integer ? "integer_greater" : "number_greater", {
+    throw message.error(integer ? 'integer_greater' : 'number_greater', {
       expected: greater,
       actual: value
     });
   }
 
   if (positive && value <= 0) {
-    throw message.get(integer ? "integer_positive" : "number_positive", {
+    throw message.error(integer ? 'integer_positive' : 'number_positive', {
       value
     });
   }
 
   if (negative && value >= 0) {
-    throw message.get(integer ? "integer_negative" : "number_negative", {
+    throw message.error(integer ? 'integer_negative' : 'number_negative', {
       value
     });
   }

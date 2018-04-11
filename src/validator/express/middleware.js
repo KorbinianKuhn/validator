@@ -1,22 +1,20 @@
-const _ = require("./../../utils/lodash");
+const _ = require('./../../utils/lodash');
 
-const DEFAULTS = {
-  details: true,
-  message: "Bad request. Invalid input parameters and/or values.",
-  next: false
-};
+const { MIDDLEWARE_OPTIONS } = require('./options');
 
 module.exports = (options = {}) => {
-  const details = _.has(options, "details")
+  const details = _.has(options, 'details')
     ? options.details
-    : DEFAULTS.details;
-  const message = _.has(options, "message")
+    : MIDDLEWARE_OPTIONS.details;
+  const message = _.has(options, 'message')
     ? options.message
-    : DEFAULTS.message;
-  const nextError = _.has(options, "next") ? options.next : DEFAULTS.next;
+    : MIDDLEWARE_OPTIONS.message;
+  const nextError = _.has(options, 'next')
+    ? options.next
+    : MIDDLEWARE_OPTIONS.next;
 
   return (err, req, res, next) => {
-    if (err.name === "ValidationError" && err.type === "validator") {
+    if (err.name === 'ValidationError' && err.type === 'validator') {
       const response = {
         error: true,
         message,

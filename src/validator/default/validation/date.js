@@ -1,6 +1,6 @@
-const { isNil } = require("./../../../utils/lodash");
-const moment = require("moment");
-const { validateFunctionSync, validateFunctionAsync } = require("./any");
+const { isNil } = require('./../../../utils/lodash');
+const moment = require('moment');
+const { validateFunctionSync, validateFunctionAsync } = require('./any');
 
 const validateDate = (
   value,
@@ -18,7 +18,7 @@ const validateDate = (
     if (defaultValue) {
       return defaultValue;
     } else if (required) {
-      throw message.get("required", { value });
+      throw message.error('required', { value });
     } else {
       return value;
     }
@@ -29,15 +29,15 @@ const validateDate = (
     : moment(date, format, strict);
 
   if (!date.isValid()) {
-    throw message.get("date", "invalid", format);
+    throw message.error('date', 'invalid', format);
   }
 
   if (min && date.toDate() < min) {
-    throw message.get("date_min", { expected: min.toISOString() });
+    throw message.error('date_min', { expected: min.toISOString() });
   }
 
   if (max && date.toDate() > max) {
-    throw message.get("date_max", { expected: max.toISOString() });
+    throw message.error('date_max', { expected: max.toISOString() });
   }
 
   if (parse) {

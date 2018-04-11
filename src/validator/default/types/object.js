@@ -5,20 +5,20 @@ const {
   has,
   merge,
   isFunction
-} = require("./../../../utils/lodash");
-const { ANY } = require("./any");
-const { validate, validateSync } = require("./../validation/object");
-const { toObject } = require("./../../../utils/to-object");
+} = require('./../../../utils/lodash');
+const { ANY } = require('./any');
+const { validate, validateSync } = require('./../validation/object');
+const { toObject } = require('./../../../utils/to-object');
 
 const ALLOWED_CONDITIONS = [
-  "gt",
-  "equals",
-  "lt",
-  "gte",
-  "lte",
-  "notEquals",
-  "dependsOn",
-  "xor"
+  'gt',
+  'equals',
+  'lt',
+  'gte',
+  'lte',
+  'notEquals',
+  'dependsOn',
+  'xor'
 ];
 
 class OBJECT extends ANY {
@@ -26,11 +26,11 @@ class OBJECT extends ANY {
     super(options, defaults);
 
     if (object === undefined) {
-      throw this._message.error("object_missing");
+      throw this._message.error('object_missing');
     }
 
     if (!isPlainObject(object)) {
-      throw this._message.error("object_invalid_type");
+      throw this._message.error('object_invalid_type');
     }
 
     this._object = object;
@@ -62,7 +62,7 @@ class OBJECT extends ANY {
       });
     } else {
       return Object.assign(settings, {
-        type: "object",
+        type: 'object',
         description: this._description,
         example: this._example,
         default: this._default
@@ -135,7 +135,7 @@ class OBJECT extends ANY {
 
   func(fn, ...keys) {
     if (!isFunction(fn)) {
-      throw this._message.error("not_a_function");
+      throw this._message.error('not_a_function');
     }
 
     this._func = {
@@ -162,7 +162,7 @@ class OBJECT extends ANY {
 
   default(value) {
     if (!isPlainObject(value)) {
-      throw this._message.error("not_an_object");
+      throw this._message.error('not_an_object');
     }
     this._default = value;
     return this;

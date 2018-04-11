@@ -1,8 +1,8 @@
-const { BOOLEAN } = require("./../../default/types/boolean");
+const { BOOLEAN } = require('./../../default/types/boolean');
 const {
   validate,
   validateSync
-} = require("./../../default/validation/boolean");
+} = require('./../../default/validation/boolean');
 
 class BOOLEAN_ANGULAR extends BOOLEAN {
   constructor(options, defaults) {
@@ -12,7 +12,7 @@ class BOOLEAN_ANGULAR extends BOOLEAN {
   validate() {
     return async formControl => {
       try {
-        const value = formControl.value === "" ? null : formControl.value;
+        const value = formControl.value === '' ? null : formControl.value;
         await validate(value, this);
         return null;
       } catch (err) {
@@ -24,7 +24,7 @@ class BOOLEAN_ANGULAR extends BOOLEAN {
   validateSync() {
     return formControl => {
       try {
-        const value = formControl.value === "" ? null : formControl.value;
+        const value = formControl.value === '' ? null : formControl.value;
         validateSync(value, this);
         return null;
       } catch (err) {

@@ -1,4 +1,4 @@
-const _ = require("./lodash");
+const _ = require('./lodash');
 
 const removeUndefined = object => _.pickBy(object, _.isNotNil);
 
@@ -8,7 +8,7 @@ exports.toObject = (object, options = {}) => {
   const values = removeUndefined(object);
 
   switch (options.type) {
-    case "raml": {
+    case 'raml': {
       return toRAML(values, options);
     }
     default:

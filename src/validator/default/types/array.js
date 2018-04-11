@@ -1,7 +1,7 @@
-const { defaultTo, isArray } = require("./../../../utils/lodash");
-const { ANY } = require("./any");
-const { validate, validateSync } = require("./../validation/array");
-const { toObject } = require("./../../../utils/to-object");
+const { defaultTo, isArray } = require('./../../../utils/lodash');
+const { ANY } = require('./any');
+const { validate, validateSync } = require('./../validation/array');
+const { toObject } = require('./../../../utils/to-object');
 
 class ARRAY extends ANY {
   constructor(type, options, defaults) {
@@ -30,7 +30,7 @@ class ARRAY extends ANY {
       });
     } else {
       return Object.assign(settings, {
-        type: "array",
+        type: 'array',
         description: this._description,
         example: this._example,
         default: this._default
@@ -68,8 +68,8 @@ class ARRAY extends ANY {
 
   default(value) {
     if (isArray(value)) {
-      throw this._message.error("invalid_default_value", {
-        expected: "array",
+      throw this._message.error('invalid_default_value', {
+        expected: 'array',
         actual: typeof value
       });
     }

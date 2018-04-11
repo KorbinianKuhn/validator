@@ -1,6 +1,7 @@
-const { defaultTo } = require("./../../../utils/lodash");
-const { toObject } = require("./../../../utils/to-object");
-const { validate, validateSync } = require("./../validation/any");
+const { defaultTo } = require('./../../../utils/lodash');
+const { toObject } = require('./../../../utils/to-object');
+const { validate, validateSync } = require('./../validation/any');
+const { isFunction } = require('./../../../utils/lodash');
 
 class ANY {
   constructor(options, defaults) {
@@ -28,7 +29,7 @@ class ANY {
       });
     } else {
       return Object.assign(settings, {
-        type: "any",
+        type: 'any',
         description: this._description,
         example: this._example,
         default: this._default
@@ -48,8 +49,8 @@ class ANY {
     if (required !== undefined) {
       console.warn(
         this._message.deprecated(
-          "required() with arguments",
-          "required() and optional()"
+          'required() with arguments',
+          'required() and optional()'
         )
       );
       this._required = required;
@@ -95,7 +96,9 @@ class ANY {
   }
 
   func(func) {
-    // TODO check if is function
+    if (!isFunction(func)) {
+      throw this._message.error('not_a_function', {}, { configuration: true });
+    }
     this._func = func;
     return this;
   }

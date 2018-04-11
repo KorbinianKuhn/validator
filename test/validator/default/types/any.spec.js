@@ -1,44 +1,71 @@
-const chai = require("chai");
-const chaiAsPromised = require("chai-as-promised");
-const { Validator } = require("./../../../../index");
+import test from 'ava';
+import { Validator } from './../../../../index';
 
-chai.use(chaiAsPromised);
-const should = chai.should();
+const validator = Validator();
 
-describe("Any()", () => {
-  const validator = Validator();
+test('should return default options', t => {
+  const actual = validator.Any().options();
 
-  it("validate() should verify", async () => {
-    await validator
-      .Any()
-      .validate("test")
-      .should.eventually.equal("test");
-  });
+  const expected = {
+    type: 'any',
+    default: undefined,
+    description: undefined,
+    example: undefined,
+    not: undefined,
+    only: undefined,
+    required: true,
+    parse: true
+  };
 
-  it("validateSync() should verify", async () => {
-    validator
-      .Any()
-      .validateSync("test")
-      .should.equal("test");
-  });
+  t.deepEqual(actual, expected);
+});
 
-  it("toObject() should contain all settings", async () => {
-    const actual = validator
-      .Any()
-      .default("default")
-      .description("description")
-      .example("example")
-      .parse(false)
-      .required(false)
-      .toObject();
-    const expected = {
-      type: "any",
-      default: "default",
-      description: "description",
-      example: "example",
-      parse: false,
-      required: false
-    };
-    actual.should.deep.equal(expected);
-  });
+test('should return set options', t => {
+  const actual = validator
+    .Any()
+    .default('default')
+    .description('description')
+    .example('example')
+    .not(['not'])
+    .only(['only'])
+    .optional()
+    .parse(false)
+    .options();
+
+  const expected = {
+    type: 'any',
+    default: 'default',
+    description: 'description',
+    example: 'example',
+    not: ['not'],
+    only: ['only'],
+    required: false,
+    parse: false
+  };
+
+  t.deepEqual(actual, expected);
+});
+
+test('should return options for validation', t => {
+  const func = () => {};
+
+  const actual = validator
+    .Any()
+    .default('default')
+    .not(['not'])
+    .only(['only'])
+    .func(func)
+    .options({ validation: true });
+
+  const expected = {
+    defaultValue: 'default',
+    not: ['not'],
+    only: ['only'],
+    required: true,
+    parse: true,
+    func: func,
+    message: validator._message
+  };
+
+  t.deepEqual(actual, expected);
 });

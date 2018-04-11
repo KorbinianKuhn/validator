@@ -1,25 +1,25 @@
-const _ = require("./../../utils/lodash");
-const { Validator } = require("./../default/validator");
-const middleware = require("./middleware");
+const _ = require('./../../utils/lodash');
+const { Validator } = require('./../default/validator');
+const middleware = require('./middleware');
 
 const TYPES = [
-  "ANY",
-  "ARRAY",
-  "BOOLEAN",
-  "DATE",
-  "NUMBER",
-  "OBJECT",
-  "STRING",
-  "REQUEST",
-  "RESPONSE"
+  'ANY',
+  'ARRAY',
+  'BOOLEAN',
+  'DATE',
+  'NUMBER',
+  'OBJECT',
+  'STRING',
+  'REQUEST',
+  'RESPONSE'
 ];
 
-const { BODY_OPTIONS, QUERY_OPTIONS, URI_OPTIONS } = require("./settings");
+const { BODY_OPTIONS, QUERY_OPTIONS, URI_OPTIONS } = require('./options');
 
 class ExpressValidator extends Validator {
   constructor(options) {
-    options.messages = "default";
-    options.type = "express";
+    options.messages = 'default';
+    options.type = 'express';
     super(options);
     this._types = TYPES;
   }
@@ -58,7 +58,7 @@ class ExpressValidator extends Validator {
         _.defaults({}, BODY_OPTIONS, this._options, this._defaults)
       );
     } else {
-      throw new Error("Only plain object or array is allowed");
+      throw new Error('Only plain object or array is allowed');
     }
   }
 

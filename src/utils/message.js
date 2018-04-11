@@ -1,4 +1,5 @@
-const { en } = require("./../locales");
+const { en } = require('./../locales');
+const { ValueError } = require('./error');
 
 class Message {
   constructor(locale) {
@@ -8,19 +9,26 @@ class Message {
   get(code, replacements) {
     let text = this._locale[code];
     if (!text) {
-      return "Invalid.";
+      return 'Invalid.';
     } else {
       for (const key in replacements) {
-        text = text.replace(new RegExp(`{{${key}}}`, "g"), replacements[key]);
+        text = text.replace(new RegExp(`{{${key}}}`, 'g'), replacements[key]);
       }
       return text;
     }
   }
 
-  error(code, replacements) {
-    return new Error(
-      `Validator configuration error: ${this.get(code, replacements)}`
-    );
+  error(code, replacements, options = {}) {
+    let message;
+    if (options.configuration) {
+      message = `Validator configuration error: ${this.get(
+        code,
+        replacements
+      )}`;
+    } else {
+      message = this.get(code, replacements);
+    }
+    return new ValueError(message, code);
   }
 
   deprecated(functionName, suggestion) {

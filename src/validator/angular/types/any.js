@@ -1,5 +1,5 @@
-const { ANY } = require("./../../default/types/any");
-const { validate, validateSync } = require("./../../default/validation/any");
+const { ANY } = require('./../../default/types/any');
+const { validate, validateSync } = require('./../../default/validation/any');
 
 class ANY_ANGULAR extends ANY {
   constructor(options, defaults) {
@@ -9,7 +9,7 @@ class ANY_ANGULAR extends ANY {
   validate() {
     return async formControl => {
       try {
-        const value = formControl.value === "" ? null : formControl.value;
+        const value = formControl.value === '' ? null : formControl.value;
         await validate(value, this);
         return null;
       } catch (err) {
@@ -21,7 +21,7 @@ class ANY_ANGULAR extends ANY {
   validateSync() {
     return formControl => {
       try {
-        const value = formControl.value === "" ? null : formControl.value;
+        const value = formControl.value === '' ? null : formControl.value;
         validateSync(value, this);
         return null;
       } catch (err) {

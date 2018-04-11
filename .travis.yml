@@ -14,7 +14,7 @@ before_script:
 - npm install
 
 script:
-- npm run coveralls
+- npm run test:coveralls
 
 after_script: 
 - greenkeeper-lockfile-upload

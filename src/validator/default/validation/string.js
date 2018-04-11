@@ -1,54 +1,49 @@
-const { isNil, isString } = require("./../../../utils/lodash");
+const { isNil, isString } = require('./../../../utils/lodash');
 
 const validateSync = (exports.validateSync = (
   value,
-  {
-    defaultValue,
-    required,
-    message,
-    parse,
-    trim,
-    empty,
-    min,
-    max,
-    length,
-    pattern
-  }
+  { defaultValue, required, message, trim, empty, min, max, length, pattern }
 ) => {
   if (isNil(value)) {
     if (defaultValue) {
       return defaultValue;
     } else if (required) {
-      throw message.get("required", { value });
+      throw message.error('required', { value });
     } else {
       return value;
     }
   }
 
   if (!isString(value)) {
-    throw message.get("wrong_type", { expected: "string", actual: value });
+    throw message.error('wrong_type', { expected: 'string', actual: value });
   }
 
   if (trim) {
     value = value.trim();
   }
 
-  if (value === "" && empty === false) {
-    throw message.get("string_empty");
+  if (value === '' && empty === false) {
+    throw message.error('string_empty');
   }
 
   if (min || max || length) {
     const stringLength = value.length;
     if (min && stringLength < min) {
-      throw message.get("string_min", { expected: min, actual: stringLength });
+      throw message.error('string_min', {
+        expected: min,
+        actual: stringLength
+      });
     }
 
     if (max && stringLength > max) {
-      throw message.get("string_max", { expected: max, actual: stringLength });
+      throw message.error('string_max', {
+        expected: max,
+        actual: stringLength
+      });
     }
 
     if (length && stringLength !== length) {
-      throw message.get("string_length", {
+      throw message.error('string_length', {
         expected: length,
         actual: stringLength
       });

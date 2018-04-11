@@ -5,7 +5,7 @@ const {
   uniqWith,
   isEqual,
   keys
-} = require("./../../../utils/lodash");
+} = require('./../../../utils/lodash');
 
 const validateItemsSync = (value, { itemSchema }) => {
   if (itemSchema !== undefined) {
@@ -70,7 +70,7 @@ const validateArray = (exports.validateSync = (
     if (defaultValue) {
       return defaultValue;
     } else if (required) {
-      throw message.get("required", { value });
+      throw message.error('required', { value });
     } else {
       return value;
     }
@@ -80,33 +80,33 @@ const validateArray = (exports.validateSync = (
     try {
       value = JSON.parse(value);
     } catch (err) {
-      value = value.split(",");
+      value = value.split(',');
     }
   }
 
   if (!isArray(value)) {
-    throw message.get("wrong_type", {
-      expected: "array",
+    throw message.get('wrong_type', {
+      expected: 'array',
       actual: typeof value
     });
   }
 
   if (empty === false && value.length === 0) {
-    throw message.get("array_empty");
+    throw message.get('array_empty');
   }
 
   if (min || max || length) {
     const arrayLength = value.length;
     if (min && arrayLength < min) {
-      throw message.get("array_min", { expected: min, actual: arrayLength });
+      throw message.get('array_min', { expected: min, actual: arrayLength });
     }
 
     if (max && arrayLength > max) {
-      throw message.get("array_max", { expected: max, actual: arrayLength });
+      throw message.get('array_max', { expected: max, actual: arrayLength });
     }
 
     if (length && arrayLength !== length) {
-      throw message.get("array_length", {
+      throw message.get('array_length', {
         expected: length,
         actual: arrayLength
       });
@@ -114,7 +114,7 @@ const validateArray = (exports.validateSync = (
   }
 
   if (unique && uniqWith(value, isEqual).length !== value.length) {
-    throw message.get("array_duplicate_items");
+    throw message.get('array_duplicate_items');
   }
 
   return value;

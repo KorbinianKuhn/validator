@@ -1,19 +1,29 @@
-const { isNil, isBoolean } = require("./../../../utils/lodash");
-const { validateFunctionSync, validateFunctionAsync } = require("./any");
+const { isNil, isBoolean } = require('./../../../utils/lodash');
+const {
+  validateFunctionSync,
+  validateFunctionAsync,
+  validateOnly,
+  validateNot,
+  validateRequired
+} = require('./any');
 
-const FALSES = ["0", 0, "false"];
-const TRUES = ["1", 1, "true"];
+const FALSES = ['0', 0, 'false'];
+const TRUES = ['1', 1, 'true'];
 
-const validateBoolean = (value, defaultValue, required, message, parse) => {
-  if (isNil(value)) {
-    if (defaultValue) {
-      return defaultValue;
-    } else if (required) {
-      throw message.get("required", { value });
-    } else {
-      return value;
-    }
+const validateBoolean = ({
+  value,
+  defaultValue,
+  required,
+  message,
+  parse,
+  not,
+  only
+}) => {
+  if (isNil(value) && !isNil(defaultValue)) {
+    return defaultValue;
   }
+
+  validateRequired(value, required, message);
 
   if (parse) {
     if (TRUES.indexOf(value) !== -1) {
@@ -23,8 +33,11 @@ const validateBoolean = (value, defaultValue, required, message, parse) => {
     }
   }
 
+  validateOnly(only, value, message);
+  validateNot(not, value, message);
+
   if (!isBoolean(value)) {
-    throw message.get("wrong_type", { expected: "boolean", actual: value });
+    throw message.error('wrong_type', { expected: 'boolean', actual: value });
   }
 
   return value;
