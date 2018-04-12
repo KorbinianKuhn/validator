@@ -1,25 +1,11 @@
 const {
-  defaultTo,
+  defaultToAny,
   isPlainObject,
-  set,
-  has,
-  merge,
   isFunction
 } = require("./../../../utils/lodash");
 const { ANY } = require("./any");
 const { validate, validateSync } = require("./../validation/object");
 const { toObject } = require("./../../../utils/to-object");
-
-const ALLOWED_CONDITIONS = [
-  "gt",
-  "equals",
-  "lt",
-  "gte",
-  "lte",
-  "notEquals",
-  "dependsOn",
-  "xor"
-];
 
 class OBJECT extends ANY {
   constructor(object, options, defaults) {
@@ -34,11 +20,16 @@ class OBJECT extends ANY {
     }
 
     this._object = object;
-    this._conditions = {};
-    this._empty = !defaultTo(options.noEmptyObjects, defaults.noEmptyObjects);
-    this._noUndefinedKeys = defaultTo(
-      options.noUndefinedKeys,
-      defaults.noUndefinedKeys
+    this._conditions = [];
+    this._empty = defaultToAny(
+      options.emptyObjects,
+      defaults.emptyObjects,
+      true
+    );
+    this._unknown = defaultToAny(
+      options.unknownObjectKeys,
+      defaults.unknownObjectKeys,
+      true
     );
   }
 
@@ -52,7 +43,7 @@ class OBJECT extends ANY {
       max: this._max,
       length: this._length,
       empty: this._empty,
-      noUndefinedKeys: this._noUndefinedKeys
+      unknown: this._unknown
     };
     if (options.validation) {
       return Object.assign(settings, {
@@ -83,54 +74,40 @@ class OBJECT extends ANY {
     return this;
   }
 
-  conditions(options) {
-    for (const key in options) {
-      if (!has(this._object, key)) throw `Object has no key '${key}'.`;
-      for (const method in options[key]) {
-        if (ALLOWED_CONDITIONS.indexOf(method) === -1)
-          throw `Object has no condition method '${method}'.`;
-        if (!has(this._object, options[key][method]))
-          throw `Object has no key '${options[key][method]}'.`;
-        if (has(this._conditions, key)) {
-          merge(this._conditions[key], options[key]);
-        } else {
-          this._conditions[key] = options[key];
-        }
-      }
-    }
-    return this;
-  }
-
   gt(a, b) {
-    return this.conditions(set({}, `${a}.gt`, b));
+    return this.conditions.push({ keyA: a, keyB: b, method: "gt" });
   }
 
   gte(a, b) {
-    return this.conditions(set({}, `${a}.gte`, b));
+    return this.conditions.push({ keyA: a, keyB: b, method: "gte" });
   }
 
   lt(a, b) {
-    return this.conditions(set({}, `${a}.lt`, b));
+    return this.conditions.push({ keyA: a, keyB: b, method: "lt" });
   }
 
   lte(a, b) {
-    return this.conditions(set({}, `${a}.lte`, b));
+    return this.conditions.push({ keyA: a, keyB: b, method: "lte" });
   }
 
   equals(a, b) {
-    return this.conditions(set({}, `${a}.equals`, b));
+    return this.conditions.push({ keyA: a, keyB: b, method: "equals" });
   }
 
   notEquals(a, b) {
-    return this.conditions(set({}, `${a}.notEquals`, b));
+    return this.conditions.push({ keyA: a, keyB: b, method: "notEquals" });
   }
 
   dependsOn(a, b) {
-    return this.conditions(set({}, `${a}.dependsOn`, b));
+    return this.conditions.push({ keyA: a, keyB: b, method: "dependsOn" });
   }
 
   xor(a, b) {
-    return this.conditions(set({}, `${a}.xor`, b));
+    return this.conditions.push({ keyA: a, keyB: b, method: "xor" });
+  }
+
+  or(a, b) {
+    return this.conditions.push({ keyA: a, keyB: b, method: "or" });
   }
 
   func(fn, ...keys) {

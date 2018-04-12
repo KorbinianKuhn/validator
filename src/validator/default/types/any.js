@@ -1,17 +1,27 @@
-const { defaultTo } = require("./../../../utils/lodash");
+const { defaultToAny } = require("./../../../utils/lodash");
 const { toObject } = require("./../../../utils/to-object");
 const { validate, validateSync } = require("./../validation/any");
 const { isFunction } = require("./../../../utils/lodash");
+const { Message } = require("./../../../utils/message");
 
 class ANY {
   constructor(options, defaults) {
-    this._message = defaultTo(options.message, defaults.message);
-    this._type = defaultTo(options.type, defaults.type);
-    this._required = defaultTo(
-      options.requiredAsDefault,
-      defaults.requiredAsDefault
+    this._message = defaultToAny(
+      options.message,
+      defaults.message,
+      Message("en")
     );
-    this._parse = defaultTo(options.parseToType, defaults.parseToType);
+    this._type = defaultToAny(options.type, defaults.type, "default");
+    this._required = defaultToAny(
+      options.requiredAsDefault,
+      defaults.requiredAsDefault,
+      false
+    );
+    this._parse = defaultToAny(
+      options.parseToType,
+      defaults.parseToType,
+      false
+    );
   }
 
   options(options = {}) {
@@ -45,18 +55,8 @@ class ANY {
     return validateSync(value, this.options({ validation: true }));
   }
 
-  required(required) {
-    if (required !== undefined) {
-      console.warn(
-        this._message.deprecated(
-          "required() with arguments",
-          "required() and optional()"
-        )
-      );
-      this._required = required;
-    } else {
-      this._required = true;
-    }
+  required() {
+    this._required = true;
     return this;
   }
 
@@ -97,7 +97,11 @@ class ANY {
 
   func(func) {
     if (!isFunction(func)) {
-      throw this._message.error("not_a_function", {}, { configuration: true });
+      throw this._message.error(
+        "invalid_function",
+        {},
+        { configuration: true }
+      );
     }
     this._func = func;
     return this;

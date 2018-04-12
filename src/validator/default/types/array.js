@@ -1,4 +1,4 @@
-const { defaultTo, isArray } = require("./../../../utils/lodash");
+const { defaultToAny, isArray } = require("./../../../utils/lodash");
 const { ANY } = require("./any");
 const { validate, validateSync } = require("./../validation/array");
 const { toObject } = require("./../../../utils/to-object");
@@ -7,7 +7,7 @@ class ARRAY extends ANY {
   constructor(type, options, defaults) {
     super(options, defaults);
     this._type = type; // TODO: check if valid schema type
-    this._empty = !defaultTo(options.noEmptyArrays, defaults.noEmptyArrays);
+    this._empty = defaultToAny(options.emptyArrays, defaults.emptyArrays, true);
   }
 
   options(options = {}) {
@@ -26,7 +26,8 @@ class ARRAY extends ANY {
       return Object.assign(settings, {
         defaultValue: this._default,
         message: this._message,
-        itemSchema: this._type
+        itemSchema: this._type,
+        func: this._func
       });
     } else {
       return Object.assign(settings, {
@@ -67,11 +68,17 @@ class ARRAY extends ANY {
   }
 
   default(value) {
-    if (isArray(value)) {
-      throw this._message.error("invalid_default_value", {
-        expected: "array",
-        actual: typeof value
-      });
+    if (!isArray(value)) {
+      throw this._message.error(
+        "invalid_default_value",
+        {
+          expected: "array",
+          actual: typeof value
+        },
+        {
+          configuration: true
+        }
+      );
     }
     this._default = value;
     return this;

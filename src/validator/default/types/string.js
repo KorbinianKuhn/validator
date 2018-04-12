@@ -1,12 +1,16 @@
-const { defaultTo, isString, isRegExp } = require("./../../../utils/lodash");
+const { defaultToAny, isString, isRegExp } = require("./../../../utils/lodash");
 const { ANY } = require("./any");
 const { validate, validateSync } = require("./../validation/string");
 
 class STRING extends ANY {
   constructor(options, defaults) {
     super(options, defaults);
-    this._empty = !defaultTo(options.noEmptyStrings, defaults.noEmptyStrings);
-    this._trim = defaultTo(options.trimStrings, defaults.trimStrings);
+    this._empty = defaultToAny(
+      options.emptyStrings,
+      defaults.emptyStrings,
+      true
+    );
+    this._trim = defaultToAny(options.trimStrings, defaults.trimStrings, false);
   }
 
   options(options = {}) {
@@ -25,7 +29,8 @@ class STRING extends ANY {
     if (options.validation) {
       return Object.assign(settings, {
         defaultValue: this._default,
-        message: this._message
+        message: this._message,
+        func: this._func
       });
     } else {
       return Object.assign(settings, {
@@ -72,7 +77,13 @@ class STRING extends ANY {
 
   regex(pattern) {
     if (!isRegExp(pattern)) {
-      throw this._message.error("not_a_regular_expression", { value: pattern });
+      throw this._message.error(
+        "invalid_regular_expression",
+        {
+          value: pattern
+        },
+        { configuration: true }
+      );
     }
     this._pattern = pattern;
     return this;
@@ -80,10 +91,14 @@ class STRING extends ANY {
 
   default(value) {
     if (!isString(value)) {
-      throw this._message.error("invalid_default_value", {
-        expected: "string",
-        actual: value
-      });
+      throw this._message.error(
+        "invalid_default_value",
+        {
+          expected: "string",
+          actual: typeof value
+        },
+        { configuration: true }
+      );
     }
     this._default = value;
     return this;

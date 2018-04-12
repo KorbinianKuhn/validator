@@ -1,31 +1,26 @@
 const {
   isNil,
+  isNotNil,
   isString,
   isPlainObject,
   keys,
   has,
   get,
   isEqual,
-  at
-} = require('./../../../utils/lodash');
+  isAsyncFunction
+} = require("./../../../utils/lodash");
+const { validateRequired } = require("./any");
+const { getErrorMessage } = require("./../../../../src/utils/error");
 
-const AsyncFunction = (async () => {}).constructor;
-const isAsyncFunction = func =>
-  (func instanceof AsyncFunction && AsyncFunction !== Function) === true;
-
-const validateObjectBeforeProperties = (exports.validateObjectBeforeProperties = (
+const validateObjectBeforeProperties = (
   value,
   { defaultValue, required, message, parse, empty, min, max, length }
 ) => {
-  if (isNil(value)) {
-    if (defaultValue) {
-      return defaultValue;
-    } else if (required) {
-      throw message.error('required', { value });
-    } else {
-      return value;
-    }
+  if (isNil(value) && isNotNil(defaultValue)) {
+    return defaultValue;
   }
+
+  validateRequired(value, required, message);
 
   if (parse && isString(value)) {
     try {
@@ -36,97 +31,216 @@ const validateObjectBeforeProperties = (exports.validateObjectBeforeProperties =
   }
 
   if (!isPlainObject(value)) {
-    throw message.get('wrong_type', { expected: 'object', actual: value });
+    throw message.get("wrong_type", {
+      expected: "object",
+      actual: typeof value
+    });
   }
 
   const numKeys = keys(value).length;
 
-  if (length === 0 && empty === false) {
-    throw message.get('empty_object');
+  if (numKeys === 0 && empty === false) {
+    throw message.error("object_empty");
   }
 
   if (min && numKeys < min) {
-    throw message.get('object_min', { expected: min, actual: numKeys });
+    throw message.get("object_min", { expected: min, actual: numKeys });
   }
 
   if (max && numKeys > max) {
-    throw message.get('object_max', { expected: max, actual: numKeys });
+    throw message.get("object_max", { expected: max, actual: numKeys });
   }
 
   if (length && numKeys !== length) {
-    throw message.get('object_length', { expected: length, actual: numKeys });
+    throw message.get("object_length", { expected: length, actual: numKeys });
   }
 
   return value;
-});
+};
 
-const validateObjectPropertiesSync = (exports.validateObjectPropertiesSync = (
-  errors,
-  value,
-  object
-) => {
+const validateObjectPropertiesSync = (value, object) => {
+  const errors = {};
+
   for (const key in object) {
     try {
-      const result = object[key].validate(value[key]);
-      if (!isNil(result)) {
-        value[key] = result;
-      }
+      value[key] = object[key].validateSync(value[key]);
     } catch (err) {
       errors[key] = err;
     }
   }
-});
 
-const validateObjectPropertiesAsync = (exports.validateObjectPropertiesAsync = async (
-  errors,
-  value,
-  object
-) => {
+  if (keys(errors).length > 0) {
+    throw errors;
+  }
+
+  return value;
+};
+
+const validateObjectPropertiesAsync = async (value, object) => {
+  const errors = {};
+
   for (const key in object) {
     try {
-      const result = await object[key].validate(value[key]);
-      if (!isNil(result)) {
-        value[key] = result;
-      }
+      value[key] = await object[key].validate(value[key]);
     } catch (err) {
       errors[key] = err;
     }
   }
-});
 
-const validateObjectAfterProperties = (exports.validateObjectBeforeProperties = (
-  errors,
+  if (keys(errors).length > 0) {
+    throw errors;
+  }
+
+  return value;
+};
+
+const validateObjectAfterProperties = (
   value,
-  { noUndefinedKeys, conditions, object, message }
+  { unknown, conditions, object, message }
 ) => {
-  if (noUndefinedKeys) {
+  if (unknown === false) {
+    const errors = {};
+
     for (const key in value) {
       if (!has(object, key)) {
-        errors[key] = message.get('object_unknown_key', { key });
+        errors[key] = message.get("object_unknown", { key });
+      }
+    }
+
+    if (keys(errors).length > 0) {
+      throw errors;
+    }
+  }
+
+  if (conditions) {
+    validateObjectConditions(message, value, conditions);
+  }
+};
+
+const isGreaterThan = (message, keyA, keyB, a, b) => {
+  if (isPlainObject(a) || isPlainObject(b)) {
+    return;
+  }
+
+  if (!(a > b)) {
+    throw message.get("condition_gt", { keyA, keyB });
+  }
+};
+
+const isGreaterOrEqualThan = (message, keyA, keyB, a, b) => {
+  if (isPlainObject(a) || isPlainObject(b)) {
+    return;
+  }
+
+  if (!(a >= b)) {
+    throw message.error("condition_gte", { keyA, keyB });
+  }
+};
+
+const isLessThan = (message, keyA, keyB, a, b) => {
+  if (isPlainObject(a) || isPlainObject(b)) {
+    return;
+  }
+
+  if (!(a < b)) {
+    throw message.error("condition_lt", { keyA, keyB });
+  }
+};
+
+const isLessOrEqualThan = (message, keyA, keyB, a, b) => {
+  if (isPlainObject(a) || isPlainObject(b)) {
+    return;
+  }
+
+  if (!(a <= b)) {
+    throw message.error("condition_lte", { keyA, keyB });
+  }
+};
+
+const isEqualCondition = (message, keyA, keyB, a, b) => {
+  if (!isEqual(a, b)) {
+    throw message.error("condition_equals", { keyA, keyB });
+  }
+};
+
+const isNotEqual = (message, keyA, keyB, a, b) => {
+  if (isEqual(a, b)) {
+    throw message.error("condition_not_equals", { keyA, keyB });
+  }
+};
+
+const xor = (message, keyA, keyB, a, b) => {
+  if (
+    (a !== undefined && b !== undefined) ||
+    (a === undefined && b === undefined)
+  ) {
+    throw message.error("condition_xor", { keyA, keyB });
+  }
+};
+
+const or = (message, keyA, keyB, a, b) => {
+  if (a !== undefined && b !== undefined) {
+    throw message.error("condition_or", { keyA, keyB });
+  }
+};
+
+const dependsOn = (message, keyA, keyB, a, b) => {
+  if (a !== undefined && b === undefined) {
+    throw message.error("condition_depends_on", { keyA, keyB });
+  }
+};
+
+const validateCondition = (message, method, keyA, keyB, a, b) => {
+  switch (method) {
+    case "gt":
+      return isGreaterThan(message, keyA, keyB, a, b);
+    case "gte":
+      return isGreaterOrEqualThan(message, keyA, keyB, a, b);
+    case "lt":
+      return isLessThan(message, keyA, keyB, a, b);
+    case "lte":
+      return isLessOrEqualThan(message, keyA, keyB, a, b);
+    case "equals":
+      return isEqualCondition(message, keyA, keyB, a, b);
+    case "notEquals":
+      return isNotEqual(message, keyA, keyB, a, b);
+    case "xor":
+      return xor(message, keyA, keyB, a, b);
+    case "or":
+      return or(message, keyA, keyB, a, b);
+    case "dependsOn":
+      return dependsOn(message, keyA, keyB, a, b);
+  }
+};
+
+const validateObjectConditions = (message, value, conditions) => {
+  const errors = {};
+
+  for (const condition of conditions) {
+    const keyA = condition.keyA;
+    const keyB = condition.keyB;
+    const a = get(value, keyA);
+    const b = get(value, keyB);
+    try {
+      validateCondition(message, condition.method, keyA, keyB, a, b);
+    } catch (err) {
+      if (keyA in errors) {
+        errors[keyA] = `${errors[keyA]} ${err}`;
+      } else {
+        errors[keyA] = err;
       }
     }
   }
 
-  // TODO check conditions
-  /*
-  if (conditions && keys(errors).length === 0) {
-    for (const key in conditions) {
-      try {
-        // TODO check condition
-        // compare(value, key, conditions[key], language, messages);
-      } catch (err) {
-        errors[key] = err;
-      }
-    }
-  } */
-});
+  if (keys(errors).length > 0) {
+    throw errors;
+  }
+};
 
-const validateObjectFunctionSync = (exports.validateObjectFunctionSync = async (
-  errors,
-  value,
-  func
-) => {
+const validateObjectFunctionSync = (value, func) => {
   if (func) {
+    const errors = {};
+
     const fn = func.fn;
     const values = [];
     for (const key of func.keys) {
@@ -135,17 +249,21 @@ const validateObjectFunctionSync = (exports.validateObjectFunctionSync = async (
     try {
       fn(...values);
     } catch (err) {
-      errors[`[${keys.join(', ')}]`] = err instanceof Error ? err.message : err;
+      errors[`[${func.keys.join(", ")}]`] = getErrorMessage(err);
+    }
+
+    if (keys(errors).length > 0) {
+      throw errors;
     }
   }
-});
 
-const validateObjectFunctionAsync = (exports.validateObjectFunctionAsync = async (
-  errors,
-  value,
-  func
-) => {
+  return value;
+};
+
+const validateObjectFunctionAsync = async (value, func) => {
   if (func) {
+    const errors = {};
+
     const fn = func.fn;
     const values = [];
     for (const key of func.keys) {
@@ -158,12 +276,18 @@ const validateObjectFunctionAsync = (exports.validateObjectFunctionAsync = async
         fn(...values);
       }
     } catch (err) {
-      errors[`[${keys.join(', ')}]`] = err instanceof Error ? err.message : err;
+      errors[`[${func.keys.join(", ")}]`] = getErrorMessage(err);
+    }
+
+    if (keys(errors).length > 0) {
+      throw errors;
     }
   }
-});
 
-exports.validateSync = (
+  return value;
+};
+
+const validateSync = (
   value,
   {
     defaultValue,
@@ -175,7 +299,9 @@ exports.validateSync = (
     max,
     length,
     object,
-    func
+    func,
+    unknown,
+    conditions
   }
 ) => {
   value = validateObjectBeforeProperties(value, {
@@ -188,21 +314,22 @@ exports.validateSync = (
     max,
     length
   });
-  const errors = {};
-  validateObjectPropertiesSync(errors, value, object);
 
-  validateObjectAfterProperties(errors, value, object);
+  value = validateObjectPropertiesSync(value, object);
 
-  validateObjectFunctionSync(errors, value, func);
+  validateObjectAfterProperties(value, {
+    unknown,
+    conditions,
+    message,
+    object
+  });
 
-  if (keys(errors).length > 0) {
-    throw errors;
-  } else {
-    return value;
-  }
+  validateObjectFunctionSync(value, func);
+
+  return value;
 };
 
-exports.validate = async (
+const validate = async (
   value,
   {
     defaultValue,
@@ -214,7 +341,9 @@ exports.validate = async (
     max,
     length,
     object,
-    func
+    func,
+    unknown,
+    conditions
   }
 ) => {
   value = validateObjectBeforeProperties(value, {
@@ -227,128 +356,30 @@ exports.validate = async (
     max,
     length
   });
-  const errors = {};
-  await validateObjectPropertiesAsync(errors, value, object);
 
-  validateObjectAfterProperties(errors, value, object);
+  value = await validateObjectPropertiesAsync(value, object);
 
-  await validateObjectFunctionAsync(errors, value, func);
+  validateObjectAfterProperties(value, {
+    unknown,
+    conditions,
+    message,
+    object
+  });
 
-  if (keys(errors).length > 0) {
-    throw errors;
-  } else {
-    return value;
-  }
-};
-/*
-const isGreaterThan = (keyA, keyB, a, b) => {
-  if (isPlainObject(a) || isPlainObject(b)) {
-    return;
-  }
+  validateObjectFunctionAsync(value, func);
 
-  if (!(a > b)) {
-    throw message.get('condition_gt', { keyA, keyB });
-  }
+  return value;
 };
 
-const isGreaterOrEqualThan = (keyA, keyB, a, b) => {
-  if (isPlainObject(a) || isPlainObject(b)) {
-    return;
-  }
-
-  if (!(a >= b)) {
-    throw message.get('condition_gte', { keyA, keyB });
-  }
+module.exports = {
+  validate,
+  validateSync,
+  validateObjectBeforeProperties,
+  validateObjectPropertiesSync,
+  validateObjectPropertiesAsync,
+  validateObjectAfterProperties,
+  validateCondition,
+  validateObjectConditions,
+  validateObjectFunctionSync,
+  validateObjectFunctionAsync
 };
-
-const isLessThan = (keyA, keyB, a, b) => {
-  if (isPlainObject(a) || isPlainObject(b)) {
-    return;
-  }
-
-  if (!(a < b)) {
-    throw message.get('condition_lt', { keyA, keyB });
-  }
-};
-
-const isLessOrEqualThan = (keyA, keyB, a, b) => {
-  if (isPlainObject(a) || isPlainObject(b)) {
-    return;
-  }
-
-  if (!(a <= b)) {
-    throw message.get('condition_lte', { keyA, keyB });
-  }
-};
-
-const isEqual = (keyA, keyB, a, b) => {
-  if (!_.isEqual(a, b)) {
-    throw message.get('condition_equals', { keyA, keyB });
-  }
-};
-
-const isNotEqual = (keyA, keyB, a, b) => {
-  if (_.isEqual(a, b)) {
-    throw message.get('condition_not_equals', { keyA, keyB });
-  }
-};
-
-const xor = (keyA, keyB, a, b) => {
-  if (
-    (a !== undefined && b !== undefined) ||
-    (a === undefined && b === undefined)
-  ) {
-    throw message.get('condition_xor', { keyA, keyB });
-  }
-};
-
-const dependsOn = (keyA, keyB, a, b) => {
-  if (a !== undefined && b === undefined) {
-    throw message.get('condition_depends_on', { keyA, keyB });
-  }
-};
-
-const validateCondition = (method, keyA, keyB, a, b) => {
-  switch (method) {
-    case 'gt':
-      return isGreaterThan(keyA, keyB, a, b);
-    case 'get':
-      return isGreaterOrEqualThan(keyA, keyB, a, b);
-    case 'lt':
-      return isLessThan(keyA, keyB, a, b);
-    case 'lte':
-      return isLessOrEqualThan(keyA, keyB, a, b);
-    case 'equals':
-      return isEqual(keyA, keyB, a, b);
-    case 'notEquals':
-      return isNotEqual(keyA, keyB, a, b);
-    case 'xor':
-      return xor(keyA, keyB, a, b);
-    case 'dependsOn':
-      return dependsOn(keyA, keyB, a, b);
-  }
-};
-
-const validateObjectConditions = (value, conditions) => {
-  const errors = {};
-  for (const condition of conditions) {
-    const keyA = condition.keyA;
-    const keyB = condition.keyB;
-    const a = _.get(value, keyA);
-    const b = _.get(value, keyB);
-    try {
-      validateCondition(condition.method, keyA, keyB, a, b);
-    } catch (err) {
-      if (keyA in errors) {
-        errors[keyA] = `${errors[keyA]}, ${err}`;
-      } else {
-        errors[keyA] = err;
-      }
-    }
-  }
-
-  if (Object.keys(errors).length > 0) {
-    throw errors;
-  }
-};
-*/

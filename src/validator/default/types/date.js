@@ -1,4 +1,4 @@
-const { defaultTo } = require("./../../../utils/lodash");
+const { defaultToAny } = require("./../../../utils/lodash");
 const { ANY } = require("./any");
 const { validate, validateSync } = require("./../validation/date");
 const moment = require("moment");
@@ -20,11 +20,16 @@ const toMoment = (message, date, utc, format, strict) => {
 class DATE extends ANY {
   constructor(options, defaults) {
     super(options, defaults);
-    this._format = defaultTo(options.dateFormat, defaults.dateFormat);
-    this._utc = defaultTo(options.utc, defaults.utc);
-    this._strict = defaultTo(
+    this._format = defaultToAny(
+      options.dateFormat,
+      defaults.dateFormat,
+      "YYYY-MM-DD[T]HH:mm:ss.SSSZ"
+    );
+    this._utc = defaultToAny(options.utc, defaults.utc, false);
+    this._strict = defaultToAny(
       options.strictDateValidation,
-      defaults.strictDateValidation
+      defaults.strictDateValidation,
+      false
     );
   }
 

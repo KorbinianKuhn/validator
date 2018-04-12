@@ -25,7 +25,8 @@ class NUMBER extends ANY {
     if (options.validation) {
       return Object.assign(settings, {
         defaultValue: this._default,
-        message: this._message
+        message: this._message,
+        func: this._func
       });
     } else {
       return Object.assign(settings, {
@@ -83,16 +84,24 @@ class NUMBER extends ANY {
   default(value) {
     if (this._integer) {
       if (!isInteger(value)) {
-        throw this._message.error("invalid_default_value", {
-          expected: "integer",
-          actual: value
-        });
+        throw this._message.error(
+          "invalid_default_value",
+          {
+            expected: "integer",
+            actual: typeof value
+          },
+          { configuration: true }
+        );
       }
     } else if (!isNumber(value)) {
-      throw this._message.error("invalid_default_value", {
-        expected: "number",
-        actual: value
-      });
+      throw this._message.error(
+        "invalid_default_value",
+        {
+          expected: "number",
+          actual: typeof value
+        },
+        { configuration: true }
+      );
     }
 
     this._default = value;

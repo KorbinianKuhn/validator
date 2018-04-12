@@ -13,6 +13,8 @@ module.exports = {
   not: "Is not allowed.",
   invalid_default_value:
     "Default value must be type {{expected}} but is {{actual}}.",
+  invalid_function: "Must be a function.",
+  invalid_regular_expression: "Must be a regular expression.",
   string_empty: "String is empty.",
   string_min: "Must have at least {{expected}} characters.",
   string_max: "Must have at most {{expected}} characters.",
@@ -37,5 +39,19 @@ module.exports = {
   number_negative: "Must be a negative number.",
   date_invalid: "Must be a valid date with the format {{format}}.",
   date_min: "Must be at minimum {{min}}.",
-  date_max: "Must be at maximum {{max}}."
+  date_max: "Must be at maximum {{max}}.",
+  object_min: "Must have at least {{expected}} keys.",
+  object_max: "Must have at most {{expected}} keys.",
+  object_length: "Must have exactly {{expected}} keys.",
+  object_empty: "Object is empty.",
+  object_unknown: "Unknown key.",
+  condition_gt: "Must be greater than {{keyB}}.",
+  condition_gte: "Must be greater than or equal {{keyB}}.",
+  condition_lt: "Must be less than {{keyB}}.",
+  condition_lte: "Must be less than or equal {{keyB}}.",
+  condition_equals: "Must equal {{keyB}}.",
+  condition_not_equals: "Must not equal {{keyB}}.",
+  condition_xor: "Either {{keyA}} or {{keyB}} must be set.",
+  condition_or: "Either {{keyA}} or {{keyB}} can be set.",
+  condition_depends_on: "Depends on {{keyB}}."
 };

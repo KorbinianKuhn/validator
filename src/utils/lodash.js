@@ -8,23 +8,33 @@ const isFunction = require("lodash/isFunction");
 const isNil = require("lodash/isNil");
 const get = require("lodash/get");
 const set = require("lodash/set");
-const at = require("lodash/at");
 const has = require("lodash/has");
-const keys = require("lodash/keys");
 const defaults = require("lodash/defaults");
 const hasIn = require("lodash/hasIn");
 const isNumber = require("lodash/isNumber");
 const cloneDeep = require("lodash/cloneDeep");
 const pickBy = require("lodash/pickBy");
 const uniqWith = require("lodash/uniqWith");
+const isEqual = require("lodash/isEqual");
+const isRegExp = require("lodash/isRegExp");
 
 const AsyncFunction = (async () => {}).constructor;
 const isAsyncFunction = func => func instanceof AsyncFunction;
 
 const isNotNil = value => !isNil(value);
 
+const keys = Object.keys;
+
+const defaultToAny = (...values) => {
+  for (const value of values) {
+    if (isNotNil(value)) return value;
+  }
+  return undefined;
+};
+
 module.exports = {
   defaultTo,
+  defaultToAny,
   isString,
   isBoolean,
   isInteger,
@@ -34,7 +44,6 @@ module.exports = {
   isNil,
   get,
   set,
-  at,
   has,
   keys,
   defaults,
@@ -44,5 +53,7 @@ module.exports = {
   pickBy,
   isAsyncFunction,
   isNotNil,
-  uniqWith
+  uniqWith,
+  isEqual,
+  isRegExp
 };
