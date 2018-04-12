@@ -1,7 +1,7 @@
-const { defaultTo } = require('./../../../utils/lodash');
-const { ANY } = require('./any');
-const { validate, validateSync } = require('./../validation/date');
-const moment = require('moment');
+const { defaultTo } = require("./../../../utils/lodash");
+const { ANY } = require("./any");
+const { validate, validateSync } = require("./../validation/date");
+const moment = require("moment");
 
 const toMoment = (message, date, utc, format, strict) => {
   const momentDate = utc
@@ -47,12 +47,12 @@ class DATE extends ANY {
       });
     } else {
       return Object.assign(settings, {
-        type: 'date',
+        type: "date",
         description: this._description,
         example: this._example,
         default: this._default,
-        min: this._min ? this._min.toISOString() : undefined,
-        max: this._max ? this._max.toISOString() : undefined
+        min: this._min ? this._min : undefined,
+        max: this._max ? this._max : undefined
       });
     }
   }
@@ -93,7 +93,7 @@ class DATE extends ANY {
       this._utc,
       this._format,
       this._strict
-    );
+    ).toISOString();
     return this;
   }
 
@@ -104,7 +104,7 @@ class DATE extends ANY {
       this._utc,
       this._format,
       this._strict
-    );
+    ).toISOString();
     return this;
   }
 }

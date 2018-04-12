@@ -1,25 +1,20 @@
-const { isNil, isBoolean } = require('./../../../utils/lodash');
+const { isNil, isNotNil, isBoolean } = require("./../../../utils/lodash");
 const {
   validateFunctionSync,
   validateFunctionAsync,
   validateOnly,
   validateNot,
   validateRequired
-} = require('./any');
+} = require("./any");
 
-const FALSES = ['0', 0, 'false'];
-const TRUES = ['1', 1, 'true'];
+const FALSES = ["0", 0, "false"];
+const TRUES = ["1", 1, "true"];
 
-const validateBoolean = ({
+const validateBoolean = (
   value,
-  defaultValue,
-  required,
-  message,
-  parse,
-  not,
-  only
-}) => {
-  if (isNil(value) && !isNil(defaultValue)) {
+  { defaultValue, required, message, parse, not, only }
+) => {
+  if (isNil(value) && isNotNil(defaultValue)) {
     return defaultValue;
   }
 
@@ -37,19 +32,42 @@ const validateBoolean = ({
   validateNot(not, value, message);
 
   if (!isBoolean(value)) {
-    throw message.error('wrong_type', { expected: 'boolean', actual: value });
+    throw message.error("wrong_type", {
+      expected: "boolean",
+      actual: typeof value
+    });
   }
 
   return value;
 };
 
-const validateSync = (value, { defaultValue, required, message, func }) => {
-  value = validateBoolean(value, defaultValue, required, message);
+const validateSync = (
+  value,
+  { defaultValue, required, message, func, parse, not, only }
+) => {
+  value = validateBoolean(value, {
+    defaultValue,
+    required,
+    message,
+    parse,
+    not,
+    only
+  });
   return validateFunctionSync(func, value);
 };
 
-const validate = async (value, { defaultValue, required, message, func }) => {
-  value = validateBoolean(value, defaultValue, required, message);
+const validate = async (
+  value,
+  { defaultValue, required, message, func, parse, not, only }
+) => {
+  value = validateBoolean(value, {
+    defaultValue,
+    required,
+    message,
+    parse,
+    not,
+    only
+  });
   return validateFunctionAsync(func, value);
 };
 

@@ -1,44 +1,53 @@
-const { isNil } = require('./../../../utils/lodash');
-const moment = require('moment');
-const { validateFunctionSync, validateFunctionAsync } = require('./any');
+const { isNil, isNotNil } = require("./../../../utils/lodash");
+const moment = require("moment");
+const {
+  validateFunctionSync,
+  validateFunctionAsync,
+  validateOnly,
+  validateNot,
+  validateRequired
+} = require("./any");
 
 const validateDate = (
   value,
-  defaultValue,
-  required,
-  message,
-  parse,
-  utc,
-  format,
-  strict,
-  min,
-  max
-) => {
-  if (isNil(value)) {
-    if (defaultValue) {
-      return defaultValue;
-    } else if (required) {
-      throw message.error('required', { value });
-    } else {
-      return value;
-    }
+  {
+    defaultValue,
+    required,
+    message,
+    parse,
+    utc,
+    format,
+    strict,
+    min,
+    max,
+    only,
+    not
   }
+) => {
+  if (isNil(value) && isNotNil(defaultValue)) {
+    return defaultValue;
+  }
+
+  validateRequired(value, required, message);
 
   const date = utc
-    ? moment.utc(date, format, strict)
-    : moment(date, format, strict);
+    ? moment.utc(value, format, strict)
+    : moment(value, format, strict);
 
   if (!date.isValid()) {
-    throw message.error('date', 'invalid', format);
+    throw message.error("date_invalid", { format });
   }
 
-  if (min && date.toDate() < min) {
-    throw message.error('date_min', { expected: min.toISOString() });
+  if (min && date.toISOString() < min) {
+    throw message.error("date_min", { min });
   }
 
-  if (max && date.toDate() > max) {
-    throw message.error('date_max', { expected: max.toISOString() });
+  if (max && date.toISOString() > max) {
+    throw message.error("date_max", { max });
   }
+
+  validateOnly(only, value, message);
+  validateNot(not, value, message);
 
   if (parse) {
     value = date.toDate();
@@ -59,11 +68,12 @@ const validateSync = (
     strict,
     min,
     max,
+    only,
+    not,
     func
   }
 ) => {
-  value = validateDate(
-    value,
+  value = validateDate(value, {
     defaultValue,
     required,
     message,
@@ -72,8 +82,10 @@ const validateSync = (
     format,
     strict,
     min,
-    max
-  );
+    max,
+    only,
+    not
+  });
   return validateFunctionSync(func, value);
 };
 
@@ -89,11 +101,12 @@ const validate = async (
     strict,
     min,
     max,
+    only,
+    not,
     func
   }
 ) => {
-  value = validateDate(
-    value,
+  value = validateDate(value, {
     defaultValue,
     required,
     message,
@@ -102,8 +115,10 @@ const validate = async (
     format,
     strict,
     min,
-    max
-  );
+    max,
+    only,
+    not
+  });
   return validateFunctionAsync(func, value);
 };
 

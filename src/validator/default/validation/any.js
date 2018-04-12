@@ -1,14 +1,14 @@
-const { isNil, defaultTo } = require('./../../../utils/lodash');
-const { toError } = require('./../../../utils/error');
+const { isNil, isNotNil, defaultTo } = require("./../../../utils/lodash");
+const { getErrorMessage } = require("./../../../utils/error");
 
 const validateRequired = (value, required, message) => {
   if (isNil(value) && required) {
-    throw message.error('required', { value });
+    throw message.error("required", { value });
   }
 };
 
-const validateAny = ({ value, defaultValue, required, message, not, only }) => {
-  if (isNil(value) && !isNil(defaultValue)) {
+const validateAny = (value, { defaultValue, required, message, not, only }) => {
+  if (isNil(value) && isNotNil(defaultValue)) {
     return defaultValue;
   }
 
@@ -24,7 +24,7 @@ const validateFunctionSync = (func, value) => {
     try {
       return defaultTo(func(value), value);
     } catch (err) {
-      throw toError(err);
+      throw getErrorMessage(err);
     }
   }
 
@@ -34,9 +34,9 @@ const validateFunctionSync = (func, value) => {
 const validateFunctionAsync = async (func, value) => {
   if (func) {
     const result = await Promise.resolve(func(value)).catch(err => {
-      throw toError(err);
+      throw getErrorMessage(err);
     });
-    return result === undefined ? value : result;
+    return defaultTo(result, value);
   } else {
     return value;
   }
@@ -44,13 +44,13 @@ const validateFunctionAsync = async (func, value) => {
 
 const validateOnly = (only, value, message) => {
   if (only && only.indexOf(value) === -1) {
-    throw message.error('only', { value, only });
+    throw message.error("only", { value, only: only.join(", ") });
   }
 };
 
 const validateNot = (not, value, message) => {
   if (not && not.indexOf(value) !== -1) {
-    throw message.error('not', { value, not });
+    throw message.error("not", { value, not: not.join(", ") });
   }
 };
 
@@ -58,7 +58,7 @@ const validateSync = (
   value,
   { defaultValue, required, message, not, only, func }
 ) => {
-  value = validateAny({ value, defaultValue, required, message, not, only });
+  value = validateAny(value, { defaultValue, required, message, not, only });
   return validateFunctionSync(func, value);
 };
 
@@ -66,7 +66,7 @@ const validate = async (
   value,
   { defaultValue, required, message, not, only, func }
 ) => {
-  value = validateAny({ value, defaultValue, required, message, not, only });
+  value = validateAny(value, { defaultValue, required, message, not, only });
   return validateFunctionAsync(func, value);
 };
 

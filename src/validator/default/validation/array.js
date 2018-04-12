@@ -1,13 +1,19 @@
 const {
   isNil,
+  isNotNil,
   isArray,
   isString,
   uniqWith,
   isEqual,
   keys
-} = require('./../../../utils/lodash');
+} = require("./../../../utils/lodash");
+const {
+  validateFunctionSync,
+  validateFunctionAsync,
+  validateRequired
+} = require("./any");
 
-const validateItemsSync = (value, { itemSchema }) => {
+const validateItemsSync = (value, itemSchema) => {
   if (itemSchema !== undefined) {
     const errors = {};
 
@@ -29,7 +35,7 @@ const validateItemsSync = (value, { itemSchema }) => {
   }
 };
 
-const validateItemsAsync = async (value, { itemSchema }) => {
+const validateItemsAsync = async (value, itemSchema) => {
   if (itemSchema !== undefined) {
     const errors = {};
 
@@ -51,7 +57,7 @@ const validateItemsAsync = async (value, { itemSchema }) => {
   }
 };
 
-const validateArray = (exports.validateSync = (
+const validateArray = (
   value,
   {
     defaultValue,
@@ -63,50 +69,47 @@ const validateArray = (exports.validateSync = (
     min,
     max,
     length,
-    itemSchema
+    not,
+    only
   }
 ) => {
-  if (isNil(value)) {
-    if (defaultValue) {
-      return defaultValue;
-    } else if (required) {
-      throw message.error('required', { value });
-    } else {
-      return value;
-    }
+  if (isNil(value) && isNotNil(defaultValue)) {
+    return defaultValue;
   }
+
+  validateRequired(value, required, message);
 
   if (parse && isString(value)) {
     try {
       value = JSON.parse(value);
     } catch (err) {
-      value = value.split(',');
+      value = value.split(",");
     }
   }
 
   if (!isArray(value)) {
-    throw message.get('wrong_type', {
-      expected: 'array',
+    throw message.error("wrong_type", {
+      expected: "array",
       actual: typeof value
     });
   }
 
   if (empty === false && value.length === 0) {
-    throw message.get('array_empty');
+    throw message.error("array_empty");
   }
 
   if (min || max || length) {
     const arrayLength = value.length;
     if (min && arrayLength < min) {
-      throw message.get('array_min', { expected: min, actual: arrayLength });
+      throw message.error("array_min", { expected: min, actual: arrayLength });
     }
 
     if (max && arrayLength > max) {
-      throw message.get('array_max', { expected: max, actual: arrayLength });
+      throw message.error("array_max", { expected: max, actual: arrayLength });
     }
 
     if (length && arrayLength !== length) {
-      throw message.get('array_length', {
+      throw message.error("array_length", {
         expected: length,
         actual: arrayLength
       });
@@ -114,43 +117,15 @@ const validateArray = (exports.validateSync = (
   }
 
   if (unique && uniqWith(value, isEqual).length !== value.length) {
-    throw message.get('array_duplicate_items');
+    throw message.error("array_duplicate_items");
   }
+
+  // TODO validateNot, validateOnly
 
   return value;
-});
-
-exports.validateSync = async (
-  value,
-  {
-    defaultValue,
-    required,
-    message,
-    parse,
-    unique,
-    empty,
-    min,
-    max,
-    length,
-    itemSchema
-  }
-) => {
-  value = validateArray(value, {
-    defaultValue,
-    required,
-    message,
-    parse,
-    unique,
-    empty,
-    min,
-    max,
-    length,
-    itemSchema
-  });
-  return validateItemsSync(value, { itemSchema });
 };
 
-exports.validate = async (
+const validateSync = (
   value,
   {
     defaultValue,
@@ -162,6 +137,9 @@ exports.validate = async (
     min,
     max,
     length,
+    not,
+    only,
+    func,
     itemSchema
   }
 ) => {
@@ -175,7 +153,54 @@ exports.validate = async (
     min,
     max,
     length,
-    itemSchema
+    not,
+    only
   });
-  return validateItemsAsync(value, { itemSchema });
+
+  value = validateItemsSync(value, itemSchema);
+  return validateFunctionSync(func, value);
+};
+
+const validate = async (
+  value,
+  {
+    defaultValue,
+    required,
+    message,
+    parse,
+    unique,
+    empty,
+    min,
+    max,
+    length,
+    not,
+    only,
+    func,
+    itemSchema
+  }
+) => {
+  value = validateArray(value, {
+    defaultValue,
+    required,
+    message,
+    parse,
+    unique,
+    empty,
+    min,
+    max,
+    length,
+    not,
+    only
+  });
+
+  value = await validateItemsAsync(value, itemSchema);
+  return validateFunctionAsync(func, value);
+};
+
+module.exports = {
+  validate,
+  validateSync,
+  validateArray,
+  validateItemsAsync,
+  validateItemsSync
 };

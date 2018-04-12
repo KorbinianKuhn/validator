@@ -1,12 +1,14 @@
 {
   "name": "@korbiniankuhn/validator",
   "version": "0.1.7",
-  "description": "Validate input parameters for expressjs, Angular and mongoose.",
+  "description":
+    "Validate input parameters for expressjs, Angular and mongoose.",
   "main": "index.js",
   "scripts": {
-    "test": "ava",
-    "test:coverage": "nyc --reporter=html ava",
-    "test:coveralls": "nyc ava && nyc report --reporter=text-lcov | coveralls",
+    "test": "mocha \"./test/**/*.spec.js\"",
+    "test:coverage": "nyc --reporter=html mocha \"./test/**/*.spec.js\"",
+    "test:coveralls":
+      "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -48,20 +50,15 @@
   },
   "dependencies": {
     "lodash": "^4.17.5",
-    "moment": "^2.20.1"
+    "mocha": "^5.0.5",
+    "moment": "^2.20.1",
+    "should": "^13.2.1"
   },
   "lint-staged": {
-    "*.{js,json,css,md}": [
-      "prettier --write",
-      "git add"
-    ]
+    "*.{js,json,css,md}": ["prettier --write", "git add"]
   },
-  "pre-commit": [
-    "lint-staged"
-  ],
+  "pre-commit": ["lint-staged"],
   "ava": {
-    "files": [
-      "test/**/*.spec.js"
-    ]
+    "files": ["test/**/*.spec.js"]
   }
 }

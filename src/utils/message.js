@@ -1,5 +1,5 @@
-const { en } = require('./../locales');
-const { ValueError } = require('./error');
+const { en } = require("./../locales");
+const { ValueError } = require("./error");
 
 class Message {
   constructor(locale) {
@@ -9,10 +9,10 @@ class Message {
   get(code, replacements) {
     let text = this._locale[code];
     if (!text) {
-      return 'Invalid.';
+      return "Invalid.";
     } else {
       for (const key in replacements) {
-        text = text.replace(new RegExp(`{{${key}}}`, 'g'), replacements[key]);
+        text = text.replace(new RegExp(`{{${key}}}`, "g"), replacements[key]);
       }
       return text;
     }
@@ -28,7 +28,7 @@ class Message {
     } else {
       message = this.get(code, replacements);
     }
-    return new ValueError(message, code);
+    return message;
   }
 
   deprecated(functionName, suggestion) {

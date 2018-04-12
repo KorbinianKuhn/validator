@@ -1,1 +1,1 @@
-exports.en = require('./en');
+exports.en = require("./en");

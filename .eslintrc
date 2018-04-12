@@ -1,9 +1,12 @@
 {
-  "extends": ["eslint:recommended", "plugin:ava/recommended", "prettier"],
+  "extends": ["eslint:recommended", "prettier"],
   "rules": {
-    "prettier/prettier": ["error", {
-      "singleQuote": true
-    }],
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": false
+      }
+    ],
     "no-console": "off"
   },
   "parserOptions": {
@@ -11,8 +14,9 @@
     "sourceType": "module"
   },
   "parser": "babel-eslint",
-  "plugins": ["ava", "prettier"],
+  "plugins": ["prettier"],
   "env": {
+    "mocha": true,
     "node": true
   }
 }
