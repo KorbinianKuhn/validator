@@ -32,7 +32,7 @@ const validateBoolean = (
   validateNot(not, value, message);
 
   if (!isBoolean(value)) {
-    throw message.error("wrong_type", {
+    throw message.get("wrong_type", {
       expected: "boolean",
       actual: typeof value
     });

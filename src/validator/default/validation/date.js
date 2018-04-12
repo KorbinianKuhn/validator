@@ -35,15 +35,15 @@ const validateDate = (
     : moment(value, format, strict);
 
   if (!date.isValid()) {
-    throw message.error("date_invalid", { format });
+    throw message.get("date_invalid", { format });
   }
 
   if (min && date.toISOString() < min) {
-    throw message.error("date_min", { min });
+    throw message.get("date_min", { min });
   }
 
   if (max && date.toISOString() > max) {
-    throw message.error("date_max", { max });
+    throw message.get("date_max", { max });
   }
 
   validateOnly(only, value, message);

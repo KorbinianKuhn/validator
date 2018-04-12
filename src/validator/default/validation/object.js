@@ -40,7 +40,7 @@ const validateObjectBeforeProperties = (
   const numKeys = keys(value).length;
 
   if (numKeys === 0 && empty === false) {
-    throw message.error("object_empty");
+    throw message.get("object_empty");
   }
 
   if (min && numKeys < min) {
@@ -133,7 +133,7 @@ const isGreaterOrEqualThan = (message, keyA, keyB, a, b) => {
   }
 
   if (!(a >= b)) {
-    throw message.error("condition_gte", { keyA, keyB });
+    throw message.get("condition_gte", { keyA, keyB });
   }
 };
 
@@ -143,7 +143,7 @@ const isLessThan = (message, keyA, keyB, a, b) => {
   }
 
   if (!(a < b)) {
-    throw message.error("condition_lt", { keyA, keyB });
+    throw message.get("condition_lt", { keyA, keyB });
   }
 };
 
@@ -153,19 +153,19 @@ const isLessOrEqualThan = (message, keyA, keyB, a, b) => {
   }
 
   if (!(a <= b)) {
-    throw message.error("condition_lte", { keyA, keyB });
+    throw message.get("condition_lte", { keyA, keyB });
   }
 };
 
 const isEqualCondition = (message, keyA, keyB, a, b) => {
   if (!isEqual(a, b)) {
-    throw message.error("condition_equals", { keyA, keyB });
+    throw message.get("condition_equals", { keyA, keyB });
   }
 };
 
 const isNotEqual = (message, keyA, keyB, a, b) => {
   if (isEqual(a, b)) {
-    throw message.error("condition_not_equals", { keyA, keyB });
+    throw message.get("condition_not_equals", { keyA, keyB });
   }
 };
 
@@ -174,19 +174,19 @@ const xor = (message, keyA, keyB, a, b) => {
     (a !== undefined && b !== undefined) ||
     (a === undefined && b === undefined)
   ) {
-    throw message.error("condition_xor", { keyA, keyB });
+    throw message.get("condition_xor", { keyA, keyB });
   }
 };
 
 const or = (message, keyA, keyB, a, b) => {
   if (a !== undefined && b !== undefined) {
-    throw message.error("condition_or", { keyA, keyB });
+    throw message.get("condition_or", { keyA, keyB });
   }
 };
 
 const dependsOn = (message, keyA, keyB, a, b) => {
   if (a !== undefined && b === undefined) {
-    throw message.error("condition_depends_on", { keyA, keyB });
+    throw message.get("condition_depends_on", { keyA, keyB });
   }
 };
 

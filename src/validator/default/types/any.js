@@ -97,11 +97,7 @@ class ANY {
 
   func(func) {
     if (!isFunction(func)) {
-      throw this._message.error(
-        "invalid_function",
-        {},
-        { configuration: true }
-      );
+      throw this._message.error("invalid_function", {});
     }
     this._func = func;
     return this;

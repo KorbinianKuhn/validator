@@ -77,13 +77,9 @@ class STRING extends ANY {
 
   regex(pattern) {
     if (!isRegExp(pattern)) {
-      throw this._message.error(
-        "invalid_regular_expression",
-        {
-          value: pattern
-        },
-        { configuration: true }
-      );
+      throw this._message.error("invalid_regular_expression", {
+        value: pattern
+      });
     }
     this._pattern = pattern;
     return this;
@@ -91,14 +87,10 @@ class STRING extends ANY {
 
   default(value) {
     if (!isString(value)) {
-      throw this._message.error(
-        "invalid_default_value",
-        {
-          expected: "string",
-          actual: typeof value
-        },
-        { configuration: true }
-      );
+      throw this._message.error("invalid_default_value", {
+        expected: "string",
+        actual: typeof value
+      });
     }
     this._default = value;
     return this;

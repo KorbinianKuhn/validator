@@ -1,5 +1,7 @@
 module.exports = {
+  configuration_error: "Validator configuration error",
   validation_error: "Bad Request. Input parameters and/or values are wrong.",
+  unknown_locale: "Unknown locale {{locale}}.",
   invalid_schema: "Invalid schema.",
   unknown_schema: "Unknown schema.",
   invalid_custom_type:

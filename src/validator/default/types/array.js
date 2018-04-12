@@ -69,16 +69,10 @@ class ARRAY extends ANY {
 
   default(value) {
     if (!isArray(value)) {
-      throw this._message.error(
-        "invalid_default_value",
-        {
-          expected: "array",
-          actual: typeof value
-        },
-        {
-          configuration: true
-        }
-      );
+      throw this._message.error("invalid_default_value", {
+        expected: "array",
+        actual: typeof value
+      });
     }
     this._default = value;
     return this;

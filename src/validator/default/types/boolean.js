@@ -40,14 +40,10 @@ class BOOLEAN extends ANY {
 
   default(value) {
     if (!isBoolean(value)) {
-      throw this._message.error(
-        "invalid_default_value",
-        {
-          expected: "boolean",
-          actual: typeof value
-        },
-        { configuration: true }
-      );
+      throw this._message.error("invalid_default_value", {
+        expected: "boolean",
+        actual: typeof value
+      });
     }
     this._default = value;
     return this;

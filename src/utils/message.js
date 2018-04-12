@@ -1,9 +1,13 @@
-const { en } = require("./../locales");
-const { ValueError } = require("./error");
+const LOCALES = require("./../locales");
 
 class Message {
-  constructor(locale) {
-    this._locale = en;
+  constructor(locale = "en") {
+    if (locale in LOCALES) {
+      this._locale = LOCALES["en"];
+      this.error("unknown_locale", "locale");
+    } else {
+      this._locale = LOCALES[locale];
+    }
   }
 
   get(code, replacements) {
@@ -18,21 +22,11 @@ class Message {
     }
   }
 
-  error(code, replacements, options = {}) {
-    let message;
-    if (options.configuration) {
-      message = `Validator configuration error: ${this.get(
-        code,
-        replacements
-      )}`;
-    } else {
-      message = this.get(code, replacements);
-    }
-    return message;
-  }
-
-  deprecated(functionName, suggestion) {
-    return `Validator deprecation warning: using ${functionName} is deprecated and will be removed on next major version update. Use ${suggestion}.`;
+  error(code, replacements) {
+    return `${this.get("configuration_error")}: ${this.get(
+      code,
+      replacements
+    )}`;
   }
 }
 exports.Message = locale => new Message(locale);

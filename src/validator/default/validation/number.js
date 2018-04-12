@@ -51,57 +51,57 @@ const validateNumber = (
   if (integer) {
     if (!isInteger(value)) {
       if (isNumber(value)) {
-        throw message.error("integer_is_number", { value, actual: "number" });
+        throw message.get("integer_is_number", { value, actual: "number" });
       } else {
-        throw message.error("wrong_type", {
+        throw message.get("wrong_type", {
           expected: "integer",
           actual: typeof value
         });
       }
     }
   } else if (!isNumber(value)) {
-    throw message.error("wrong_type", {
+    throw message.get("wrong_type", {
       expected: "number",
       actual: typeof value
     });
   }
 
   if (min && value < min) {
-    throw message.error(integer ? "integer_min" : "number_min", {
+    throw message.get(integer ? "integer_min" : "number_min", {
       expected: min,
       actual: value
     });
   }
 
   if (max && value > max) {
-    throw message.error(integer ? "integer_max" : "number_max", {
+    throw message.get(integer ? "integer_max" : "number_max", {
       expected: max,
       actual: value
     });
   }
 
   if (less && value >= less) {
-    throw message.error(integer ? "integer_less" : "number_less", {
+    throw message.get(integer ? "integer_less" : "number_less", {
       expected: less,
       actual: value
     });
   }
 
   if (greater && value <= greater) {
-    throw message.error(integer ? "integer_greater" : "number_greater", {
+    throw message.get(integer ? "integer_greater" : "number_greater", {
       expected: greater,
       actual: value
     });
   }
 
   if (positive && value <= 0) {
-    throw message.error(integer ? "integer_positive" : "number_positive", {
+    throw message.get(integer ? "integer_positive" : "number_positive", {
       value
     });
   }
 
   if (negative && value >= 0) {
-    throw message.error(integer ? "integer_negative" : "number_negative", {
+    throw message.get(integer ? "integer_negative" : "number_negative", {
       value
     });
   }

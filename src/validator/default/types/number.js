@@ -84,24 +84,16 @@ class NUMBER extends ANY {
   default(value) {
     if (this._integer) {
       if (!isInteger(value)) {
-        throw this._message.error(
-          "invalid_default_value",
-          {
-            expected: "integer",
-            actual: typeof value
-          },
-          { configuration: true }
-        );
+        throw this._message.error("invalid_default_value", {
+          expected: "integer",
+          actual: typeof value
+        });
       }
     } else if (!isNumber(value)) {
-      throw this._message.error(
-        "invalid_default_value",
-        {
-          expected: "number",
-          actual: typeof value
-        },
-        { configuration: true }
-      );
+      throw this._message.error("invalid_default_value", {
+        expected: "number",
+        actual: typeof value
+      });
     }
 
     this._default = value;

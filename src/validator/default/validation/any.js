@@ -3,7 +3,7 @@ const { getErrorMessage } = require("./../../../utils/error");
 
 const validateRequired = (value, required, message) => {
   if (isNil(value) && required) {
-    throw message.error("required", { value });
+    throw message.get("required", { value });
   }
 };
 
@@ -44,13 +44,13 @@ const validateFunctionAsync = async (func, value) => {
 
 const validateOnly = (only, value, message) => {
   if (only && only.indexOf(value) === -1) {
-    throw message.error("only", { value, only: only.join(", ") });
+    throw message.get("only", { value, only: only.join(", ") });
   }
 };
 
 const validateNot = (not, value, message) => {
   if (not && not.indexOf(value) !== -1) {
-    throw message.error("not", { value, not: not.join(", ") });
+    throw message.get("not", { value, not: not.join(", ") });
   }
 };
 

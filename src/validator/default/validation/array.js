@@ -88,28 +88,28 @@ const validateArray = (
   }
 
   if (!isArray(value)) {
-    throw message.error("wrong_type", {
+    throw message.get("wrong_type", {
       expected: "array",
       actual: typeof value
     });
   }
 
   if (empty === false && value.length === 0) {
-    throw message.error("array_empty");
+    throw message.get("array_empty");
   }
 
   if (min || max || length) {
     const arrayLength = value.length;
     if (min && arrayLength < min) {
-      throw message.error("array_min", { expected: min, actual: arrayLength });
+      throw message.get("array_min", { expected: min, actual: arrayLength });
     }
 
     if (max && arrayLength > max) {
-      throw message.error("array_max", { expected: max, actual: arrayLength });
+      throw message.get("array_max", { expected: max, actual: arrayLength });
     }
 
     if (length && arrayLength !== length) {
-      throw message.error("array_length", {
+      throw message.get("array_length", {
         expected: length,
         actual: arrayLength
       });
@@ -117,7 +117,7 @@ const validateArray = (
   }
 
   if (unique && uniqWith(value, isEqual).length !== value.length) {
-    throw message.error("array_duplicate_items");
+    throw message.get("array_duplicate_items");
   }
 
   // TODO validateNot, validateOnly

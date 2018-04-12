@@ -30,7 +30,7 @@ const validateString = (
   validateRequired(value, required, message);
 
   if (!isString(value)) {
-    throw message.error("wrong_type", {
+    throw message.get("wrong_type", {
       expected: "string",
       actual: typeof value
     });
@@ -41,7 +41,7 @@ const validateString = (
   }
 
   if (value === "" && empty === false) {
-    throw message.error("string_empty");
+    throw message.get("string_empty");
   }
 
   validateOnly(only, value, message);
@@ -50,21 +50,21 @@ const validateString = (
   if (min || max || length) {
     const stringLength = value.length;
     if (min && stringLength < min) {
-      throw message.error("string_min", {
+      throw message.get("string_min", {
         expected: min,
         actual: stringLength
       });
     }
 
     if (max && stringLength > max) {
-      throw message.error("string_max", {
+      throw message.get("string_max", {
         expected: max,
         actual: stringLength
       });
     }
 
     if (length && stringLength !== length) {
-      throw message.error("string_length", {
+      throw message.get("string_length", {
         expected: length,
         actual: stringLength
       });
