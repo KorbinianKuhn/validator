@@ -11,11 +11,10 @@ const toMoment = (message, date, utc, format, strict) => {
   if (momentDate.isValid()) {
     return momentDate;
   } else {
-    throw this._message.error(
-      `Not a valid date. Must match format '${this._format}'.`
-    );
+    throw message.error("date_invalid", { format });
   }
 };
+exports.toMoment = toMoment;
 
 class DATE extends ANY {
   constructor(options, defaults) {
@@ -35,6 +34,7 @@ class DATE extends ANY {
 
   options(options = {}) {
     const settings = {
+      allowed: this._allowed,
       required: this._required,
       parse: this._parse,
       format: this._format,
@@ -47,6 +47,7 @@ class DATE extends ANY {
       return Object.assign(settings, {
         defaultValue: this._default,
         message: this._message,
+        func: this._func,
         min: this._min,
         max: this._max
       });
@@ -54,7 +55,7 @@ class DATE extends ANY {
       return Object.assign(settings, {
         type: "date",
         description: this._description,
-        example: this._example,
+        example: this.example(),
         default: this._default,
         min: this._min ? this._min : undefined,
         max: this._max ? this._max : undefined
@@ -72,12 +73,6 @@ class DATE extends ANY {
 
   format(string) {
     this._format = string;
-    return this;
-  }
-
-  default(value) {
-    toMoment(this._message, value, this._utc, this._format, this._strict);
-    this._default = value;
     return this;
   }
 

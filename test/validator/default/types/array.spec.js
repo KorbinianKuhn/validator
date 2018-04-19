@@ -16,6 +16,7 @@ describe("validator/default/types/array", () => {
   it("options() should return options", () => {
     const func = () => {};
     const defaultValue = ["test"];
+    const allowed = [null];
     const not = ["not"];
     const only = ["only"];
     const parse = false;
@@ -31,8 +32,9 @@ describe("validator/default/types/array", () => {
       .description(description)
       .example(example)
       .default(defaultValue)
-      .not(not)
-      .only(only)
+      .allow(...allowed)
+      .not(...not)
+      .only(...only)
       .parse(parse)
       .required()
       .optional()
@@ -45,6 +47,7 @@ describe("validator/default/types/array", () => {
 
     schema.options({ validation: true }).should.deepEqual({
       defaultValue,
+      allowed,
       func,
       not,
       only,
@@ -64,6 +67,7 @@ describe("validator/default/types/array", () => {
       description,
       example,
       default: defaultValue,
+      allowed,
       not,
       only,
       parse,
@@ -74,13 +78,6 @@ describe("validator/default/types/array", () => {
       empty,
       unique
     });
-  });
-
-  it("default() invalid default value should throw", () => {
-    utils.shouldThrow(
-      () => ArrayFactory(undefined, { message }, {}).default(true),
-      "Validator configuration error: Default value must be type array but is boolean."
-    );
   });
 
   it("toObject() should return object", () => {

@@ -1,4 +1,9 @@
-const { isNil, isNotNil, defaultTo } = require("./../../../utils/lodash");
+const {
+  isUndefined,
+  isNotUndefined,
+  defaultTo,
+  isNil
+} = require("./../../../utils/lodash");
 const { getErrorMessage } = require("./../../../utils/error");
 
 const validateRequired = (value, required, message) => {
@@ -7,9 +12,16 @@ const validateRequired = (value, required, message) => {
   }
 };
 
-const validateAny = (value, { defaultValue, required, message, not, only }) => {
-  if (isNil(value) && isNotNil(defaultValue)) {
+const validateAny = (
+  value,
+  { defaultValue, allowed, required, message, not, only }
+) => {
+  if (isUndefined(value) && isNotUndefined(defaultValue)) {
     return defaultValue;
+  }
+
+  if (allowed && allowed.indexOf(value) !== -1) {
+    return value;
   }
 
   validateRequired(value, required, message);
@@ -56,17 +68,31 @@ const validateNot = (not, value, message) => {
 
 const validateSync = (
   value,
-  { defaultValue, required, message, not, only, func }
+  { defaultValue, allowed, required, message, not, only, func }
 ) => {
-  value = validateAny(value, { defaultValue, required, message, not, only });
+  value = validateAny(value, {
+    defaultValue,
+    allowed,
+    required,
+    message,
+    not,
+    only
+  });
   return validateFunctionSync(func, value);
 };
 
 const validate = async (
   value,
-  { defaultValue, required, message, not, only, func }
+  { defaultValue, allowed, required, message, not, only, func }
 ) => {
-  value = validateAny(value, { defaultValue, required, message, not, only });
+  value = validateAny(value, {
+    defaultValue,
+    allowed,
+    required,
+    message,
+    not,
+    only
+  });
   return validateFunctionAsync(func, value);
 };
 

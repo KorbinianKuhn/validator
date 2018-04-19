@@ -1,4 +1,3 @@
-const { isNumber, isInteger } = require("./../../../utils/lodash");
 const { ANY } = require("./any");
 const { validate, validateSync } = require("./../validation/number");
 
@@ -10,6 +9,7 @@ class NUMBER extends ANY {
 
   options(options = {}) {
     const settings = {
+      allowed: this._allowed,
       required: this._required,
       parse: this._parse,
       only: this._only,
@@ -32,7 +32,7 @@ class NUMBER extends ANY {
       return Object.assign(settings, {
         type: "number",
         description: this._description,
-        example: this._example,
+        example: this.example(),
         default: this._default
       });
     }
@@ -78,25 +78,6 @@ class NUMBER extends ANY {
 
   negative() {
     this._negative = true;
-    return this;
-  }
-
-  default(value) {
-    if (this._integer) {
-      if (!isInteger(value)) {
-        throw this._message.error("invalid_default_value", {
-          expected: "integer",
-          actual: typeof value
-        });
-      }
-    } else if (!isNumber(value)) {
-      throw this._message.error("invalid_default_value", {
-        expected: "number",
-        actual: typeof value
-      });
-    }
-
-    this._default = value;
     return this;
   }
 }

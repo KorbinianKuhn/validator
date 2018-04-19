@@ -26,3 +26,16 @@ exports.shouldEventuallyThrow = async (promise, code) => {
   }
   should.deepEqual(error, code);
 };
+
+class Response {
+  status(number) {
+    this._status = number;
+    return this;
+  }
+
+  json(object) {
+    this._json = object;
+    return object;
+  }
+}
+exports.Response = Response;

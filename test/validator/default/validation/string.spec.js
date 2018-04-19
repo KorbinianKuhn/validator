@@ -5,6 +5,7 @@ const {
 } = require("./../../../../src/validator/default/validation/string");
 const { Message } = require("./../../../../src/utils/message");
 const utils = require("./../../../utils");
+const should = require("should");
 
 describe("validator/default/validation/string", () => {
   const message = Message("en");
@@ -21,6 +22,25 @@ describe("validator/default/validation/string", () => {
       defaultValue: "test"
     });
     actual.should.equal("test");
+  });
+
+  it("validateString() with null should verify", () => {
+    const actual = validateString(null, {
+      allowed: [null]
+    });
+    should.equal(actual, null);
+  });
+
+  it("validateString() with null should throw", () => {
+    utils.shouldThrow(
+      () =>
+        validateString(null, {
+          message,
+          required: true,
+          allowed: []
+        }),
+      "Required but is null."
+    );
   });
 
   it("validateString() should throw", () => {
@@ -83,6 +103,52 @@ describe("validator/default/validation/string", () => {
   it("validateString() length length should verify", () => {
     const actual = validateString("test", { length: 4 });
     actual.should.equal("test");
+  });
+
+  it("validateString() with regex should verify", () => {
+    const actual = validateString("TEST", {
+      regex: { pattern: /[A-Z]/, locales: {} }
+    });
+    actual.should.equal("TEST");
+  });
+
+  it("validateString() with regex should throw", () => {
+    utils.shouldThrow(
+      () =>
+        validateString("test", {
+          message,
+          regex: { pattern: /[A-Z]/, locales: {} }
+        }),
+      "Value does not match regular expression."
+    );
+  });
+
+  it("validateString() with regex should return custom error message", () => {
+    utils.shouldThrow(
+      () =>
+        validateString("test", {
+          message,
+          regex: {
+            pattern: /[A-Z]/,
+            locales: { en: "Value does not match {{pattern}}." }
+          }
+        }),
+      "Value does not match /[A-Z]/."
+    );
+  });
+
+  it("validateString() with regex should return default error message", () => {
+    utils.shouldThrow(
+      () =>
+        validateString("test", {
+          message,
+          regex: {
+            pattern: /[A-Z]/,
+            locales: { unknown: "Value does not match {{pattern}}." }
+          }
+        }),
+      "Value does not match regular expression."
+    );
   });
 
   it("validateSync() should return given value", () => {

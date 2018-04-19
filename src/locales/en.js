@@ -1,6 +1,7 @@
 module.exports = {
+  default: "Invalid.",
   configuration_error: "Validator configuration error",
-  validation_error: "Bad Request. Input parameters and/or values are wrong.",
+  validation_error: "Invalid input parameters and/or values.",
   unknown_locale: "Unknown locale {{locale}}.",
   invalid_schema: "Invalid schema.",
   unknown_schema: "Unknown schema.",
@@ -13,14 +14,13 @@ module.exports = {
   wrong_type: "Must be type {{expected}} but is {{actual}}.",
   only: "Only '{{only}}' is allowed.",
   not: "Is not allowed.",
-  invalid_default_value:
-    "Default value must be type {{expected}} but is {{actual}}.",
   invalid_function: "Must be a function.",
   invalid_regular_expression: "Must be a regular expression.",
   string_empty: "String is empty.",
   string_min: "Must have at least {{expected}} characters.",
   string_max: "Must have at most {{expected}} characters.",
   string_length: "Must have exactly {{expected}} characters.",
+  string_regex_invalid: "Value does not match regular expression.",
   array_empty: "Array is empty.",
   array_min: "Must have at least {{expected}} items.",
   array_max: "Must have at most {{expected}} items.",
@@ -42,6 +42,7 @@ module.exports = {
   date_invalid: "Must be a valid date with the format {{format}}.",
   date_min: "Must be at minimum {{min}}.",
   date_max: "Must be at maximum {{max}}.",
+  object_invalid_type: "Must be an object.",
   object_min: "Must have at least {{expected}} keys.",
   object_max: "Must have at most {{expected}} keys.",
   object_length: "Must have exactly {{expected}} keys.",
@@ -55,5 +56,9 @@ module.exports = {
   condition_not_equals: "Must not equal {{keyB}}.",
   condition_xor: "Either {{keyA}} or {{keyB}} must be set.",
   condition_or: "Either {{keyA}} or {{keyB}} can be set.",
-  condition_depends_on: "Depends on {{keyB}}."
+  condition_depends_on: "Depends on {{keyB}}.",
+  express_invalid_request_object: "Invalid express req object.",
+  express_unknown_params: "URI parameters are not allowed.",
+  express_unknown_query: "Query parameters are not allowed.",
+  express_unknown_body: "Body parameters are not allowed."
 };

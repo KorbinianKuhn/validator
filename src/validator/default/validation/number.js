@@ -1,6 +1,7 @@
 const {
-  isNil,
-  isNotNil,
+  isUndefined,
+  isNotUndefined,
+  isNull,
   isNumber,
   isString,
   isInteger
@@ -17,6 +18,7 @@ const validateNumber = (
   value,
   {
     defaultValue,
+    allowed,
     required,
     message,
     parse,
@@ -31,8 +33,12 @@ const validateNumber = (
     not
   }
 ) => {
-  if (isNil(value) && isNotNil(defaultValue)) {
+  if (isUndefined(value) && isNotUndefined(defaultValue)) {
     return defaultValue;
+  }
+
+  if (allowed && allowed.indexOf(value) !== -1) {
+    return value;
   }
 
   validateRequired(value, required, message);
@@ -113,6 +119,7 @@ const validateSync = (
   value,
   {
     defaultValue,
+    allowed,
     required,
     message,
     parse,
@@ -130,6 +137,7 @@ const validateSync = (
 ) => {
   value = validateNumber(value, {
     defaultValue,
+    allowed,
     required,
     message,
     parse,
@@ -150,6 +158,7 @@ const validate = async (
   value,
   {
     defaultValue,
+    allowed,
     required,
     message,
     parse,
@@ -167,6 +176,7 @@ const validate = async (
 ) => {
   value = validateNumber(value, {
     defaultValue,
+    allowed,
     required,
     message,
     parse,

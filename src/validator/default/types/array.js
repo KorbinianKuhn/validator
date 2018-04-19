@@ -1,4 +1,4 @@
-const { defaultToAny, isArray } = require("./../../../utils/lodash");
+const { defaultToAny } = require("./../../../utils/lodash");
 const { ANY } = require("./any");
 const { validate, validateSync } = require("./../validation/array");
 const { toObject } = require("./../../../utils/to-object");
@@ -6,12 +6,13 @@ const { toObject } = require("./../../../utils/to-object");
 class ARRAY extends ANY {
   constructor(type, options, defaults) {
     super(options, defaults);
-    this._type = type; // TODO: check if valid schema type
+    this._type = type;
     this._empty = defaultToAny(options.emptyArrays, defaults.emptyArrays, true);
   }
 
   options(options = {}) {
     const settings = {
+      allowed: this._allowed,
       required: this._required,
       parse: this._parse,
       unique: this._unique,
@@ -33,7 +34,7 @@ class ARRAY extends ANY {
       return Object.assign(settings, {
         type: "array",
         description: this._description,
-        example: this._example,
+        example: this.example(),
         default: this._default
       });
     }
@@ -45,6 +46,23 @@ class ARRAY extends ANY {
 
   validateSync(value) {
     return validateSync(value, this.options({ validation: true }));
+  }
+
+  example(example) {
+    if (example === undefined) {
+      if (this._example === undefined) {
+        if (this._type === undefined) {
+          return [];
+        } else {
+          return this._type.example();
+        }
+      } else {
+        return this._example;
+      }
+    } else {
+      this._example = example;
+      return this;
+    }
   }
 
   min(length) {
@@ -64,17 +82,6 @@ class ARRAY extends ANY {
 
   empty(boolean) {
     this._empty = boolean;
-    return this;
-  }
-
-  default(value) {
-    if (!isArray(value)) {
-      throw this._message.error("invalid_default_value", {
-        expected: "array",
-        actual: typeof value
-      });
-    }
-    this._default = value;
     return this;
   }
 

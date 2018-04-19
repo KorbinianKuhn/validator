@@ -14,6 +14,7 @@ describe("validator/default/types/number", () => {
   it("options() should return options", () => {
     const func = () => {};
     const defaultValue = 2;
+    const allowed = [null];
     const not = [0];
     const only = [2];
     const parse = false;
@@ -30,11 +31,13 @@ describe("validator/default/types/number", () => {
       .description(description)
       .example(example)
       .default(defaultValue)
-      .not(not)
-      .only(only)
+      .allow(...allowed)
+      .not(...not)
+      .only(...only)
       .parse(parse)
       .required()
       .optional()
+      .integer()
       .func(func)
       .min(min)
       .max(max)
@@ -45,6 +48,7 @@ describe("validator/default/types/number", () => {
 
     schema.options({ validation: true }).should.deepEqual({
       defaultValue,
+      allowed,
       func,
       not,
       only,
@@ -57,7 +61,7 @@ describe("validator/default/types/number", () => {
       greater,
       negative,
       positive,
-      integer: false
+      integer: true
     });
 
     schema.options().should.deepEqual({
@@ -65,6 +69,7 @@ describe("validator/default/types/number", () => {
       description,
       example,
       default: defaultValue,
+      allowed,
       not,
       only,
       parse,
@@ -75,31 +80,8 @@ describe("validator/default/types/number", () => {
       greater,
       negative,
       positive,
-      integer: false
+      integer: true
     });
-  });
-
-  it("default() invalid default value should throw", () => {
-    utils.shouldThrow(
-      () => NumberFactory({ message }, {}).default(true),
-      "Validator configuration error: Default value must be type number but is boolean."
-    );
-  });
-
-  it("default() invalid default value for integer should throw", () => {
-    utils.shouldThrow(
-      () =>
-        NumberFactory({ message }, {})
-          .integer()
-          .default(2.2),
-      "Validator configuration error: Default value must be type integer but is number."
-    );
-  });
-
-  it("default() default value for integer should verify", () => {
-    NumberFactory({ message }, {})
-      .integer()
-      .default(1);
   });
 
   it("toObject() should return object", () => {

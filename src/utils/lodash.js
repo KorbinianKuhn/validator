@@ -17,11 +17,15 @@ const pickBy = require("lodash/pickBy");
 const uniqWith = require("lodash/uniqWith");
 const isEqual = require("lodash/isEqual");
 const isRegExp = require("lodash/isRegExp");
+const isUndefined = require("lodash/isUndefined");
+const isNull = require("lodash/isNull");
 
 const AsyncFunction = (async () => {}).constructor;
 const isAsyncFunction = func => func instanceof AsyncFunction;
 
 const isNotNil = value => !isNil(value);
+
+const isNotUndefined = value => !isUndefined(value);
 
 const keys = Object.keys;
 
@@ -55,5 +59,8 @@ module.exports = {
   isNotNil,
   uniqWith,
   isEqual,
-  isRegExp
+  isRegExp,
+  isUndefined,
+  isNotUndefined,
+  isNull
 };

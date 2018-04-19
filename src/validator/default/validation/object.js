@@ -1,6 +1,6 @@
 const {
-  isNil,
-  isNotNil,
+  isUndefined,
+  isNotUndefined,
   isString,
   isPlainObject,
   keys,
@@ -14,10 +14,14 @@ const { getErrorMessage } = require("./../../../../src/utils/error");
 
 const validateObjectBeforeProperties = (
   value,
-  { defaultValue, required, message, parse, empty, min, max, length }
+  { defaultValue, allowed, required, message, parse, empty, min, max, length }
 ) => {
-  if (isNil(value) && isNotNil(defaultValue)) {
+  if (isUndefined(value) && isNotUndefined(defaultValue)) {
     return defaultValue;
+  }
+
+  if (allowed && allowed.indexOf(value) !== -1) {
+    return value;
   }
 
   validateRequired(value, required, message);
@@ -291,6 +295,7 @@ const validateSync = (
   value,
   {
     defaultValue,
+    allowed,
     required,
     message,
     parse,
@@ -306,6 +311,7 @@ const validateSync = (
 ) => {
   value = validateObjectBeforeProperties(value, {
     defaultValue,
+    allowed,
     required,
     message,
     parse,
@@ -333,6 +339,7 @@ const validate = async (
   value,
   {
     defaultValue,
+    allowed,
     required,
     message,
     parse,
@@ -348,6 +355,7 @@ const validate = async (
 ) => {
   value = validateObjectBeforeProperties(value, {
     defaultValue,
+    allowed,
     required,
     message,
     parse,

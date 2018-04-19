@@ -10,18 +10,15 @@ const {
 } = require("./../../../../src/validator/default/validation/any");
 const { Message } = require("./../../../../src/utils/message");
 const utils = require("./../../../utils");
+const should = require("should");
 
 describe("validator/default/validation/any", () => {
   const message = Message("en");
   it("validateRequired() should throw", () => {
     utils.shouldThrow(
-      () => validateRequired(null, true, message),
-      "Required but is null."
+      () => validateRequired(undefined, true, message),
+      "Required but is undefined."
     );
-  });
-
-  it("validateRequired() should not throw", () => {
-    validateRequired("test", true, message);
   });
 
   it("validateOnly() should throw", () => {
@@ -118,6 +115,25 @@ describe("validator/default/validation/any", () => {
       defaultValue: "test"
     });
     actual.should.equal("test");
+  });
+
+  it("validateAny() with null should verify", () => {
+    const actual = validateAny(null, {
+      allowed: [null]
+    });
+    should.equal(actual, null);
+  });
+
+  it("validateAny() with null should throw", () => {
+    utils.shouldThrow(
+      () =>
+        validateAny(null, {
+          message,
+          required: true,
+          allowed: []
+        }),
+      "Required but is null."
+    );
   });
 
   it("validateSync() should return given value", () => {

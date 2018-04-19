@@ -1,9 +1,9 @@
-const { ANY } = require("./../../default/types/any");
-const { validate, validateSync } = require("./../../default/validation/any");
+const { OBJECT } = require("./../../default/types/object");
+const { validate, validateSync } = require("./../../default/validation/object");
 
-class ANY_ANGULAR extends ANY {
-  constructor(options, defaults) {
-    super(options, defaults);
+class OBJECT_ANGULAR extends OBJECT {
+  constructor(schema, options, defaults) {
+    super(schema, options, defaults);
   }
 
   validate() {
@@ -31,5 +31,6 @@ class ANY_ANGULAR extends ANY {
   }
 }
 
-exports.ANY_ANGULAR = ANY_ANGULAR;
-exports.AnyFactory = (options, defaults) => new ANY_ANGULAR(options, defaults);
+exports.OBJECT_ANGULAR = OBJECT_ANGULAR;
+exports.ObjectFactory = (schema, options, defaults) =>
+  new OBJECT_ANGULAR(schema, options, defaults);

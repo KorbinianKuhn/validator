@@ -11,7 +11,6 @@ class ANY {
       defaults.message,
       Message("en")
     );
-    this._type = defaultToAny(options.type, defaults.type, "default");
     this._required = defaultToAny(
       options.requiredAsDefault,
       defaults.requiredAsDefault,
@@ -26,6 +25,7 @@ class ANY {
 
   options(options = {}) {
     const settings = {
+      allowed: this._allowed,
       required: this._required,
       parse: this._parse,
       only: this._only,
@@ -41,7 +41,7 @@ class ANY {
       return Object.assign(settings, {
         type: "any",
         description: this._description,
-        example: this._example,
+        example: this.example(),
         default: this._default
       });
     }
@@ -71,8 +71,12 @@ class ANY {
   }
 
   example(example) {
-    this._example = example;
-    return this;
+    if (example === undefined) {
+      return this._example;
+    } else {
+      this._example = example;
+      return this;
+    }
   }
 
   default(value) {
@@ -85,13 +89,18 @@ class ANY {
     return this;
   }
 
-  only(values) {
+  only(...values) {
     this._only = values;
     return this;
   }
 
-  not(values) {
+  not(...values) {
     this._not = values;
+    return this;
+  }
+
+  allow(...values) {
+    this._allowed = values;
     return this;
   }
 

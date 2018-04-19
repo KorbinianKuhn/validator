@@ -14,6 +14,7 @@ describe("validator/default/types/boolean", () => {
   it("options() should return options", () => {
     const func = () => {};
     const defaultValue = true;
+    const allowed = [null];
     const not = ["not"];
     const only = ["only"];
     const parse = false;
@@ -24,8 +25,9 @@ describe("validator/default/types/boolean", () => {
       .description(description)
       .example(example)
       .default(defaultValue)
-      .not(not)
-      .only(only)
+      .allow(...allowed)
+      .not(...not)
+      .only(...only)
       .parse(parse)
       .required()
       .optional()
@@ -33,6 +35,7 @@ describe("validator/default/types/boolean", () => {
 
     schema.options({ validation: true }).should.deepEqual({
       defaultValue,
+      allowed,
       func,
       not,
       only,
@@ -46,18 +49,12 @@ describe("validator/default/types/boolean", () => {
       description,
       example,
       default: defaultValue,
+      allowed,
       not,
       only,
       parse,
       required: false
     });
-  });
-
-  it("default() invalid default value should throw", () => {
-    utils.shouldThrow(
-      () => BooleanFactory({ message }, {}).default("wrong"),
-      "Validator configuration error: Default value must be type boolean but is string."
-    );
   });
 
   it("toObject() should return object", () => {

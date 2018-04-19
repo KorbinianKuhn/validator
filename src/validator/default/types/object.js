@@ -8,12 +8,8 @@ const { validate, validateSync } = require("./../validation/object");
 const { toObject } = require("./../../../utils/to-object");
 
 class OBJECT extends ANY {
-  constructor(object, options, defaults) {
+  constructor(object = {}, options, defaults) {
     super(options, defaults);
-
-    if (object === undefined) {
-      throw this._message.error("object_missing");
-    }
 
     if (!isPlainObject(object)) {
       throw this._message.error("object_invalid_type");
@@ -35,6 +31,7 @@ class OBJECT extends ANY {
 
   options(options = {}) {
     const settings = {
+      allowed: this._allowed,
       required: this._required,
       parse: this._parse,
       only: this._only,
@@ -49,13 +46,15 @@ class OBJECT extends ANY {
       return Object.assign(settings, {
         defaultValue: this._default,
         message: this._message,
-        object: this._object
+        object: this._object,
+        func: this._func,
+        conditions: this._conditions
       });
     } else {
       return Object.assign(settings, {
         type: "object",
         description: this._description,
-        example: this._example,
+        example: this.example(),
         default: this._default
       });
     }
@@ -69,50 +68,76 @@ class OBJECT extends ANY {
     return validateSync(value, this.options({ validation: true }));
   }
 
+  example(example) {
+    if (example === undefined) {
+      if (this._example === undefined) {
+        const example = {};
+        for (const key in this._object) {
+          example[key] = this._object[key].example();
+        }
+        return example;
+      } else {
+        return this._example;
+      }
+    } else {
+      this._example = example;
+      return this;
+    }
+  }
+
   empty(boolean) {
     this._empty = boolean;
     return this;
   }
 
   gt(a, b) {
-    return this.conditions.push({ keyA: a, keyB: b, method: "gt" });
+    this._conditions.push({ keyA: a, keyB: b, method: "gt" });
+    return this;
   }
 
   gte(a, b) {
-    return this.conditions.push({ keyA: a, keyB: b, method: "gte" });
+    this._conditions.push({ keyA: a, keyB: b, method: "gte" });
+    return this;
   }
 
   lt(a, b) {
-    return this.conditions.push({ keyA: a, keyB: b, method: "lt" });
+    this._conditions.push({ keyA: a, keyB: b, method: "lt" });
+    return this;
   }
 
   lte(a, b) {
-    return this.conditions.push({ keyA: a, keyB: b, method: "lte" });
+    this._conditions.push({ keyA: a, keyB: b, method: "lte" });
+    return this;
   }
 
   equals(a, b) {
-    return this.conditions.push({ keyA: a, keyB: b, method: "equals" });
+    this._conditions.push({ keyA: a, keyB: b, method: "equals" });
+    return this;
   }
 
   notEquals(a, b) {
-    return this.conditions.push({ keyA: a, keyB: b, method: "notEquals" });
+    this._conditions.push({ keyA: a, keyB: b, method: "notEquals" });
+    return this;
   }
 
   dependsOn(a, b) {
-    return this.conditions.push({ keyA: a, keyB: b, method: "dependsOn" });
+    this._conditions.push({ keyA: a, keyB: b, method: "dependsOn" });
+    return this;
   }
 
   xor(a, b) {
-    return this.conditions.push({ keyA: a, keyB: b, method: "xor" });
+    this._conditions.push({ keyA: a, keyB: b, method: "xor" });
+    return this;
   }
 
   or(a, b) {
-    return this.conditions.push({ keyA: a, keyB: b, method: "or" });
+    this._conditions.push({ keyA: a, keyB: b, method: "or" });
+    return this;
   }
 
   func(fn, ...keys) {
     if (!isFunction(fn)) {
-      throw this._message.error("not_a_function");
+      throw this._message.error("invalid_function");
     }
 
     this._func = {
@@ -137,11 +162,8 @@ class OBJECT extends ANY {
     return this;
   }
 
-  default(value) {
-    if (!isPlainObject(value)) {
-      throw this._message.error("not_an_object");
-    }
-    this._default = value;
+  unknown(boolean) {
+    this._unknown = boolean;
     return this;
   }
 

@@ -15,6 +15,7 @@ const utils = require("./../../../utils");
 const {
   StringFactory
 } = require("./../../../../src/validator/default/types/string");
+const should = require("should");
 
 describe("validator/default/validation/object", () => {
   const message = Message("en");
@@ -34,6 +35,25 @@ describe("validator/default/validation/object", () => {
       defaultValue: {}
     });
     actual.should.deepEqual({});
+  });
+
+  it("validateObjectBeforeProperties() with null should verify", () => {
+    const actual = validateObjectBeforeProperties(null, {
+      allowed: [null]
+    });
+    should.equal(actual, null);
+  });
+
+  it("validateObjectBeforeProperties() with null should throw", () => {
+    utils.shouldThrow(
+      () =>
+        validateObjectBeforeProperties(null, {
+          message,
+          required: true,
+          allowed: []
+        }),
+      "Required but is null."
+    );
   });
 
   it("validateObjectBeforeProperties() should throw", () => {

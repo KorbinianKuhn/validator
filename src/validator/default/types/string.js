@@ -1,4 +1,4 @@
-const { defaultToAny, isString, isRegExp } = require("./../../../utils/lodash");
+const { defaultToAny, isRegExp } = require("./../../../utils/lodash");
 const { ANY } = require("./any");
 const { validate, validateSync } = require("./../validation/string");
 
@@ -15,6 +15,7 @@ class STRING extends ANY {
 
   options(options = {}) {
     const settings = {
+      allowed: this._allowed,
       required: this._required,
       parse: this._parse,
       only: this._only,
@@ -23,21 +24,22 @@ class STRING extends ANY {
       empty: this._empty,
       min: this._min,
       max: this._max,
-      length: this._length,
-      pattern: this._pattern
+      length: this._length
     };
     if (options.validation) {
       return Object.assign(settings, {
         defaultValue: this._default,
         message: this._message,
-        func: this._func
+        func: this._func,
+        regex: this._regex
       });
     } else {
       return Object.assign(settings, {
         type: "string",
         description: this._description,
-        example: this._example,
-        default: this._default
+        example: this.example(),
+        default: this._default,
+        pattern: this._regex ? this._regex.pattern : undefined
       });
     }
   }
@@ -75,24 +77,14 @@ class STRING extends ANY {
     return this;
   }
 
-  regex(pattern) {
+  regex(pattern, locales = {}) {
     if (!isRegExp(pattern)) {
-      throw this._message.error("invalid_regular_expression", {
-        value: pattern
-      });
+      throw this._message.error("invalid_regular_expression");
     }
-    this._pattern = pattern;
-    return this;
-  }
-
-  default(value) {
-    if (!isString(value)) {
-      throw this._message.error("invalid_default_value", {
-        expected: "string",
-        actual: typeof value
-      });
-    }
-    this._default = value;
+    this._regex = {
+      pattern,
+      locales
+    };
     return this;
   }
 }

@@ -14,6 +14,7 @@ describe("validator/default/types/string", () => {
   it("options() should return options", () => {
     const func = () => {};
     const defaultValue = "test";
+    const allowed = [null];
     const not = ["not"];
     const only = ["only"];
     const parse = false;
@@ -25,13 +26,15 @@ describe("validator/default/types/string", () => {
     const trim = true;
     const pattern = /A-Z/;
     const empty = false;
+    const locales = { key: "value" };
 
     const schema = StringFactory({ message }, {})
       .description(description)
       .example(example)
       .default(defaultValue)
-      .not(not)
-      .only(only)
+      .allow(...allowed)
+      .not(...not)
+      .only(...only)
       .parse(parse)
       .required()
       .optional()
@@ -40,11 +43,12 @@ describe("validator/default/types/string", () => {
       .max(max)
       .length(length)
       .trim(trim)
-      .regex(pattern)
+      .regex(pattern, locales)
       .empty(empty);
 
     schema.options({ validation: true }).should.deepEqual({
       defaultValue,
+      allowed,
       func,
       not,
       only,
@@ -55,7 +59,10 @@ describe("validator/default/types/string", () => {
       max,
       length,
       trim,
-      pattern,
+      regex: {
+        pattern,
+        locales
+      },
       empty
     });
 
@@ -64,6 +71,7 @@ describe("validator/default/types/string", () => {
       description,
       example,
       default: defaultValue,
+      allowed,
       not,
       only,
       parse,
@@ -75,13 +83,6 @@ describe("validator/default/types/string", () => {
       pattern,
       empty
     });
-  });
-
-  it("default() invalid default value should throw", () => {
-    utils.shouldThrow(
-      () => StringFactory({ message }, {}).default(true),
-      "Validator configuration error: Default value must be type string but is boolean."
-    );
   });
 
   it("regex() invalid regex should throw", () => {

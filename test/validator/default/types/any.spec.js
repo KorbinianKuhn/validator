@@ -12,6 +12,7 @@ describe("validator/default/types/any", () => {
   it("options() should return options", () => {
     const func = () => {};
     const defaultValue = "default";
+    const allowed = [null];
     const not = ["not"];
     const only = ["only"];
     const parse = false;
@@ -22,8 +23,9 @@ describe("validator/default/types/any", () => {
       .description(description)
       .example(example)
       .default(defaultValue)
-      .not(not)
-      .only(only)
+      .allow(...allowed)
+      .not(...not)
+      .only(...only)
       .parse(parse)
       .required()
       .optional()
@@ -31,6 +33,7 @@ describe("validator/default/types/any", () => {
 
     schema.options({ validation: true }).should.deepEqual({
       defaultValue,
+      allowed,
       func,
       not,
       only,
@@ -44,6 +47,7 @@ describe("validator/default/types/any", () => {
       description,
       example,
       default: defaultValue,
+      allowed,
       not,
       only,
       parse,

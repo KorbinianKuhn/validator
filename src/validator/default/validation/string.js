@@ -1,4 +1,8 @@
-const { isNil, isString, isNotNil } = require("./../../../utils/lodash");
+const {
+  isUndefined,
+  isString,
+  isNotUndefined
+} = require("./../../../utils/lodash");
 const {
   validateFunctionSync,
   validateFunctionAsync,
@@ -11,6 +15,7 @@ const validateString = (
   value,
   {
     defaultValue,
+    allowed,
     required,
     message,
     trim,
@@ -18,13 +23,17 @@ const validateString = (
     min,
     max,
     length,
-    pattern,
+    regex,
     not,
     only
   }
 ) => {
-  if (isNil(value) && isNotNil(defaultValue)) {
+  if (isUndefined(value) && isNotUndefined(defaultValue)) {
     return defaultValue;
+  }
+
+  if (allowed && allowed.indexOf(value) !== -1) {
+    return value;
   }
 
   validateRequired(value, required, message);
@@ -71,9 +80,16 @@ const validateString = (
     }
   }
 
-  if (pattern && !value.match(pattern)) {
-    // TODO throw custom message
-    // throw schema._message[schema._language];
+  if (regex && !value.match(regex.pattern)) {
+    const locale = message.getLocale();
+    if (locale in regex.locales) {
+      throw message.replace(regex.locales[locale], {
+        pattern: regex.pattern,
+        value
+      });
+    } else {
+      throw message.get("string_regex_invalid", {});
+    }
   }
 
   return value;
@@ -83,6 +99,7 @@ const validateSync = (
   value,
   {
     defaultValue,
+    allowed,
     required,
     message,
     parse,
@@ -91,7 +108,7 @@ const validateSync = (
     min,
     max,
     length,
-    pattern,
+    regex,
     not,
     only,
     func
@@ -99,6 +116,7 @@ const validateSync = (
 ) => {
   value = validateString(value, {
     defaultValue,
+    allowed,
     required,
     message,
     parse,
@@ -107,7 +125,7 @@ const validateSync = (
     min,
     max,
     length,
-    pattern,
+    regex,
     not,
     only,
     func
@@ -119,6 +137,7 @@ const validate = async (
   value,
   {
     defaultValue,
+    allowed,
     required,
     message,
     parse,
@@ -127,7 +146,7 @@ const validate = async (
     min,
     max,
     length,
-    pattern,
+    regex,
     not,
     only,
     func
@@ -135,6 +154,7 @@ const validate = async (
 ) => {
   value = validateString(value, {
     defaultValue,
+    allowed,
     required,
     message,
     parse,
@@ -143,7 +163,7 @@ const validate = async (
     min,
     max,
     length,
-    pattern,
+    regex,
     not,
     only,
     func

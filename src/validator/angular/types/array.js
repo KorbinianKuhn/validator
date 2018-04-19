@@ -1,15 +1,15 @@
-const { ARRAY } = require('./../../default/types/array');
-const { validate, validateSync } = require('./../../default/validation/array');
+const { ARRAY } = require("./../../default/types/array");
+const { validate, validateSync } = require("./../../default/validation/array");
 
 class ARRAY_ANGULAR extends ARRAY {
-  constructor(options, defaults) {
-    super(options, defaults);
+  constructor(type, options, defaults) {
+    super(type, options, defaults);
   }
 
   validate() {
     return async formControl => {
       try {
-        const value = formControl.value === '' ? null : formControl.value;
+        const value = formControl.value === "" ? null : formControl.value;
         await validate(value, this);
         return null;
       } catch (err) {
@@ -21,7 +21,7 @@ class ARRAY_ANGULAR extends ARRAY {
   validateSync() {
     return formControl => {
       try {
-        const value = formControl.value === '' ? null : formControl.value;
+        const value = formControl.value === "" ? null : formControl.value;
         validateSync(value, this);
         return null;
       } catch (err) {
@@ -32,5 +32,5 @@ class ARRAY_ANGULAR extends ARRAY {
 }
 
 exports.ARRAY_ANGULAR = ARRAY_ANGULAR;
-exports.AnyFactory = (options, defaults) =>
-  new ARRAY_ANGULAR(options, defaults);
+exports.ArrayFactory = (type, options, defaults) =>
+  new ARRAY_ANGULAR(type, options, defaults);

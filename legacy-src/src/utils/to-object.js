@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const _ = require("lodash");
 
 const isNotNil = value => !_.isNil(value);
 
@@ -10,7 +10,7 @@ exports.toObject = (object, options = {}) => {
   const values = removeUndefined();
   console.log(values);
   switch (options.type) {
-    case 'raml': {
+    case "raml": {
       return toRAML(values, options);
     }
     default:

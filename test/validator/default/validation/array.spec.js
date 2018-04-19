@@ -10,6 +10,7 @@ const utils = require("./../../../utils");
 const {
   StringFactory
 } = require("./../../../../src/validator/default/types/string");
+const should = require("should");
 
 describe("validator/default/validation/array", () => {
   const message = Message("en");
@@ -26,6 +27,25 @@ describe("validator/default/validation/array", () => {
       defaultValue: []
     });
     actual.should.deepEqual([]);
+  });
+
+  it("validateArray() with null should verify", () => {
+    const actual = validateArray(null, {
+      allowed: [null]
+    });
+    should.equal(actual, null);
+  });
+
+  it("validateArray() with null should throw", () => {
+    utils.shouldThrow(
+      () =>
+        validateArray(null, {
+          message,
+          required: true,
+          allowed: []
+        }),
+      "Required but is null."
+    );
   });
 
   it("validateArray() should throw", () => {

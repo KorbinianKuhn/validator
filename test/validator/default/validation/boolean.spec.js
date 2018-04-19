@@ -5,6 +5,7 @@ const {
 } = require("./../../../../src/validator/default/validation/boolean");
 const { Message } = require("./../../../../src/utils/message");
 const utils = require("./../../../utils");
+const should = require("should");
 
 describe("validator/default/validation/boolean", () => {
   const message = Message("en");
@@ -21,6 +22,25 @@ describe("validator/default/validation/boolean", () => {
       defaultValue: false
     });
     actual.should.equal(false);
+  });
+
+  it("validateBoolean() with null should verify", () => {
+    const actual = validateBoolean(null, {
+      allowed: [null]
+    });
+    should.equal(actual, null);
+  });
+
+  it("validateBoolean() with null should throw", () => {
+    utils.shouldThrow(
+      () =>
+        validateBoolean(null, {
+          message,
+          required: true,
+          allowed: []
+        }),
+      "Required but is null."
+    );
   });
 
   it("validateBoolean() should throw", () => {

@@ -1,38 +1,74 @@
+const {
+  defaults,
+  hasIn,
+  defaultTo,
+  isPlainObject
+} = require("./../../../utils/lodash");
+const { ObjectFactory } = require("./../../default/types/object");
+const { URI_OPTIONS, QUERY_OPTIONS, BODY_OPTIONS } = require("./../options");
+const { toObject } = require("./../../../utils/to-object");
+const {
+  validateRequest,
+  validateRequestSync
+} = require("./../validation/request");
+
 const toSchema = (schema, options, defaults) => {
-  if (!_.hasIn(schema, 'constructor.name')) {
-    throw new Error('Invalid schema.');
+  if (!hasIn(schema, "constructor.name")) {
+    throw new Error("Invalid schema.");
   }
 
-  if (['OBJECT', 'ARRAY'].indexOf(schema.constructor.name) === -1) {
-    if (_.isPlainObject(schema)) {
+  if (["OBJECT", "ARRAY"].indexOf(schema.constructor.name) === -1) {
+    if (isPlainObject(schema)) {
       schema = ObjectFactory(schema, options, defaults);
     } else {
-      throw new Error('Must be Object or Array Schema.');
+      throw new Error("Must be Object or Array Schema.");
     }
   }
 
   return schema;
 };
 
-class REQUEST extends ANY {
+class REQUEST {
   constructor(options, defaults) {
-    super(options, defaults);
-    this._defaults = _.defaults(options, defaults);
-    this._noUndefinedKeys = _.defaultTo(
+    this._defaults = defaults(options, defaults);
+    this._noUndefinedKeys = defaultTo(
       options.noUndefinedKeys,
       defaults.noUndefinedKeys
     );
   }
 
-  async validate(value) {
-    return validateRequest(value, this);
+  options(options = {}) {
+    return {
+      params: this._params,
+      query: this._query,
+      body: this._body,
+      defaults: this._defaults
+    };
+  }
+
+  async validate(req) {
+    return validateRequest(req, this.options({ validation: true }));
+  }
+
+  validateSync(req) {
+    return validateRequestSync(req, this.options({ validation: true }));
+  }
+
+  description(description) {
+    this.description = description;
+    return this;
+  }
+
+  example(example) {
+    this._example = example;
+    return this;
   }
 
   params(schema, options = {}) {
     this._params = toSchema(
       schema,
       options,
-      _.defaults({}, URI_OPTIONS, this._defaults)
+      defaults(URI_OPTIONS, this._defaults)
     );
     return this;
   }
@@ -41,7 +77,7 @@ class REQUEST extends ANY {
     this._query = toSchema(
       schema,
       options,
-      _.defaults({}, QUERY_OPTIONS, this._defaults)
+      defaults(QUERY_OPTIONS, this._defaults)
     );
     return this;
   }
@@ -50,51 +86,13 @@ class REQUEST extends ANY {
     this._body = toSchema(
       schema,
       options,
-      _.defaults({}, BODY_OPTIONS, this._defaults)
+      defaults(BODY_OPTIONS, this._defaults)
     );
     return this;
   }
 
   toObject(options = {}) {
-    const params = this._params
-      ? this._params.toObject(options).properties
-      : undefined;
-    const query = this._query
-      ? this._query.toObject(options).properties
-      : undefined;
-    const body = this._body
-      ? { 'application/json': this._body.toObject(options) }
-      : undefined;
-    switch (options.type) {
-      case 'raml': {
-        return _.pickBy(
-          {
-            description: this._description,
-            uriParameters: params,
-            queryParameters: query,
-            body
-          },
-          helper.isNotNil
-        );
-      }
-      default: {
-        return _.pickBy(
-          {
-            type: 'request',
-            required: this._required,
-            name: this._name,
-            description: this._description,
-            default: this._default,
-            example: this._example,
-            examples: this._examples,
-            params,
-            query,
-            body
-          },
-          helper.isNotNil
-        );
-      }
-    }
+    return toObject(this.options(), options);
   }
 }
 

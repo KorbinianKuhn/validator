@@ -5,6 +5,7 @@ const {
 } = require("./../../../../src/validator/default/validation/number");
 const { Message } = require("./../../../../src/utils/message");
 const utils = require("./../../../utils");
+const should = require("should");
 
 describe("validator/default/validation/number", () => {
   const message = Message("en");
@@ -21,6 +22,25 @@ describe("validator/default/validation/number", () => {
       defaultValue: 2
     });
     actual.should.equal(2);
+  });
+
+  it("validateNumber() with null should verify", () => {
+    const actual = validateNumber(null, {
+      allowed: [null]
+    });
+    should.equal(actual, null);
+  });
+
+  it("validateNumber() with null should throw", () => {
+    utils.shouldThrow(
+      () =>
+        validateNumber(null, {
+          message,
+          required: true,
+          allowed: []
+        }),
+      "Required but is null."
+    );
   });
 
   it("validateNumber() should throw", () => {
