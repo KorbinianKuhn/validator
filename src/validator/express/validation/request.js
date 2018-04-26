@@ -1,9 +1,13 @@
-const { keys } = require("./../../../utils/lodash");
+const { keys, isObject } = require("./../../../utils/lodash");
 
 const isValidRequestObject = (req, message) => {
+  if (!isObject(req)) {
+    throw message.get("express_invalid_request_object", {});
+  }
+
   for (const key of ["params", "query", "body"]) {
     if (!(key in req)) {
-      throw message.get("express_invalid_request_object", { key });
+      throw message.get("express_invalid_request_object", {});
     }
   }
 };
@@ -38,14 +42,20 @@ const validateSchemaSync = (value, schema, message, { unknown, type }) => {
   return null;
 };
 
-const validateRequest = async (req, message, schema, { unknown }) => {
+const validateRequest = async (
+  req,
+  { params, query, body, unknown, message }
+) => {
   isValidRequestObject(req, message);
 
   const errors = {};
   let valid = true;
-  for (const key of ["params", "query", "body"]) {
-    const error = await validateSchema(req[key], schema[`_${key}`], {
-      unknown: unknown,
+  const keys = ["params", "query", "body"];
+  const schemas = [params, query, body];
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const error = await validateSchema(req[key], schemas[i], message, {
+      unknown,
       type: key
     });
 
@@ -62,14 +72,20 @@ const validateRequest = async (req, message, schema, { unknown }) => {
   }
 };
 
-const validateRequestSync = (req, message, schema, { unknown }) => {
+const validateRequestSync = (
+  req,
+  { params, query, body, unknown, message }
+) => {
   isValidRequestObject(req, message);
 
   const errors = {};
   let valid = true;
-  for (const key of ["params", "query", "body"]) {
-    const error = validateSchema(req[key], schema[`_${key}`], {
-      unknown: unknown,
+  const keys = ["params", "query", "body"];
+  const schemas = [params, query, body];
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const error = validateSchemaSync(req[key], schemas[i], message, {
+      unknown,
       type: key
     });
 

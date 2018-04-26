@@ -1,4 +1,8 @@
-const { defaultToAny, isRegExp } = require("./../../../utils/lodash");
+const {
+  defaultToAny,
+  isRegExp,
+  removeUndefinedProperties
+} = require("./../../../utils/lodash");
 const { ANY } = require("./any");
 const { validate, validateSync } = require("./../validation/string");
 
@@ -27,20 +31,24 @@ class STRING extends ANY {
       length: this._length
     };
     if (options.validation) {
-      return Object.assign(settings, {
-        defaultValue: this._default,
-        message: this._message,
-        func: this._func,
-        regex: this._regex
-      });
+      return removeUndefinedProperties(
+        Object.assign(settings, {
+          defaultValue: this._default,
+          message: this._message,
+          func: this._func,
+          regex: this._regex
+        })
+      );
     } else {
-      return Object.assign(settings, {
-        type: "string",
-        description: this._description,
-        example: this.example(),
-        default: this._default,
-        pattern: this._regex ? this._regex.pattern : undefined
-      });
+      return removeUndefinedProperties(
+        Object.assign(settings, {
+          type: "string",
+          description: this._description,
+          example: this.example(),
+          default: this._default,
+          pattern: this._regex ? this._regex.pattern : undefined
+        })
+      );
     }
   }
 
@@ -87,7 +95,83 @@ class STRING extends ANY {
     };
     return this;
   }
+
+  // TODO email
+  // email({remove}) {
+  //   return this;
+  // }
+
+  // TODO alphanum
+  // alphanum() {
+  //   return this;
+  // }
+
+  // TODO alphabetic
+  // alphabetic() {
+  //   return this;
+  // }
+
+  // TODO password
+  // password({ numbers, specialChars }) {
+  //   return this;
+  // }
+
+  // TODO uuid
+  // uuid(version = "v4") {
+  //   return this;
+  // }
+
+  // TODO lowercase
+  // lowercase() {
+  //   return this;
+  // }
+
+  // TODO uppercase
+  // uppercase() {
+  //   return this;
+  // }
+
+  // TODO replace
+  // replace() {
+  //   return this;
+  // }
+
+  // TODO words
+  // words() {
+  //   return this;
+  // }
+
+  // TODO split
+  // split() {
+  //   return this;
+  // }
+
+  // TODO deburr
+  // deburr() {
+  //   return this;
+  // }
+
+  // TODO escape
+  // escape() {
+  //   return this;
+  // }
+
+  // TODO mongoDbId
+  // mongoDbId() {
+  //   return this;
+  // }
+
+  // TODO uri
+  // uri() {
+  //   return this;
+  // }
+
+  // TODO hex
+  // hex() {
+  //   return this;
+  // }
 }
 
 exports.STRING = STRING;
-exports.StringFactory = (options, defaults) => new STRING(options, defaults);
+exports.StringFactory = (options = {}, defaults = {}) =>
+  new STRING(options, defaults);

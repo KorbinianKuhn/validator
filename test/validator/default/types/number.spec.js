@@ -8,7 +8,7 @@ describe("validator/default/types/number", () => {
   const message = Message("en");
 
   it("NumberFactory() should return NUMBER object", () => {
-    NumberFactory({ message }, {}).constructor.name.should.equal("NUMBER");
+    NumberFactory().constructor.name.should.equal("NUMBER");
   });
 
   it("options() should return options", () => {
@@ -27,7 +27,7 @@ describe("validator/default/types/number", () => {
     const positive = true;
     const negative = true;
 
-    const schema = NumberFactory({ message }, {})
+    const schema = NumberFactory()
       .description(description)
       .example(example)
       .default(defaultValue)
@@ -88,7 +88,7 @@ describe("validator/default/types/number", () => {
     const description = "description";
     const example = "example";
 
-    const schema = NumberFactory({ message }, {})
+    const schema = NumberFactory()
       .description(description)
       .example(example)
       .required();
@@ -104,7 +104,7 @@ describe("validator/default/types/number", () => {
   });
 
   it("validateSync() should verify", () => {
-    NumberFactory({ message }, {})
+    NumberFactory()
       .validateSync(2)
       .should.equal(2);
   });
@@ -112,7 +112,7 @@ describe("validator/default/types/number", () => {
   it("validateSync() should fail", () => {
     utils.shouldThrow(
       () =>
-        NumberFactory({ message }, {})
+        NumberFactory()
           .required()
           .validateSync(undefined),
       "Required but is undefined."
@@ -120,7 +120,7 @@ describe("validator/default/types/number", () => {
   });
 
   it("validateAsync() should verify", async () => {
-    await NumberFactory({ message }, {})
+    await NumberFactory()
       .validate(2)
       .then(value => {
         value.should.equal(2);
@@ -129,7 +129,7 @@ describe("validator/default/types/number", () => {
 
   it("validateAsync() should fail", async () => {
     await utils.shouldEventuallyThrow(
-      NumberFactory({ message }, {})
+      NumberFactory()
         .required()
         .validate(undefined),
       "Required but is undefined."

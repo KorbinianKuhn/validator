@@ -9,7 +9,6 @@ const isNil = require("lodash/isNil");
 const get = require("lodash/get");
 const set = require("lodash/set");
 const has = require("lodash/has");
-const defaults = require("lodash/defaults");
 const hasIn = require("lodash/hasIn");
 const isNumber = require("lodash/isNumber");
 const cloneDeep = require("lodash/cloneDeep");
@@ -19,6 +18,7 @@ const isEqual = require("lodash/isEqual");
 const isRegExp = require("lodash/isRegExp");
 const isUndefined = require("lodash/isUndefined");
 const isNull = require("lodash/isNull");
+const isObject = require("lodash/isObject");
 
 const AsyncFunction = (async () => {}).constructor;
 const isAsyncFunction = func => func instanceof AsyncFunction;
@@ -36,6 +36,9 @@ const defaultToAny = (...values) => {
   return undefined;
 };
 
+const removeUndefinedProperties = object =>
+  pickBy(object, v => v !== undefined);
+
 module.exports = {
   defaultTo,
   defaultToAny,
@@ -50,7 +53,6 @@ module.exports = {
   set,
   has,
   keys,
-  defaults,
   hasIn,
   isNumber,
   cloneDeep,
@@ -62,5 +64,7 @@ module.exports = {
   isRegExp,
   isUndefined,
   isNotUndefined,
-  isNull
+  isNull,
+  removeUndefinedProperties,
+  isObject
 };

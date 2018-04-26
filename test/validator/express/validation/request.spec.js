@@ -12,11 +12,18 @@ const {
 const utils = require("./../../../utils");
 const should = require("should");
 
-describe.only("validator/express/validation/request", () => {
+describe("validator/express/validation/request", () => {
   const message = Message("en");
   const validator = ExpressValidatorFactory();
 
   it("isValidRequestObject() should throw", () => {
+    utils.shouldThrow(
+      () => isValidRequestObject("wrong", message),
+      "Invalid express req object."
+    );
+  });
+
+  it("isValidRequestObject() with missing keys should throw", () => {
     utils.shouldThrow(
       () => isValidRequestObject({}, message),
       "Invalid express req object."
@@ -106,5 +113,70 @@ describe.only("validator/express/validation/request", () => {
     const schema = validator.Object({}).optional();
     const actual = await validateSchema({}, schema, message, {});
     should.equal(actual, null);
+  });
+
+  it("validateRequest() with empty schema should verify", async () => {
+    const req = { params: {}, query: {}, body: {} };
+    const actual = await validateRequest(req, { message });
+    actual.should.deepEqual(req);
+  });
+
+  it("validateRequest() with schema should verify", async () => {
+    const req = { params: { name: "Jane Doe" }, query: {}, body: {} };
+    const params = validator.Object({ name: validator.String() });
+    const actual = await validateRequest(req, {
+      params,
+      message
+    });
+    actual.should.deepEqual(req);
+  });
+
+  it("validateRequest() with schema and invalid data should throw", async () => {
+    const req = { params: { name: false }, query: {}, body: {} };
+    const params = validator.Object({ name: validator.String() });
+    await utils.shouldEventuallyThrow(
+      validateRequest(req, {
+        params,
+        message
+      }),
+      {
+        params: {
+          name: "Must be type string but is boolean."
+        }
+      }
+    );
+  });
+
+  it("validateRequestSync() with empty schema should verify", () => {
+    const req = { params: {}, query: {}, body: {} };
+    const actual = validateRequestSync(req, { message });
+    actual.should.deepEqual(req);
+  });
+
+  it("validateRequestSync() with schema should verify", () => {
+    const req = { params: { name: "Jane Doe" }, query: {}, body: {} };
+    const params = validator.Object({ name: validator.String() });
+    const actual = validateRequestSync(req, {
+      params,
+      message
+    });
+    actual.should.deepEqual(req);
+  });
+
+  it("validateRequestSync() with schema and invalid data should throw", () => {
+    const req = { params: { name: false }, query: {}, body: {} };
+    const params = validator.Object({ name: validator.String() });
+    utils.shouldThrow(
+      () =>
+        validateRequestSync(req, {
+          params,
+          message
+        }),
+      {
+        params: {
+          name: "Must be type string but is boolean."
+        }
+      }
+    );
   });
 });

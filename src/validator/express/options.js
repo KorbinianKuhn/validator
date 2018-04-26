@@ -3,7 +3,20 @@ exports.MIDDLEWARE_OPTIONS = {
   next: false
 };
 
-const DATE_FORMAT = (exports.DATE_FORMAT = "YYYY-MM-DD[T]HH:mm:ss.SSSZ");
+const DATE_FORMAT = "YYYY-MM-DD[T]HH:mm:ss.SSSZ";
+exports.DATE_FORMAT = DATE_FORMAT;
+
+exports.TYPES = [
+  "ANY",
+  "ARRAY",
+  "BOOLEAN",
+  "DATE",
+  "NUMBER",
+  "OBJECT",
+  "STRING",
+  "REQUEST",
+  "RESPONSE"
+];
 
 exports.VALIDATOR_OPTIONS = {
   locale: "en",

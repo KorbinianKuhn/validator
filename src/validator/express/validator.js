@@ -1,24 +1,16 @@
-const _ = require("./../../utils/lodash");
+const { isArray, isPlainObject } = require("./../../utils/lodash");
 const { Validator } = require("./../default/validator");
 const middleware = require("./middleware");
 const { RequestFactory } = require("./types/request");
 const { ResponseFactory } = require("./types/response");
 const { ObjectFactory } = require("./../default/types/object");
 const { ArrayFactory } = require("./../default/types/array");
-
-const TYPES = [
-  "ANY",
-  "ARRAY",
-  "BOOLEAN",
-  "DATE",
-  "NUMBER",
-  "OBJECT",
-  "STRING",
-  "REQUEST",
-  "RESPONSE"
-];
-
-const { BODY_OPTIONS, QUERY_OPTIONS, URI_OPTIONS } = require("./options");
+const {
+  TYPES,
+  BODY_OPTIONS,
+  QUERY_OPTIONS,
+  URI_OPTIONS
+} = require("./options");
 
 class ExpressValidator extends Validator {
   constructor(options) {
@@ -27,14 +19,14 @@ class ExpressValidator extends Validator {
   }
 
   Request(options = {}) {
-    return RequestFactory(options, _.defaults(this._options));
+    return RequestFactory(options, this._options);
   }
 
   Params(schema, options = {}) {
     return ObjectFactory(
       schema,
       options,
-      _.defaults(URI_OPTIONS, this._options, this._defaults)
+      Object.assign({}, this._defaults, this._options, URI_OPTIONS)
     );
   }
 
@@ -42,25 +34,25 @@ class ExpressValidator extends Validator {
     return ObjectFactory(
       schema,
       options,
-      _.defaults(QUERY_OPTIONS, this._options, this._defaults)
+      Object.assign({}, this._defaults, this._options, QUERY_OPTIONS)
     );
   }
 
   Body(schema, options = {}) {
-    if (_.isArray(schema)) {
+    if (isArray(schema)) {
       return ArrayFactory(
         schema,
         options,
-        _.defaults(BODY_OPTIONS, this._options, this._defaults)
+        Object.assign({}, this._defaults, this._options, BODY_OPTIONS)
       );
-    } else if (_.isPlainObject(schema)) {
+    } else if (isPlainObject(schema)) {
       return ObjectFactory(
         schema,
         options,
-        _.defaults(BODY_OPTIONS, this._options, this._defaults)
+        Object.assign({}, this._defaults, this._options, BODY_OPTIONS)
       );
     } else {
-      throw new Error("Only plain object or array is allowed");
+      throw this._message.error("express_object_or_array", {});
     }
   }
 
@@ -69,7 +61,7 @@ class ExpressValidator extends Validator {
       status,
       object,
       options,
-      _.defaults({}, this._options)
+      Object.assign({}, this._options)
     );
   }
 

@@ -1,9 +1,4 @@
-const {
-  defaultTo,
-  defaults,
-  cloneDeep,
-  hasIn
-} = require("./../../utils/lodash");
+const { defaultTo, cloneDeep, hasIn } = require("./../../utils/lodash");
 const { ValidationError } = require("./../../utils/error");
 const { Message } = require("./../../utils/message");
 const { VALIDATOR_OPTIONS } = require("./options");
@@ -19,7 +14,7 @@ const TYPES = ["ANY", "ARRAY", "BOOLEAN", "DATE", "NUMBER", "OBJECT", "STRING"];
 
 class Validator {
   constructor(options) {
-    this._options = defaults(options, VALIDATOR_OPTIONS);
+    this._options = Object.assign({}, VALIDATOR_OPTIONS, options);
     this._customs = {};
     this._types = TYPES;
     this._message = Message(defaultTo(this._options.locale, "en"));
@@ -107,6 +102,14 @@ class Validator {
     } else {
       throw this._message.error("unknown_custom_type", { name });
     }
+  }
+
+  listCustomTypes() {
+    const types = [];
+    for (const custom in this._customs) {
+      types.push(`${custom}: ${this._customs[custom].constructor.name}`);
+    }
+    return types;
   }
 
   Any(type, options = {}) {

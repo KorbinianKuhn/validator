@@ -1,6 +1,9 @@
 const {
   ArrayFactory
 } = require("./../../../../src/validator/default/types/array");
+const {
+  StringFactory
+} = require("./../../../../src/validator/default/types/string");
 const { Message } = require("./../../../../src/utils/message");
 const utils = require("./../../../utils");
 
@@ -8,9 +11,7 @@ describe("validator/default/types/array", () => {
   const message = Message("en");
 
   it("ArrayFactory() should return ARRAY object", () => {
-    ArrayFactory(undefined, { message }, {}).constructor.name.should.equal(
-      "ARRAY"
-    );
+    ArrayFactory().constructor.name.should.equal("ARRAY");
   });
 
   it("options() should return options", () => {
@@ -28,7 +29,7 @@ describe("validator/default/types/array", () => {
     const empty = false;
     const unique = true;
 
-    const schema = ArrayFactory(undefined, { message }, {})
+    const schema = ArrayFactory()
       .description(description)
       .example(example)
       .default(defaultValue)
@@ -58,7 +59,6 @@ describe("validator/default/types/array", () => {
       max,
       length,
       empty,
-      itemSchema: undefined,
       unique
     });
 
@@ -84,7 +84,7 @@ describe("validator/default/types/array", () => {
     const description = "description";
     const example = "example";
 
-    const schema = ArrayFactory(undefined, { message }, {})
+    const schema = ArrayFactory()
       .description(description)
       .example(example)
       .required();
@@ -99,8 +99,23 @@ describe("validator/default/types/array", () => {
     });
   });
 
+  it("toObject() should return object with items", () => {
+    const itemSchema = StringFactory();
+
+    const schema = ArrayFactory(itemSchema);
+
+    schema.toObject().should.deepEqual({
+      type: "array",
+      required: false,
+      empty: true,
+      parse: false,
+      items: itemSchema.toObject(),
+      example: ["No example provided"]
+    });
+  });
+
   it("validateSync() should verify", () => {
-    ArrayFactory(undefined, { message }, {})
+    ArrayFactory()
       .validateSync(["test"])
       .should.deepEqual(["test"]);
   });
@@ -108,7 +123,7 @@ describe("validator/default/types/array", () => {
   it("validateSync() should fail", () => {
     utils.shouldThrow(
       () =>
-        ArrayFactory(undefined, { message }, {})
+        ArrayFactory()
           .required()
           .validateSync(undefined),
       "Required but is undefined."
@@ -116,7 +131,7 @@ describe("validator/default/types/array", () => {
   });
 
   it("validateAsync() should verify", async () => {
-    await ArrayFactory(undefined, { message }, {})
+    await ArrayFactory()
       .validate(["test"])
       .then(value => {
         value.should.deepEqual(["test"]);
@@ -125,10 +140,16 @@ describe("validator/default/types/array", () => {
 
   it("validateAsync() should fail", async () => {
     await utils.shouldEventuallyThrow(
-      ArrayFactory(undefined, { message }, {})
+      ArrayFactory()
         .required()
         .validate(undefined),
       "Required but is undefined."
     );
+  });
+
+  it("example() with no type should return empty array", () => {
+    ArrayFactory()
+      .example()
+      .should.deepEqual("No example provided");
   });
 });

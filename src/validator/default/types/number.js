@@ -1,5 +1,6 @@
 const { ANY } = require("./any");
 const { validate, validateSync } = require("./../validation/number");
+const { removeUndefinedProperties } = require("./../../../utils/lodash");
 
 class NUMBER extends ANY {
   constructor(options, defaults) {
@@ -23,18 +24,22 @@ class NUMBER extends ANY {
       integer: this._integer
     };
     if (options.validation) {
-      return Object.assign(settings, {
-        defaultValue: this._default,
-        message: this._message,
-        func: this._func
-      });
+      return removeUndefinedProperties(
+        Object.assign(settings, {
+          defaultValue: this._default,
+          message: this._message,
+          func: this._func
+        })
+      );
     } else {
-      return Object.assign(settings, {
-        type: "number",
-        description: this._description,
-        example: this.example(),
-        default: this._default
-      });
+      return removeUndefinedProperties(
+        Object.assign(settings, {
+          type: "number",
+          description: this._description,
+          example: this.example(),
+          default: this._default
+        })
+      );
     }
   }
 
@@ -80,7 +85,23 @@ class NUMBER extends ANY {
     this._negative = true;
     return this;
   }
+
+  // TODO round
+  // round(precision = 2) {
+  //   return this;
+  // }
+
+  // TODO ceil
+  // ceil(precision = 2) {
+  //   return this;
+  // }
+
+  // TODO floor
+  // floor(precision = 2) {
+  //   return this;
+  // }
 }
 
 exports.NUMBER = NUMBER;
-exports.NumberFactory = (options, defaults) => new NUMBER(options, defaults);
+exports.NumberFactory = (options = {}, defaults = {}) =>
+  new NUMBER(options, defaults);

@@ -1,8 +1,8 @@
 const {
-  defaults,
   hasIn,
-  defaultTo,
-  isPlainObject
+  defaultToAny,
+  isPlainObject,
+  removeUndefinedProperties
 } = require("./../../../utils/lodash");
 const { ObjectFactory } = require("./../../default/types/object");
 const { URI_OPTIONS, QUERY_OPTIONS, BODY_OPTIONS } = require("./../options");
@@ -11,39 +11,63 @@ const {
   validateRequest,
   validateRequestSync
 } = require("./../validation/request");
+const { Message } = require("./../../../utils/message");
 
-const toSchema = (schema, options, defaults) => {
+const toSchema = (schema, options, defaults, message) => {
   if (!hasIn(schema, "constructor.name")) {
-    throw new Error("Invalid schema.");
+    throw message.error("invalid_schema", {});
   }
 
   if (["OBJECT", "ARRAY"].indexOf(schema.constructor.name) === -1) {
     if (isPlainObject(schema)) {
       schema = ObjectFactory(schema, options, defaults);
     } else {
-      throw new Error("Must be Object or Array Schema.");
+      throw message.error("express_object_or_array_schema", {});
     }
   }
 
   return schema;
 };
+exports.toSchema = toSchema;
 
 class REQUEST {
   constructor(options, defaults) {
-    this._defaults = defaults(options, defaults);
-    this._noUndefinedKeys = defaultTo(
-      options.noUndefinedKeys,
-      defaults.noUndefinedKeys
+    this._options = Object.assign({}, defaults, options);
+    this._message = defaultToAny(
+      options.message,
+      defaults.message,
+      Message("en")
+    );
+    this._unknown = defaultToAny(
+      options.unknownObjectKeys,
+      defaults.unknownObjectKeys,
+      true
     );
   }
 
   options(options = {}) {
-    return {
-      params: this._params,
-      query: this._query,
-      body: this._body,
-      defaults: this._defaults
+    const settings = {
+      unknown: this._unknown
     };
+
+    if (options.validation) {
+      return removeUndefinedProperties(
+        Object.assign(settings, {
+          message: this._message,
+          params: this._params,
+          query: this._query,
+          body: this._body
+        })
+      );
+    } else {
+      return removeUndefinedProperties(
+        Object.assign(settings, {
+          type: "request",
+          description: this._description,
+          example: this.example()
+        })
+      );
+    }
   }
 
   async validate(req) {
@@ -55,20 +79,26 @@ class REQUEST {
   }
 
   description(description) {
-    this.description = description;
+    this._description = description;
     return this;
   }
 
   example(example) {
-    this._example = example;
-    return this;
+    // TODO generate automatic example
+    if (example === undefined) {
+      return this._example;
+    } else {
+      this._example = example;
+      return this;
+    }
   }
 
   params(schema, options = {}) {
     this._params = toSchema(
       schema,
       options,
-      defaults(URI_OPTIONS, this._defaults)
+      Object.assign({}, this._options, URI_OPTIONS),
+      this._message
     );
     return this;
   }
@@ -77,7 +107,8 @@ class REQUEST {
     this._query = toSchema(
       schema,
       options,
-      defaults(QUERY_OPTIONS, this._defaults)
+      Object.assign({}, this._options, QUERY_OPTIONS),
+      this._message
     );
     return this;
   }
@@ -86,14 +117,21 @@ class REQUEST {
     this._body = toSchema(
       schema,
       options,
-      defaults(BODY_OPTIONS, this._defaults)
+      Object.assign({}, this._options, BODY_OPTIONS),
+      this._message
     );
     return this;
   }
 
   toObject(options = {}) {
-    return toObject(this.options(), options);
+    const object = removeUndefinedProperties({
+      params: this._params ? this._params.options(options) : undefined,
+      query: this._query ? this._query.options(options) : undefined,
+      body: this._body ? this._body.options(options) : undefined
+    });
+    return toObject(Object.assign(this.options(), object), options);
   }
 }
 
-exports.RequestFactory = (options, defaults) => new REQUEST(options, defaults);
+exports.RequestFactory = (options = {}, defaults = {}) =>
+  new REQUEST(options, defaults);

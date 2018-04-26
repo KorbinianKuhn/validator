@@ -10,7 +10,7 @@ describe("validator/default/types/date", () => {
   const message = Message("en");
 
   it("DateFactory() should return DATE object", () => {
-    DateFactory({ message }, {}).constructor.name.should.equal("DATE");
+    DateFactory().constructor.name.should.equal("DATE");
   });
 
   it("options() should return options", () => {
@@ -28,7 +28,7 @@ describe("validator/default/types/date", () => {
     const min = "2018-01-01T00:00:00.000Z";
     const max = "2019-01-01T00:00:00.000Z";
 
-    const schema = DateFactory({ message }, {})
+    const schema = DateFactory()
       .description(description)
       .example(example)
       .default(defaultValue)
@@ -81,7 +81,7 @@ describe("validator/default/types/date", () => {
 
   it("func() with invalid argument should fail", () => {
     utils.shouldThrow(
-      () => DateFactory({ message }, {}).func("wrong"),
+      () => DateFactory().func("wrong"),
       "Validator configuration error: Must be a function."
     );
   });
@@ -90,7 +90,7 @@ describe("validator/default/types/date", () => {
     const description = "description";
     const example = "example";
 
-    const schema = DateFactory({ message }, {})
+    const schema = DateFactory()
       .description(description)
       .example(example)
       .required();
@@ -108,7 +108,7 @@ describe("validator/default/types/date", () => {
   });
 
   it("validateSync() should verify", () => {
-    DateFactory({ message }, {})
+    DateFactory()
       .validateSync("2018-01-01T00:00:00.000Z")
       .should.equal("2018-01-01T00:00:00.000Z");
   });
@@ -116,7 +116,7 @@ describe("validator/default/types/date", () => {
   it("validateSync() should fail", () => {
     utils.shouldThrow(
       () =>
-        DateFactory({ message }, {})
+        DateFactory()
           .required()
           .validateSync(undefined),
       "Required but is undefined."
@@ -124,7 +124,7 @@ describe("validator/default/types/date", () => {
   });
 
   it("validateAsync() should verify", async () => {
-    await DateFactory({ message }, {})
+    await DateFactory()
       .validate("2018-01-01T00:00:00.000Z")
       .then(value => {
         value.should.equal("2018-01-01T00:00:00.000Z");
@@ -133,7 +133,7 @@ describe("validator/default/types/date", () => {
 
   it("validateAsync() should fail", async () => {
     await utils.shouldEventuallyThrow(
-      DateFactory({ message }, {})
+      DateFactory()
         .required()
         .validate(undefined),
       "Required but is undefined."

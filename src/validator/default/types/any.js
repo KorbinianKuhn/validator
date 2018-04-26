@@ -1,4 +1,7 @@
-const { defaultToAny } = require("./../../../utils/lodash");
+const {
+  defaultToAny,
+  removeUndefinedProperties
+} = require("./../../../utils/lodash");
 const { toObject } = require("./../../../utils/to-object");
 const { validate, validateSync } = require("./../validation/any");
 const { isFunction } = require("./../../../utils/lodash");
@@ -32,18 +35,22 @@ class ANY {
       not: this._not
     };
     if (options.validation) {
-      return Object.assign(settings, {
-        defaultValue: this._default,
-        message: this._message,
-        func: this._func
-      });
+      return removeUndefinedProperties(
+        Object.assign(settings, {
+          defaultValue: this._default,
+          message: this._message,
+          func: this._func
+        })
+      );
     } else {
-      return Object.assign(settings, {
-        type: "any",
-        description: this._description,
-        example: this.example(),
-        default: this._default
-      });
+      return removeUndefinedProperties(
+        Object.assign(settings, {
+          type: "any",
+          description: this._description,
+          example: this.example(),
+          default: this._default
+        })
+      );
     }
   }
 
@@ -72,7 +79,9 @@ class ANY {
 
   example(example) {
     if (example === undefined) {
-      return this._example;
+      return this._example !== undefined
+        ? this._example
+        : this._message.get("no_example");
     } else {
       this._example = example;
       return this;
@@ -118,6 +127,6 @@ class ANY {
 }
 
 exports.ANY = ANY;
-exports.AnyFactory = function(options, defaults) {
+exports.AnyFactory = (options = {}, defaults = {}) => {
   return new ANY(options, defaults);
 };

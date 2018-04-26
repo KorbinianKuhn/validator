@@ -8,7 +8,7 @@ describe("validator/default/types/string", () => {
   const message = Message("en");
 
   it("StringFactory() should return STRING object", () => {
-    StringFactory({ message }, {}).constructor.name.should.equal("STRING");
+    StringFactory().constructor.name.should.equal("STRING");
   });
 
   it("options() should return options", () => {
@@ -28,7 +28,7 @@ describe("validator/default/types/string", () => {
     const empty = false;
     const locales = { key: "value" };
 
-    const schema = StringFactory({ message }, {})
+    const schema = StringFactory()
       .description(description)
       .example(example)
       .default(defaultValue)
@@ -87,7 +87,7 @@ describe("validator/default/types/string", () => {
 
   it("regex() invalid regex should throw", () => {
     utils.shouldThrow(
-      () => StringFactory({ message }, {}).regex(true),
+      () => StringFactory().regex(true),
       "Validator configuration error: Must be a regular expression."
     );
   });
@@ -96,7 +96,7 @@ describe("validator/default/types/string", () => {
     const description = "description";
     const example = "example";
 
-    const schema = StringFactory({ message }, {})
+    const schema = StringFactory()
       .description(description)
       .example(example)
       .required();
@@ -113,7 +113,7 @@ describe("validator/default/types/string", () => {
   });
 
   it("validateSync() should verify", () => {
-    StringFactory({ message }, {})
+    StringFactory()
       .validateSync("test")
       .should.equal("test");
   });
@@ -121,7 +121,7 @@ describe("validator/default/types/string", () => {
   it("validateSync() should fail", () => {
     utils.shouldThrow(
       () =>
-        StringFactory({ message }, {})
+        StringFactory()
           .required()
           .validateSync(undefined),
       "Required but is undefined."
@@ -129,7 +129,7 @@ describe("validator/default/types/string", () => {
   });
 
   it("validateAsync() should verify", async () => {
-    await StringFactory({ message }, {})
+    await StringFactory()
       .validate("test")
       .then(value => {
         value.should.equal("test");
@@ -138,7 +138,7 @@ describe("validator/default/types/string", () => {
 
   it("validateAsync() should fail", async () => {
     await utils.shouldEventuallyThrow(
-      StringFactory({ message }, {})
+      StringFactory()
         .required()
         .validate(undefined),
       "Required but is undefined."

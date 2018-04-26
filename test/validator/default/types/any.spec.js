@@ -6,7 +6,7 @@ describe("validator/default/types/any", () => {
   const message = Message("en");
 
   it("AnyFactory() should return ANY object", () => {
-    AnyFactory({ message }, {}).constructor.name.should.equal("ANY");
+    AnyFactory().constructor.name.should.equal("ANY");
   });
 
   it("options() should return options", () => {
@@ -19,7 +19,7 @@ describe("validator/default/types/any", () => {
     const description = "description";
     const example = "example";
 
-    const schema = AnyFactory({ message }, {})
+    const schema = AnyFactory()
       .description(description)
       .example(example)
       .default(defaultValue)
@@ -57,7 +57,7 @@ describe("validator/default/types/any", () => {
 
   it("func() with invalid argument should fail", () => {
     utils.shouldThrow(
-      () => AnyFactory({ message }, {}).func("wrong"),
+      () => AnyFactory().func("wrong"),
       "Validator configuration error: Must be a function."
     );
   });
@@ -66,7 +66,7 @@ describe("validator/default/types/any", () => {
     const description = "description";
     const example = "example";
 
-    const schema = AnyFactory({ message }, {})
+    const schema = AnyFactory()
       .description(description)
       .example(example)
       .required();
@@ -81,7 +81,7 @@ describe("validator/default/types/any", () => {
   });
 
   it("validateSync() should verify", () => {
-    AnyFactory({ message }, {})
+    AnyFactory()
       .validateSync("test")
       .should.equal("test");
   });
@@ -89,7 +89,7 @@ describe("validator/default/types/any", () => {
   it("validateSync() should fail", () => {
     utils.shouldThrow(
       () =>
-        AnyFactory({ message }, {})
+        AnyFactory()
           .required()
           .validateSync(undefined),
       "Required but is undefined."
@@ -97,7 +97,7 @@ describe("validator/default/types/any", () => {
   });
 
   it("validateAsync() should verify", async () => {
-    await AnyFactory({ message }, {})
+    await AnyFactory()
       .validate("test")
       .then(value => {
         value.should.equal("test");
@@ -106,7 +106,7 @@ describe("validator/default/types/any", () => {
 
   it("validateAsync() should fail", async () => {
     await utils.shouldEventuallyThrow(
-      AnyFactory({ message }, {})
+      AnyFactory()
         .required()
         .validate(undefined),
       "Required but is undefined."

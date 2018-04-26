@@ -1,4 +1,3 @@
-const { defaults } = require("./../../utils/lodash");
 const { Validator } = require("./../default/validator");
 const { VALIDATOR_OPTIONS } = require("./options");
 const { AnyFactory } = require("./types/any");
@@ -11,7 +10,7 @@ const { StringFactory } = require("./types/string");
 
 class AngularValidator extends Validator {
   constructor(options) {
-    super(defaults(options, VALIDATOR_OPTIONS));
+    super(Object.assign({}, VALIDATOR_OPTIONS, options));
   }
 
   Any(type, options = {}) {

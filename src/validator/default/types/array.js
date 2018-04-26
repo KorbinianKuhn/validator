@@ -1,4 +1,7 @@
-const { defaultToAny } = require("./../../../utils/lodash");
+const {
+  defaultToAny,
+  removeUndefinedProperties
+} = require("./../../../utils/lodash");
 const { ANY } = require("./any");
 const { validate, validateSync } = require("./../validation/array");
 const { toObject } = require("./../../../utils/to-object");
@@ -24,19 +27,23 @@ class ARRAY extends ANY {
       not: this._not
     };
     if (options.validation) {
-      return Object.assign(settings, {
-        defaultValue: this._default,
-        message: this._message,
-        itemSchema: this._type,
-        func: this._func
-      });
+      return removeUndefinedProperties(
+        Object.assign(settings, {
+          defaultValue: this._default,
+          message: this._message,
+          itemSchema: this._type,
+          func: this._func
+        })
+      );
     } else {
-      return Object.assign(settings, {
-        type: "array",
-        description: this._description,
-        example: this.example(),
-        default: this._default
-      });
+      return removeUndefinedProperties(
+        Object.assign(settings, {
+          type: "array",
+          description: this._description,
+          example: this.example(),
+          default: this._default
+        })
+      );
     }
   }
 
@@ -50,15 +57,11 @@ class ARRAY extends ANY {
 
   example(example) {
     if (example === undefined) {
-      if (this._example === undefined) {
-        if (this._type === undefined) {
-          return [];
-        } else {
-          return this._type.example();
-        }
-      } else {
-        return this._example;
-      }
+      return this._example === undefined
+        ? this._type === undefined
+          ? this._message.get("no_example")
+          : [this._type.example()]
+        : this._example;
     } else {
       this._example = example;
       return this;
@@ -94,8 +97,43 @@ class ARRAY extends ANY {
     const items = this._type ? this._type.toObject(options) : undefined;
     return toObject(Object.assign(this.options(), { items }), options);
   }
+
+  // TODO compact
+  // compact() {
+  //   return this;
+  // }
+
+  // TODO remove
+  // remove() {
+  //   return this;
+  // }
+
+  // TODO reverse
+  // reverse() {
+  //   return this;
+  // }
+
+  // TODO sort
+  // sort() {
+  //   return this;
+  // }
+
+  // TODO removeDuplicates
+  // removeDuplicates() {
+  //   return this;
+  // }
+
+  // TODO join
+  // join() {
+  //   return this;
+  // }
+
+  // TODO filter
+  // filter() {
+  //   return this;
+  // }
 }
 
 exports.ARRAY = ARRAY;
-exports.ArrayFactory = (type, options, defaults) =>
+exports.ArrayFactory = (type, options = {}, defaults = {}) =>
   new ARRAY(type, options, defaults);

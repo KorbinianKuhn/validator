@@ -16,3 +16,5 @@ pids
 # Coverage
 coverage
 .nyc_output
+
+/dist

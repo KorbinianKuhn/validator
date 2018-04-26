@@ -1,4 +1,7 @@
-const { defaultToAny } = require("./../../../utils/lodash");
+const {
+  defaultToAny,
+  removeUndefinedProperties
+} = require("./../../../utils/lodash");
 const { ANY } = require("./any");
 const { validate, validateSync } = require("./../validation/date");
 const moment = require("moment");
@@ -44,22 +47,26 @@ class DATE extends ANY {
       not: this._not
     };
     if (options.validation) {
-      return Object.assign(settings, {
-        defaultValue: this._default,
-        message: this._message,
-        func: this._func,
-        min: this._min,
-        max: this._max
-      });
+      return removeUndefinedProperties(
+        Object.assign(settings, {
+          defaultValue: this._default,
+          message: this._message,
+          func: this._func,
+          min: this._min,
+          max: this._max
+        })
+      );
     } else {
-      return Object.assign(settings, {
-        type: "date",
-        description: this._description,
-        example: this.example(),
-        default: this._default,
-        min: this._min ? this._min : undefined,
-        max: this._max ? this._max : undefined
-      });
+      return removeUndefinedProperties(
+        Object.assign(settings, {
+          type: "date",
+          description: this._description,
+          example: this.example(),
+          default: this._default,
+          min: this._min ? this._min : undefined,
+          max: this._max ? this._max : undefined
+        })
+      );
     }
   }
 
@@ -107,7 +114,13 @@ class DATE extends ANY {
     ).toISOString();
     return this;
   }
+
+  // TODO unix
+  // unix() {
+  //   return this;
+  // }
 }
 
 exports.DATE = DATE;
-exports.DateFactory = (options, defaults) => new DATE(options, defaults);
+exports.DateFactory = (options = {}, defaults = {}) =>
+  new DATE(options, defaults);

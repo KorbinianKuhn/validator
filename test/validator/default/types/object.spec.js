@@ -1,6 +1,9 @@
 const {
   ObjectFactory
 } = require("./../../../../src/validator/default/types/object");
+const {
+  StringFactory
+} = require("./../../../../src/validator/default/types/string");
 const { Message } = require("./../../../../src/utils/message");
 const utils = require("./../../../utils");
 
@@ -8,14 +11,12 @@ describe("validator/default/types/object", () => {
   const message = Message("en");
 
   it("ObjectFactory() should return OBJECT object", () => {
-    ObjectFactory(undefined, { message }, {}).constructor.name.should.equal(
-      "OBJECT"
-    );
+    ObjectFactory().constructor.name.should.equal("OBJECT");
   });
 
   it("ObjectFactory() should with invalid object should throw", () => {
     utils.shouldThrow(
-      () => ObjectFactory("wrong", { message }, {}),
+      () => ObjectFactory("wrong"),
       "Validator configuration error: Must be an object."
     );
   });
@@ -36,7 +37,7 @@ describe("validator/default/types/object", () => {
     const object = {};
     const unknown = true;
 
-    const schema = ObjectFactory(object, { message }, {})
+    const schema = ObjectFactory(object)
       .description(description)
       .example(example)
       .default(defaultValue)
@@ -95,8 +96,9 @@ describe("validator/default/types/object", () => {
   it("toObject() should return object", () => {
     const description = "description";
     const example = "example";
+    const name = StringFactory();
 
-    const schema = ObjectFactory(undefined, { message }, {})
+    const schema = ObjectFactory({ name })
       .description(description)
       .example(example)
       .required();
@@ -109,12 +111,14 @@ describe("validator/default/types/object", () => {
       empty: true,
       parse: false,
       unknown: true,
-      properties: {}
+      properties: {
+        name: name.toObject()
+      }
     });
   });
 
   it("validateSync() should verify", () => {
-    ObjectFactory(undefined, { message }, {})
+    ObjectFactory()
       .validateSync({})
       .should.deepEqual({});
   });
@@ -122,7 +126,7 @@ describe("validator/default/types/object", () => {
   it("validateSync() should fail", () => {
     utils.shouldThrow(
       () =>
-        ObjectFactory(undefined, { message }, {})
+        ObjectFactory()
           .required()
           .validateSync(undefined),
       "Required but is undefined."
@@ -130,7 +134,7 @@ describe("validator/default/types/object", () => {
   });
 
   it("validateAsync() should verify", async () => {
-    await ObjectFactory(undefined, { message }, {})
+    await ObjectFactory()
       .validate({})
       .then(value => {
         value.should.deepEqual({});
@@ -139,7 +143,7 @@ describe("validator/default/types/object", () => {
 
   it("validateAsync() should fail", async () => {
     await utils.shouldEventuallyThrow(
-      ObjectFactory(undefined, { message }, {})
+      ObjectFactory()
         .required()
         .validate(undefined),
       "Required but is undefined."
@@ -148,13 +152,13 @@ describe("validator/default/types/object", () => {
 
   it("func() with invalid type should throw", () => {
     utils.shouldThrow(
-      () => ObjectFactory({}, { message }, {}).func("wrong"),
+      () => ObjectFactory({}).func("wrong"),
       "Validator configuration error: Must be a function."
     );
   });
 
   it("conditions should get added", () => {
-    const schema = ObjectFactory({}, { message }, {})
+    const schema = ObjectFactory({})
       .gt("a", "b")
       .gte("a", "b")
       .lt("a", "b")
@@ -175,5 +179,22 @@ describe("validator/default/types/object", () => {
       { keyA: "a", keyB: "b", method: "xor" },
       { keyA: "a", keyB: "b", method: "or" }
     ]);
+  });
+
+  it("example() should return generated example", () => {
+    const schema = ObjectFactory({ name: StringFactory().example("Jane Doe") });
+    schema.example().should.deepEqual({ name: "Jane Doe" });
+  });
+
+  it("example() should return generated example", () => {
+    const schema = ObjectFactory({ name: StringFactory() });
+    schema.example().should.deepEqual({ name: "No example provided" });
+  });
+
+  it("example() should return set example", () => {
+    const schema = ObjectFactory({
+      name: StringFactory().example("Jane Doe")
+    }).example({ name: "John Doe" });
+    schema.example().should.deepEqual({ name: "John Doe" });
   });
 });

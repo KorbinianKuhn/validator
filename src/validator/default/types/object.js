@@ -1,7 +1,8 @@
 const {
   defaultToAny,
   isPlainObject,
-  isFunction
+  isFunction,
+  removeUndefinedProperties
 } = require("./../../../utils/lodash");
 const { ANY } = require("./any");
 const { validate, validateSync } = require("./../validation/object");
@@ -43,20 +44,24 @@ class OBJECT extends ANY {
       unknown: this._unknown
     };
     if (options.validation) {
-      return Object.assign(settings, {
-        defaultValue: this._default,
-        message: this._message,
-        object: this._object,
-        func: this._func,
-        conditions: this._conditions
-      });
+      return removeUndefinedProperties(
+        Object.assign(settings, {
+          defaultValue: this._default,
+          message: this._message,
+          object: this._object,
+          func: this._func,
+          conditions: this._conditions
+        })
+      );
     } else {
-      return Object.assign(settings, {
-        type: "object",
-        description: this._description,
-        example: this.example(),
-        default: this._default
-      });
+      return removeUndefinedProperties(
+        Object.assign(settings, {
+          type: "object",
+          description: this._description,
+          example: this.example(),
+          default: this._default
+        })
+      );
     }
   }
 
@@ -174,8 +179,13 @@ class OBJECT extends ANY {
     }
     return toObject(Object.assign(this.options(), { properties }), options);
   }
+
+  // TODO rename
+  // rename(source, target) {
+  //   return this;
+  // }
 }
 
 exports.OBJECT = OBJECT;
-exports.ObjectFactory = (schema, options, defaults) =>
+exports.ObjectFactory = (schema, options = {}, defaults = {}) =>
   new OBJECT(schema, options, defaults);
