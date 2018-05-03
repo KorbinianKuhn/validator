@@ -5,7 +5,7 @@ const {
   StringFactory
 } = require("./../../../../src/validator/default/types/string");
 const { Message } = require("./../../../../src/utils/message");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 
 describe("validator/default/types/array", () => {
   const message = Message("en");
@@ -121,7 +121,7 @@ describe("validator/default/types/array", () => {
   });
 
   it("validateSync() should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         ArrayFactory()
           .required()
@@ -139,7 +139,7 @@ describe("validator/default/types/array", () => {
   });
 
   it("validateAsync() should fail", async () => {
-    await utils.shouldEventuallyThrow(
+    await helper.shouldEventuallyThrow(
       ArrayFactory()
         .required()
         .validate(undefined),

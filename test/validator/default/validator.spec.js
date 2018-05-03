@@ -1,7 +1,7 @@
 const {
   ValidatorFactory
 } = require("./../../../src/validator/default/validator");
-const utils = require("./../../utils");
+const helper = require("./../../helper");
 const { ValidationError } = require("./../../../src/utils/error");
 
 describe("Validator()", () => {
@@ -48,7 +48,7 @@ describe("Validator()", () => {
 
     validator.addType("custom", custom);
 
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validator.addType("custom", custom),
       "Validator configuration error: Cannot add custom type. Name custom is already set."
     );
@@ -57,7 +57,7 @@ describe("Validator()", () => {
   it("invalid type should throw", () => {
     const validator = ValidatorFactory();
 
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validator.addType("custom", "wrong"),
       "Validator configuration error: Cannot add custom type custom. Invalid type String."
     );
@@ -76,7 +76,7 @@ describe("Validator()", () => {
   it("unknown custom type should throw", () => {
     const validator = ValidatorFactory();
 
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validator.Custom("unknown"),
       "Validator configuration error: Error getting custom type unknown. Unknown type."
     );
@@ -85,7 +85,7 @@ describe("Validator()", () => {
   it("validateSync() with invalid schema should throw", () => {
     const validator = ValidatorFactory();
 
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validator.validateSync(undefined),
       "Validator configuration error: Invalid schema."
     );
@@ -94,7 +94,7 @@ describe("Validator()", () => {
   it("validateSync() with unknown schema should throw", () => {
     const validator = ValidatorFactory();
 
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validator.validateSync({}),
       "Validator configuration error: Unknown schema."
     );
@@ -108,7 +108,7 @@ describe("Validator()", () => {
       "Required but is undefined."
     );
 
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validator.validateSync(validator.String(), undefined),
       expected
     );
@@ -135,7 +135,7 @@ describe("Validator()", () => {
   it("validate() with invalid schema should throw", async () => {
     const validator = ValidatorFactory();
 
-    await utils.shouldEventuallyThrow(
+    await helper.shouldEventuallyThrow(
       validator.validate(undefined),
       "Validator configuration error: Invalid schema."
     );
@@ -144,7 +144,7 @@ describe("Validator()", () => {
   it("validate() with unknown schema should throw", async () => {
     const validator = ValidatorFactory();
 
-    await utils.shouldEventuallyThrow(
+    await helper.shouldEventuallyThrow(
       validator.validate({}),
       "Validator configuration error: Unknown schema."
     );
@@ -158,7 +158,7 @@ describe("Validator()", () => {
       "Required but is undefined."
     );
 
-    await utils.shouldEventuallyThrow(
+    await helper.shouldEventuallyThrow(
       validator.validate(validator.String(), undefined),
       expected
     );

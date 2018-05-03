@@ -2,7 +2,7 @@ const {
   ResponseFactory
 } = require("./../../../../src/validator/express/types/response");
 const { Message } = require("./../../../../src/utils/message");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 const {
   ExpressValidatorFactory
 } = require("./../../../../src/validator/express/validator");
@@ -59,7 +59,7 @@ describe("validator/express/types/response", () => {
   it("validateSync() should fail", () => {
     const body = validator.Object({ name: validator.String() });
     const res = { status: 300, body: { name: undefined } };
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         ResponseFactory()
           .body(body)
@@ -83,7 +83,7 @@ describe("validator/express/types/response", () => {
   it("validateAsync() should fail", async () => {
     const body = validator.Object({ name: validator.String() });
     const res = { status: 300, body: { name: undefined } };
-    await utils.shouldEventuallyThrow(
+    await helper.shouldEventuallyThrow(
       ResponseFactory()
         .body(body)
         .validate(res),
@@ -128,14 +128,14 @@ describe("validator/express/types/response", () => {
   });
 
   it("body() with invalid schema should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => ResponseFactory().body(undefined),
       "Validator configuration error: Invalid schema."
     );
   });
 
   it("body() with unknown schema should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => ResponseFactory().body("test"),
       "Validator configuration error: Unknown schema."
     );

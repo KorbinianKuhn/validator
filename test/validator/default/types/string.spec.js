@@ -2,7 +2,7 @@ const {
   StringFactory
 } = require("./../../../../src/validator/default/types/string");
 const { Message } = require("./../../../../src/utils/message");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 
 describe("validator/default/types/string", () => {
   const message = Message("en");
@@ -86,7 +86,7 @@ describe("validator/default/types/string", () => {
   });
 
   it("regex() invalid regex should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => StringFactory().regex(true),
       "Validator configuration error: Must be a regular expression."
     );
@@ -119,7 +119,7 @@ describe("validator/default/types/string", () => {
   });
 
   it("validateSync() should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         StringFactory()
           .required()
@@ -137,7 +137,7 @@ describe("validator/default/types/string", () => {
   });
 
   it("validateAsync() should fail", async () => {
-    await utils.shouldEventuallyThrow(
+    await helper.shouldEventuallyThrow(
       StringFactory()
         .required()
         .validate(undefined),

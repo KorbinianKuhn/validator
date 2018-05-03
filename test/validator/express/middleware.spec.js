@@ -1,7 +1,7 @@
 const middleware = require("./../../../src/validator/express/middleware");
 const { Message } = require("./../../../src/utils/message");
 const { ValidationError } = require("./../../../src/utils/error");
-const { Response } = require("./../../utils");
+const { Response } = require("./../../helper");
 
 describe("middleware()", () => {
   const message = Message();

@@ -2,7 +2,7 @@ const {
   BooleanFactory
 } = require("./../../../../src/validator/default/types/boolean");
 const { Message } = require("./../../../../src/utils/message");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 
 describe("validator/default/types/boolean", () => {
   const message = Message("en");
@@ -82,7 +82,7 @@ describe("validator/default/types/boolean", () => {
   });
 
   it("validateSync() should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         BooleanFactory()
           .required()
@@ -100,7 +100,7 @@ describe("validator/default/types/boolean", () => {
   });
 
   it("validateAsync() should fail", async () => {
-    await utils.shouldEventuallyThrow(
+    await helper.shouldEventuallyThrow(
       BooleanFactory()
         .required()
         .validate(undefined),

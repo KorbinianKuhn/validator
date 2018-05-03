@@ -6,7 +6,7 @@ const { Message } = require("./../../../../src/utils/message");
 const {
   ExpressValidatorFactory
 } = require("./../../../../src/validator/express/validator");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 
 describe("validator/express/validation/response", () => {
   const message = Message("en");
@@ -14,7 +14,7 @@ describe("validator/express/validation/response", () => {
 
   it("validateResponse() with wrong status should fail", async () => {
     const res = { status: 400 };
-    await utils.shouldEventuallyThrow(
+    await helper.shouldEventuallyThrow(
       validateResponse(res, { status: 200, message }),
       { status: "Must have status code 200 but has 400." }
     );
@@ -28,7 +28,7 @@ describe("validator/express/validation/response", () => {
 
   it("validateResponse() with wrong body should fail", async () => {
     const res = { status: 200, body: {} };
-    await utils.shouldEventuallyThrow(
+    await helper.shouldEventuallyThrow(
       validateResponse(res, {
         status: 200,
         message,
@@ -52,7 +52,7 @@ describe("validator/express/validation/response", () => {
 
   it("validateResponseSync() with wrong status should fail", () => {
     const res = { status: 400 };
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateResponseSync(res, { status: 200, message }),
       { status: "Must have status code 200 but has 400." }
     );
@@ -66,7 +66,7 @@ describe("validator/express/validation/response", () => {
 
   it("validateResponseSync() with wrong body should fail", () => {
     const res = { status: 200, body: {} };
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateResponseSync(res, {
           status: 200,

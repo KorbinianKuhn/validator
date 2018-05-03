@@ -3,7 +3,7 @@ const {
   toMoment
 } = require("./../../../../src/validator/default/types/date");
 const { Message } = require("./../../../../src/utils/message");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 const moment = require("moment");
 
 describe("validator/default/types/date", () => {
@@ -80,7 +80,7 @@ describe("validator/default/types/date", () => {
   });
 
   it("func() with invalid argument should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => DateFactory().func("wrong"),
       "Validator configuration error: Must be a function."
     );
@@ -114,7 +114,7 @@ describe("validator/default/types/date", () => {
   });
 
   it("validateSync() should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         DateFactory()
           .required()
@@ -132,7 +132,7 @@ describe("validator/default/types/date", () => {
   });
 
   it("validateAsync() should fail", async () => {
-    await utils.shouldEventuallyThrow(
+    await helper.shouldEventuallyThrow(
       DateFactory()
         .required()
         .validate(undefined),
@@ -157,7 +157,7 @@ describe("validator/default/types/date", () => {
   it("toMoment() should fail", () => {
     const date = "2018";
     const format = "YYYY-MM-DD";
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => toMoment(message, date, false, format, true),
       "Validator configuration error: Must be a valid date with the format YYYY-MM-DD."
     );

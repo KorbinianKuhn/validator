@@ -4,7 +4,7 @@ const {
   validate
 } = require("./../../../../src/validator/default/validation/string");
 const { Message } = require("./../../../../src/utils/message");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 const should = require("should");
 
 describe("validator/default/validation/string", () => {
@@ -32,7 +32,7 @@ describe("validator/default/validation/string", () => {
   });
 
   it("validateString() with null should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateString(null, {
           message,
@@ -44,7 +44,7 @@ describe("validator/default/validation/string", () => {
   });
 
   it("validateString() should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateString(true, { message, required: true }),
       "Must be type string but is boolean."
     );
@@ -58,7 +58,7 @@ describe("validator/default/validation/string", () => {
   });
 
   it("validateString() empty string should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateString("", { message, empty: false }),
       "String is empty."
     );
@@ -70,7 +70,7 @@ describe("validator/default/validation/string", () => {
   });
 
   it("validateString() min length should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateString("te", { message, min: 3 }),
       "Must have at least 3 characters."
     );
@@ -82,7 +82,7 @@ describe("validator/default/validation/string", () => {
   });
 
   it("validateString() max length should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateString("test", { message, max: 3 }),
       "Must have at most 3 characters."
     );
@@ -94,7 +94,7 @@ describe("validator/default/validation/string", () => {
   });
 
   it("validateString() length should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateString("te", { message, length: 3 }),
       "Must have exactly 3 characters."
     );
@@ -113,7 +113,7 @@ describe("validator/default/validation/string", () => {
   });
 
   it("validateString() with regex should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateString("test", {
           message,
@@ -124,7 +124,7 @@ describe("validator/default/validation/string", () => {
   });
 
   it("validateString() with regex should return custom error message", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateString("test", {
           message,
@@ -138,7 +138,7 @@ describe("validator/default/validation/string", () => {
   });
 
   it("validateString() with regex should return default error message", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateString("test", {
           message,

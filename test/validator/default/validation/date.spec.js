@@ -4,7 +4,7 @@ const {
   validate
 } = require("./../../../../src/validator/default/validation/date");
 const { Message } = require("./../../../../src/utils/message");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 const moment = require("moment");
 const should = require("should");
 
@@ -34,7 +34,7 @@ describe("validator/default/validation/date", () => {
   });
 
   it("validateDate() with null should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateDate(null, {
           message,
@@ -46,7 +46,7 @@ describe("validator/default/validation/date", () => {
   });
 
   it("validateDate() should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateDate("123213", {
           message,
@@ -91,7 +91,7 @@ describe("validator/default/validation/date", () => {
   });
 
   it("validateDate() min date should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateDate(validISOString, {
           message,
@@ -110,7 +110,7 @@ describe("validator/default/validation/date", () => {
   });
 
   it("validateDate() max date should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateDate(validISOString, {
           message,

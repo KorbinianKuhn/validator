@@ -11,7 +11,7 @@ const {
   validate
 } = require("./../../../../src/validator/default/validation/object");
 const { Message } = require("./../../../../src/utils/message");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 const {
   StringFactory
 } = require("./../../../../src/validator/default/types/string");
@@ -45,7 +45,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateObjectBeforeProperties() with null should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateObjectBeforeProperties(null, {
           message,
@@ -57,7 +57,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateObjectBeforeProperties() should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateObjectBeforeProperties("wrong", { message, required: true }),
       "Must be type object but is string."
@@ -72,7 +72,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateObjectBeforeProperties() should try parse to object but fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateObjectBeforeProperties("wrong", {
           message,
@@ -93,7 +93,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateObjectBeforeProperties() empty object should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateObjectBeforeProperties(
           {},
@@ -117,7 +117,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateObjectBeforeProperties() min length should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateObjectBeforeProperties(
           {},
@@ -141,7 +141,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateObjectBeforeProperties() max length should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateObjectBeforeProperties(
           { key: "value", invalid: "value" },
@@ -165,7 +165,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateObjectBeforeProperties() length should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateObjectBeforeProperties(
           {},
@@ -189,9 +189,12 @@ describe("validator/default/validation/object", () => {
 
   it("validateObjectPropertiesSync() should fail", () => {
     const schema = StringFactory({}, { message });
-    utils.shouldThrow(() => validateObjectPropertiesSync({}, { key: schema }), {
-      key: "Must be type string but is undefined."
-    });
+    helper.shouldThrow(
+      () => validateObjectPropertiesSync({}, { key: schema }),
+      {
+        key: "Must be type string but is undefined."
+      }
+    );
   });
 
   it("validateObjectPropertiesAsync() should verify", async () => {
@@ -205,7 +208,7 @@ describe("validator/default/validation/object", () => {
 
   it("validateObjectPropertiesAsync() should fail", async () => {
     const schema = StringFactory({}, { message });
-    await utils.shouldEventuallyThrow(
+    await helper.shouldEventuallyThrow(
       validateObjectPropertiesAsync({}, { key: schema }),
       {
         key: "Must be type string but is undefined."
@@ -218,7 +221,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateObjectAfterProperties() with unknown key should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateObjectAfterProperties(
           { key: "value" },
@@ -246,7 +249,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateCondition() gt should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateCondition(message, "gt", "a", "b", 1, 2),
       "Must be greater than b."
     );
@@ -258,7 +261,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateCondition() gte should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateCondition(message, "gte", "a", "b", 1, 2),
       "Must be greater than or equal b."
     );
@@ -270,7 +273,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateCondition() lt should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateCondition(message, "lt", "a", "b", 2, 1),
       "Must be less than b."
     );
@@ -282,7 +285,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateCondition() lte should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateCondition(message, "lte", "a", "b", 2, 1),
       "Must be less than or equal b."
     );
@@ -293,7 +296,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateCondition() equals should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateCondition(message, "equals", "a", "b", 2, 1),
       "Must equal b."
     );
@@ -304,7 +307,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateCondition() notEquals should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateCondition(message, "notEquals", "a", "b", 2, 2),
       "Must not equal b."
     );
@@ -315,12 +318,12 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateCondition() xor should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateCondition(message, "xor", "a", "b", 1, 2),
       "Either a or b must be set."
     );
 
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateCondition(message, "xor", "a", "b", undefined, undefined),
       "Either a or b must be set."
     );
@@ -332,7 +335,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateCondition() or should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateCondition(message, "or", "a", "b", 1, 2),
       "Either a or b can be set."
     );
@@ -343,7 +346,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateCondition() dependsOn should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateCondition(message, "dependsOn", "a", "b", 1, undefined),
       "Depends on b."
     );
@@ -364,7 +367,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateObjectConditions() with conditions should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateObjectConditions(message, { a: 3, b: 2 }, [
           {
@@ -380,7 +383,7 @@ describe("validator/default/validation/object", () => {
   });
 
   it("validateObjectConditions() with multiple failing conditions should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateObjectConditions(message, { a: 3, b: 2 }, [
           {
@@ -419,7 +422,7 @@ describe("validator/default/validation/object", () => {
       },
       keys: ["a", "b"]
     };
-    utils.shouldThrow(() => validateObjectFunctionSync({}, func), {
+    helper.shouldThrow(() => validateObjectFunctionSync({}, func), {
       "[a, b]": "test"
     });
   });
@@ -443,7 +446,7 @@ describe("validator/default/validation/object", () => {
       },
       keys: ["a", "b"]
     };
-    await utils.shouldEventuallyThrow(validateObjectFunctionAsync({}, func), {
+    await helper.shouldEventuallyThrow(validateObjectFunctionAsync({}, func), {
       "[a, b]": "test"
     });
   });
@@ -455,7 +458,7 @@ describe("validator/default/validation/object", () => {
       },
       keys: ["a", "b"]
     };
-    await utils.shouldEventuallyThrow(validateObjectFunctionAsync({}, func), {
+    await helper.shouldEventuallyThrow(validateObjectFunctionAsync({}, func), {
       "[a, b]": "test"
     });
   });

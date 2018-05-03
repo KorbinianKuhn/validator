@@ -20,8 +20,7 @@ const isUndefined = require("lodash/isUndefined");
 const isNull = require("lodash/isNull");
 const isObject = require("lodash/isObject");
 
-const AsyncFunction = (async () => {}).constructor;
-const isAsyncFunction = func => func instanceof AsyncFunction;
+const isAsyncFunction = func => func.constructor.name === "AsyncFunction";
 
 const isNotNil = value => !isNil(value);
 

@@ -4,7 +4,7 @@ const {
   validate
 } = require("./../../../../src/validator/default/validation/number");
 const { Message } = require("./../../../../src/utils/message");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 const should = require("should");
 
 describe("validator/default/validation/number", () => {
@@ -32,7 +32,7 @@ describe("validator/default/validation/number", () => {
   });
 
   it("validateNumber() with null should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateNumber(null, {
           message,
@@ -44,7 +44,7 @@ describe("validator/default/validation/number", () => {
   });
 
   it("validateNumber() should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateNumber("wrong", { message, required: true }),
       "Must be a number."
     );
@@ -70,7 +70,7 @@ describe("validator/default/validation/number", () => {
   });
 
   it("validateNumber() should not parse to integer", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateNumber("2.2", {
           message,
@@ -83,33 +83,33 @@ describe("validator/default/validation/number", () => {
   });
 
   it("validateNumber() should try parse to number but fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateNumber("wrong", { message, required: true, parse: true }),
       "Must be a number."
     );
   });
 
   it("validateNumber() number for integer should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateNumber(2.2, { message, required: true, integer: true }),
       "No decimal places allowed."
     );
   });
 
   it("validateNumber() string for integer should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateNumber("2.2", { message, required: true, integer: true }),
       "Must be an integer."
     );
   });
 
   it("validateNumber() min should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateNumber(1.2, { message, min: 2 }),
       "Must be at minimum 2."
     );
 
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateNumber(1, { message, min: 2, integer: true }),
       "Must be at minimum 2."
     );
@@ -124,12 +124,12 @@ describe("validator/default/validation/number", () => {
   });
 
   it("validateNumber() max should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateNumber(3.2, { message, max: 2 }),
       "Must be at maximum 2."
     );
 
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateNumber(3, { message, max: 2, integer: true }),
       "Must be at maximum 2."
     );
@@ -144,12 +144,12 @@ describe("validator/default/validation/number", () => {
   });
 
   it("validateNumber() less should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateNumber(3.2, { message, less: 2 }),
       "Must be less than 2."
     );
 
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateNumber(3, { message, less: 2, integer: true }),
       "Must be less than 2."
     );
@@ -164,12 +164,12 @@ describe("validator/default/validation/number", () => {
   });
 
   it("validateNumber() greater should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateNumber(1.2, { message, greater: 2 }),
       "Must be greater than 2."
     );
 
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateNumber(1, { message, greater: 2, integer: true }),
       "Must be greater than 2."
     );
@@ -184,12 +184,12 @@ describe("validator/default/validation/number", () => {
   });
 
   it("validateNumber() positive should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateNumber(-1.3, { message, positive: true }),
       "Must be a positive number."
     );
 
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateNumber(0, { message, positive: true, integer: true }),
       "Must be a positive number."
     );
@@ -204,12 +204,12 @@ describe("validator/default/validation/number", () => {
   });
 
   it("validateNumber() negative should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateNumber(1.3, { message, negative: true }),
       "Must be a negative number."
     );
 
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateNumber(0, { message, negative: true, integer: true }),
       "Must be a negative number."
     );

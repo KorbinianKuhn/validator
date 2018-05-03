@@ -1,5 +1,5 @@
-const { Message } = require("./../../../src/utils/message");
-const utils = require("./../../utils");
+const { Message } = require("./../../src/utils/message");
+const helper = require("./../helper");
 
 describe("Message()", () => {
   it("addLocale() should verify", () => {
@@ -17,7 +17,7 @@ describe("Message()", () => {
   it("setLocale() should throw", () => {
     const message = Message();
 
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => message.setLocale("unknown"),
       "Validator configuration error: Unknown locale unknown."
     );

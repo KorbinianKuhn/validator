@@ -6,7 +6,7 @@ const {
   validateItemsAsync
 } = require("./../../../../src/validator/default/validation/array");
 const { Message } = require("./../../../../src/utils/message");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 const {
   StringFactory
 } = require("./../../../../src/validator/default/types/string");
@@ -37,7 +37,7 @@ describe("validator/default/validation/array", () => {
   });
 
   it("validateArray() with null should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateArray(null, {
           message,
@@ -49,7 +49,7 @@ describe("validator/default/validation/array", () => {
   });
 
   it("validateArray() should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateArray("wrong", { message, required: true }),
       "Must be type array but is string."
     );
@@ -65,14 +65,14 @@ describe("validator/default/validation/array", () => {
   });
 
   it("validateArray() should try parse to array but fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateArray(2, { message, required: true, parse: true }),
       "Must be type array but is number."
     );
   });
 
   it("validateArray() empty array should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateArray([], { message, empty: false }),
       "Array is empty."
     );
@@ -86,7 +86,7 @@ describe("validator/default/validation/array", () => {
   });
 
   it("validateArray() min length should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateArray([], { message, min: 1 }),
       "Must have at least 1 items."
     );
@@ -100,7 +100,7 @@ describe("validator/default/validation/array", () => {
   });
 
   it("validateArray() max length should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateArray(["test", "test"], { message, max: 1 }),
       "Must have at most 1 items."
     );
@@ -114,7 +114,7 @@ describe("validator/default/validation/array", () => {
   });
 
   it("validateArray() length should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateArray(["test", "test"], { message, length: 1 }),
       "Must have exactly 1 items."
     );
@@ -128,7 +128,7 @@ describe("validator/default/validation/array", () => {
   });
 
   it("validateArray() duplicate items should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateArray(["test", "test"], { message, unique: true }),
       "Items must be unique."
     );
@@ -149,7 +149,7 @@ describe("validator/default/validation/array", () => {
 
   it("validateItemsSync() should fail", () => {
     const itemSchema = StringFactory({}, { message });
-    utils.shouldThrow(() => validateItemsSync([true], itemSchema), {
+    helper.shouldThrow(() => validateItemsSync([true], itemSchema), {
       "0": "Must be type string but is boolean."
     });
   });
@@ -167,7 +167,7 @@ describe("validator/default/validation/array", () => {
 
   it("validateItemsAsync() should fail", async () => {
     const itemSchema = StringFactory({}, { message });
-    await utils.shouldEventuallyThrow(validateItemsAsync([true], itemSchema), {
+    await helper.shouldEventuallyThrow(validateItemsAsync([true], itemSchema), {
       "0": "Must be type string but is boolean."
     });
   });

@@ -9,20 +9,20 @@ const {
   validate
 } = require("./../../../../src/validator/default/validation/any");
 const { Message } = require("./../../../../src/utils/message");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 const should = require("should");
 
 describe("validator/default/validation/any", () => {
   const message = Message("en");
   it("validateRequired() should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateRequired(undefined, true, message),
       "Required but is undefined."
     );
   });
 
   it("validateOnly() should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateOnly(["test", "test2"], "hello", message),
       "Only 'test, test2' is allowed."
     );
@@ -37,7 +37,7 @@ describe("validator/default/validation/any", () => {
   });
 
   it("validateNot() should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateNot(["test"], "test", message),
       "Is not allowed."
     );
@@ -55,7 +55,7 @@ describe("validator/default/validation/any", () => {
     const func = value => {
       throw new Error("message");
     };
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateFunctionSync(func, "test", message),
       "message"
     );
@@ -80,7 +80,7 @@ describe("validator/default/validation/any", () => {
 
   it("validateFunctionAsync() should throw", async () => {
     const func = value => Promise.reject("message");
-    await utils.shouldEventuallyThrow(
+    await helper.shouldEventuallyThrow(
       validateFunctionAsync(func, "test", message),
       "message"
     );
@@ -125,7 +125,7 @@ describe("validator/default/validation/any", () => {
   });
 
   it("validateAny() with null should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateAny(null, {
           message,

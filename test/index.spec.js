@@ -13,6 +13,10 @@ describe("Library", () => {
     lib.ExpressValidator().constructor.name.should.equal("ExpressValidator");
   });
 
+  it("should return mongoose validator", () => {
+    lib.MongooseValidator().constructor.name.should.equal("MongooseValidator");
+  });
+
   it("should return validation error", () => {
     new lib.ValidationError().constructor.name.should.equal("ValidationError");
   });

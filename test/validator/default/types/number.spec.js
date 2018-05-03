@@ -2,7 +2,7 @@ const {
   NumberFactory
 } = require("./../../../../src/validator/default/types/number");
 const { Message } = require("./../../../../src/utils/message");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 
 describe("validator/default/types/number", () => {
   const message = Message("en");
@@ -110,7 +110,7 @@ describe("validator/default/types/number", () => {
   });
 
   it("validateSync() should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         NumberFactory()
           .required()
@@ -128,7 +128,7 @@ describe("validator/default/types/number", () => {
   });
 
   it("validateAsync() should fail", async () => {
-    await utils.shouldEventuallyThrow(
+    await helper.shouldEventuallyThrow(
       NumberFactory()
         .required()
         .validate(undefined),

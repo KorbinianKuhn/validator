@@ -1,10 +1,8 @@
-const {
-  ValidatorFactory
-} = require("./../../../src/validator/default/validator");
+const { ValidatorFactory } = require("./../../src/validator/default/validator");
 const {
   ExpressValidatorFactory
-} = require("./../../../src/validator/express/validator");
-const { toObject } = require("./../../../src/utils/to-object");
+} = require("./../../src/validator/express/validator");
+const { toObject } = require("./../../src/utils/to-object");
 
 describe("toObject()", () => {
   const validator = ValidatorFactory();

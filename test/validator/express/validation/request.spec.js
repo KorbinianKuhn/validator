@@ -9,7 +9,7 @@ const { Message } = require("./../../../../src/utils/message");
 const {
   ExpressValidatorFactory
 } = require("./../../../../src/validator/express/validator");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 const should = require("should");
 
 describe("validator/express/validation/request", () => {
@@ -17,14 +17,14 @@ describe("validator/express/validation/request", () => {
   const validator = ExpressValidatorFactory();
 
   it("isValidRequestObject() should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => isValidRequestObject("wrong", message),
       "Invalid express req object."
     );
   });
 
   it("isValidRequestObject() with missing keys should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => isValidRequestObject({}, message),
       "Invalid express req object."
     );
@@ -134,7 +134,7 @@ describe("validator/express/validation/request", () => {
   it("validateRequest() with schema and invalid data should throw", async () => {
     const req = { params: { name: false }, query: {}, body: {} };
     const params = validator.Object({ name: validator.String() });
-    await utils.shouldEventuallyThrow(
+    await helper.shouldEventuallyThrow(
       validateRequest(req, {
         params,
         message
@@ -166,7 +166,7 @@ describe("validator/express/validation/request", () => {
   it("validateRequestSync() with schema and invalid data should throw", () => {
     const req = { params: { name: false }, query: {}, body: {} };
     const params = validator.Object({ name: validator.String() });
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateRequestSync(req, {
           params,

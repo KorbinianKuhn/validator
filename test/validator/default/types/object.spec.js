@@ -5,7 +5,7 @@ const {
   StringFactory
 } = require("./../../../../src/validator/default/types/string");
 const { Message } = require("./../../../../src/utils/message");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 
 describe("validator/default/types/object", () => {
   const message = Message("en");
@@ -15,7 +15,7 @@ describe("validator/default/types/object", () => {
   });
 
   it("ObjectFactory() should with invalid object should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => ObjectFactory("wrong"),
       "Validator configuration error: Must be an object."
     );
@@ -124,7 +124,7 @@ describe("validator/default/types/object", () => {
   });
 
   it("validateSync() should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         ObjectFactory()
           .required()
@@ -142,7 +142,7 @@ describe("validator/default/types/object", () => {
   });
 
   it("validateAsync() should fail", async () => {
-    await utils.shouldEventuallyThrow(
+    await helper.shouldEventuallyThrow(
       ObjectFactory()
         .required()
         .validate(undefined),
@@ -151,7 +151,7 @@ describe("validator/default/types/object", () => {
   });
 
   it("func() with invalid type should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => ObjectFactory({}).func("wrong"),
       "Validator configuration error: Must be a function."
     );

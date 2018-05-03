@@ -3,7 +3,7 @@ const {
   toSchema
 } = require("./../../../../src/validator/express/types/request");
 const { Message } = require("./../../../../src/utils/message");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 const {
   ExpressValidatorFactory
 } = require("./../../../../src/validator/express/validator");
@@ -64,7 +64,7 @@ describe("validator/express/types/request", () => {
 
   it("validateSync() should fail", () => {
     const req = { params: {}, query: {}, body: {} };
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         RequestFactory({ message, requiredAsDefault: true }, {})
           .params({ name: validator.String() })
@@ -86,7 +86,7 @@ describe("validator/express/types/request", () => {
 
   it("validateAsync() should fail", async () => {
     const req = { params: {}, query: {}, body: {} };
-    await utils.shouldEventuallyThrow(
+    await helper.shouldEventuallyThrow(
       RequestFactory({ message, requiredAsDefault: true }, {})
         .params({ name: validator.String() })
         .validate(req),
@@ -97,14 +97,14 @@ describe("validator/express/types/request", () => {
   });
 
   it("toSchema() no object should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => toSchema(undefined, {}, {}, message),
       "Validator configuration error: Invalid schema."
     );
   });
 
   it("toSchema() invalid object should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => toSchema([], {}, {}, message),
       "Validator configuration error: Must be object or array schema."
     );
@@ -122,7 +122,7 @@ describe("validator/express/types/request", () => {
   });
 
   it("toSchema() with array should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => toSchema(validator.Array(), {}, {}, message),
       "Validator configuration error: Invalid schema."
     );

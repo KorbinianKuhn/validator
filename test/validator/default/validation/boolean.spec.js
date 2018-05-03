@@ -4,7 +4,7 @@ const {
   validate
 } = require("./../../../../src/validator/default/validation/boolean");
 const { Message } = require("./../../../../src/utils/message");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 const should = require("should");
 
 describe("validator/default/validation/boolean", () => {
@@ -32,7 +32,7 @@ describe("validator/default/validation/boolean", () => {
   });
 
   it("validateBoolean() with null should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         validateBoolean(null, {
           message,
@@ -44,7 +44,7 @@ describe("validator/default/validation/boolean", () => {
   });
 
   it("validateBoolean() should throw", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateBoolean("wrong", { message, required: true }),
       "Must be type boolean but is string."
     );
@@ -63,7 +63,7 @@ describe("validator/default/validation/boolean", () => {
   });
 
   it("validateBoolean() should try parse to boolean but fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => validateBoolean("wrong", { message, required: true, parse: true }),
       "Must be type boolean but is string."
     );

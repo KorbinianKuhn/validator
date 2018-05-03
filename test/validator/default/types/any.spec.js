@@ -1,6 +1,6 @@
 const { AnyFactory } = require("./../../../../src/validator/default/types/any");
 const { Message } = require("./../../../../src/utils/message");
-const utils = require("./../../../utils");
+const helper = require("./../../../helper");
 
 describe("validator/default/types/any", () => {
   const message = Message("en");
@@ -56,7 +56,7 @@ describe("validator/default/types/any", () => {
   });
 
   it("func() with invalid argument should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () => AnyFactory().func("wrong"),
       "Validator configuration error: Must be a function."
     );
@@ -87,7 +87,7 @@ describe("validator/default/types/any", () => {
   });
 
   it("validateSync() should fail", () => {
-    utils.shouldThrow(
+    helper.shouldThrow(
       () =>
         AnyFactory()
           .required()
@@ -105,7 +105,7 @@ describe("validator/default/types/any", () => {
   });
 
   it("validateAsync() should fail", async () => {
-    await utils.shouldEventuallyThrow(
+    await helper.shouldEventuallyThrow(
       AnyFactory()
         .required()
         .validate(undefined),
