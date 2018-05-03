@@ -1,7 +1,7 @@
 const LOCALES = require("./../src/locales");
 const { AssertionError } = require("assert");
 
-describe.skip("locales", () => {
+describe("locales", () => {
   it("all locales should have the keys as 'en'", () => {
     const en = LOCALES["en"];
     const locales = {};

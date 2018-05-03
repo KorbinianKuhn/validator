@@ -46,7 +46,7 @@ describe("validator/default/validation/number", () => {
   it("validateNumber() should throw", () => {
     utils.shouldThrow(
       () => validateNumber("wrong", { message, required: true }),
-      "Must be type number but is string."
+      "Must be a number."
     );
   });
 
@@ -78,28 +78,28 @@ describe("validator/default/validation/number", () => {
           parse: true,
           integer: true
         }),
-      "Must be type integer but is number."
+      "No decimal places allowed."
     );
   });
 
   it("validateNumber() should try parse to number but fail", () => {
     utils.shouldThrow(
       () => validateNumber("wrong", { message, required: true, parse: true }),
-      "Must be type number but is string."
+      "Must be a number."
     );
   });
 
   it("validateNumber() number for integer should fail", () => {
     utils.shouldThrow(
       () => validateNumber(2.2, { message, required: true, integer: true }),
-      "Must be type integer but is number."
+      "No decimal places allowed."
     );
   });
 
   it("validateNumber() string for integer should fail", () => {
     utils.shouldThrow(
       () => validateNumber("2.2", { message, required: true, integer: true }),
-      "Must be type integer but is string."
+      "Must be an integer."
     );
   });
 
@@ -191,7 +191,7 @@ describe("validator/default/validation/number", () => {
 
     utils.shouldThrow(
       () => validateNumber(0, { message, positive: true, integer: true }),
-      "Must be a positive integer."
+      "Must be a positive number."
     );
   });
 
@@ -211,7 +211,7 @@ describe("validator/default/validation/number", () => {
 
     utils.shouldThrow(
       () => validateNumber(0, { message, negative: true, integer: true }),
-      "Must be a negative integer."
+      "Must be a negative number."
     );
   });
 

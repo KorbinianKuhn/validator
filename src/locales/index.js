@@ -1,4 +1,6 @@
 module.exports = {
   en: require("./en"),
-  de: require("./de")
+  "en-alt": require("./en-alt"),
+  de: require("./de"),
+  "de-alt": require("./de-alt")
 };

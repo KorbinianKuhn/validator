@@ -2,14 +2,10 @@
 
 ## Request()
 
-### params()
-### query()
-### body()
+## Response()
 
 ## Params()
 
 ## Query()
 
 ## Body()
-
-## Response()

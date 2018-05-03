@@ -20,11 +20,12 @@ Features
 - reusable custom types
 - short syntax through stacked function calls
 - parse input values to target type
-- special support expressjs, angular, mongoose
+- special support for expressjs, angular, mongoose
 
 ## API
 
-See the detailed [API Reference](doc/api.md). 
+See the detailed [API Reference](doc/api.md).
+
 Additional information for:
 
 - [expressjs](doc/express.md)
@@ -61,8 +62,13 @@ const schema = validator.Object({
   name: validator.String()
 });
 
-await schema.validate({name: 'Jane Doe'});
-// returns the given object
+schema.validate({name: 'Jane Doe'})
+  .then((object) => {
+    // returns the given object
+  });
+
+schema.validateSync({name: 'Jane Doe'});
+// returns given object
 ```
 
 Extend the validator with custom schemas and types to reuse them later:
