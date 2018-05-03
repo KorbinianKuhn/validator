@@ -10,7 +10,7 @@ class OBJECT_ANGULAR extends OBJECT {
     return async formControl => {
       try {
         const value = formControl.value === "" ? null : formControl.value;
-        await validate(value, this);
+        await validate(value, this.options({ validation: true }));
         return null;
       } catch (err) {
         return { validation: err };
@@ -22,7 +22,7 @@ class OBJECT_ANGULAR extends OBJECT {
     return formControl => {
       try {
         const value = formControl.value === "" ? null : formControl.value;
-        validateSync(value, this);
+        validateSync(value, this.options({ validation: true }));
         return null;
       } catch (err) {
         return { validation: err };
