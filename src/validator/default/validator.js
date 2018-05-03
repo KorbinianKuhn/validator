@@ -79,19 +79,19 @@ class Validator {
     return this;
   }
 
-  addType(name, type) {
+  addType(name, schema) {
     if (name in this._customs) {
       throw this._message.error("duplicate_custom_type", { name });
     }
 
-    if (this._types.indexOf(type.constructor.name) === -1) {
+    if (this._types.indexOf(schema.constructor.name) === -1) {
       throw this._message.error("invalid_custom_type", {
         name,
-        type: type.constructor.name
+        type: schema.constructor.name
       });
     }
 
-    this._customs[name] = cloneDeep(type);
+    this._customs[name] = cloneDeep(schema);
 
     return this;
   }
