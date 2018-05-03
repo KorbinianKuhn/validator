@@ -1,14 +1,12 @@
 {
   "name": "@korbiniankuhn/validator",
   "version": "0.1.7",
-  "description":
-    "Validate object schemas for js, expressjs, angular and mongoose.",
+  "description": "Validate object schemas for js, expressjs, angular and mongoose.",
   "main": "index.js",
   "scripts": {
     "test": "mocha \"./test/**/*.spec.js\"",
     "test:coverage": "nyc --reporter=html mocha \"./test/**/*.spec.js\"",
-    "test:coveralls":
-      "nyc npm test && nyc report --reporter=text-lcov | coveralls",
+    "test:coveralls": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "build": "webpack",
@@ -62,7 +60,12 @@
     "moment": "^2.22.1"
   },
   "lint-staged": {
-    "*.{js,json,css,md}": ["prettier --write", "git add"]
+    "*.{js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
   },
-  "pre-commit": ["lint-staged"]
+  "pre-commit": [
+    "lint-staged"
+  ]
 }
