@@ -20,8 +20,9 @@ class Message {
       this._locale = name;
       this._messages = this._locales[name];
     } else {
-      this.error("unknown_locale", "locale");
+      throw this.error("unknown_locale", { locale: name });
     }
+    return this;
   }
 
   getLocale() {
@@ -37,16 +38,7 @@ class Message {
 
   get(code, replacements) {
     let text = this._messages[code];
-    if (!text) {
-      text = this._messages["default"];
-      if (text) {
-        return text;
-      } else {
-        return "Invalid.";
-      }
-    } else {
-      return this.replace(text, replacements);
-    }
+    return text ? this.replace(text, replacements) : this._messages["default"];
   }
 
   error(code, replacements) {
