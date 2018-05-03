@@ -62,7 +62,6 @@ module.exports = {
   express_unknown_params: "URI parameters are not allowed.",
   express_unknown_query: "Query parameters are not allowed.",
   express_unknown_body: "Body parameters are not allowed.",
-  express_object_or_array: "Only plain object or array is allowed.",
   express_object_or_array_schema: "Must be object or array schema.",
   express_invalid_status_code:
     "Must have status code {{expected}} but has {{actual}}."

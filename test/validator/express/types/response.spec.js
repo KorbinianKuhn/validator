@@ -19,76 +19,125 @@ describe("validator/express/types/response", () => {
 
   it("options() should return options", () => {
     const description = "description";
-    const example = "example";
     const status = 300;
-    const object = validator.Object({});
+    const body = validator.Object({});
 
-    const schema = ResponseFactory(object)
+    const schema = ResponseFactory()
       .description(description)
       .status(300)
-      .example(example);
+      .body(body);
 
     schema.options({ validation: true }).should.deepEqual({
       message,
       status,
-      schema: object
+      body
     });
 
     schema.options().should.deepEqual({
       type: "response",
       description,
-      example,
       status
     });
   });
 
   it("toObject() should return object", () => {
     const description = "description";
-    const example = "example";
-    const object = validator.Object({});
+    const body = validator.Object({});
 
-    const schema = ResponseFactory(object)
-      .description(description)
-      .example(example);
+    const schema = ResponseFactory()
+      .body(body)
+      .description(description);
 
     schema.toObject().should.deepEqual({
       type: "response",
       description,
-      example,
-      schema: object.toObject(),
+      body: body.toObject(),
       status: 200
     });
   });
 
   it("validateSync() should fail", () => {
-    const object = validator.Object({ name: validator.String() });
+    const body = validator.Object({ name: validator.String() });
     const res = { status: 300, body: { name: undefined } };
-    utils.shouldThrow(() => ResponseFactory(object).validateSync(res), {
-      body: { name: "Required but is undefined." },
-      status: "Must have status code 200 but has 300."
-    });
+    utils.shouldThrow(
+      () =>
+        ResponseFactory()
+          .body(body)
+          .validateSync(res),
+      {
+        body: { name: "Required but is undefined." },
+        status: "Must have status code 200 but has 300."
+      }
+    );
   });
 
   it("validateSync() should verify", () => {
-    const object = validator.Object({ name: validator.String() });
+    const body = validator.Object({ name: validator.String() });
     const expected = { status: 200, body: { name: "Jane Doe" } };
-    const actual = ResponseFactory(object).validateSync(expected);
+    const actual = ResponseFactory()
+      .body(body)
+      .validateSync(expected);
     actual.should.deepEqual(expected);
   });
 
   it("validateAsync() should fail", async () => {
-    const object = validator.Object({ name: validator.String() });
+    const body = validator.Object({ name: validator.String() });
     const res = { status: 300, body: { name: undefined } };
-    await utils.shouldEventuallyThrow(ResponseFactory(object).validate(res), {
-      body: { name: "Required but is undefined." },
-      status: "Must have status code 200 but has 300."
-    });
+    await utils.shouldEventuallyThrow(
+      ResponseFactory()
+        .body(body)
+        .validate(res),
+      {
+        body: { name: "Required but is undefined." },
+        status: "Must have status code 200 but has 300."
+      }
+    );
   });
 
   it("validateAsync() should verify", async () => {
-    const object = validator.Object({ name: validator.String() });
+    const body = validator.Object({ name: validator.String() });
     const expected = { status: 200, body: { name: "Jane Doe" } };
-    const actual = await ResponseFactory(object).validate(expected);
+    const actual = await ResponseFactory()
+      .body(body)
+      .validate(expected);
     actual.should.deepEqual(expected);
+  });
+
+  it("toObject() should return object without body", () => {
+    const description = "description";
+
+    const schema = ResponseFactory().description(description);
+
+    schema.toObject().should.deepEqual({
+      type: "response",
+      description,
+      status: 200
+    });
+  });
+
+  it("example() should return body example", () => {
+    const body = validator.Object({}).example({ test: "value" });
+
+    const schema = ResponseFactory().body(body);
+
+    schema.toObject().should.deepEqual({
+      type: "response",
+      status: 200,
+      body: body.toObject()
+    });
+  });
+
+  it("body() with invalid schema should throw", () => {
+    utils.shouldThrow(
+      () => ResponseFactory().body(undefined),
+      "Validator configuration error: Invalid schema."
+    );
+  });
+
+  it("body() with unknown schema should throw", () => {
+    utils.shouldThrow(
+      () => ResponseFactory().body("test"),
+      "Validator configuration error: Unknown schema."
+    );
   });
 });

@@ -182,4 +182,14 @@ describe("Validator()", () => {
     const actual = await validator.validate(validator.String(), "test");
     actual.should.equal("test");
   });
+
+  it("listCustomTypes() should return array of custom type descriptions", async () => {
+    const validator = ValidatorFactory();
+    validator.addType("name", validator.String());
+    validator.addType("age", validator.Number());
+
+    validator
+      .listCustomTypes()
+      .should.deepEqual(["name: STRING", "age: NUMBER"]);
+  });
 });

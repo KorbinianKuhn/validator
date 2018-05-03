@@ -1,4 +1,4 @@
-const validateResponse = async (res, { status, schema, message }) => {
+const validateResponse = async (res, { status, body, message }) => {
   const errors = {};
   let valid = true;
 
@@ -10,11 +10,13 @@ const validateResponse = async (res, { status, schema, message }) => {
     valid = false;
   }
 
-  try {
-    res.body = await schema.validate(res.body);
-  } catch (err) {
-    errors.body = err;
-    valid = false;
+  if (body) {
+    try {
+      res.body = await body.validate(res.body);
+    } catch (err) {
+      errors.body = err;
+      valid = false;
+    }
   }
 
   if (valid) {
@@ -23,7 +25,7 @@ const validateResponse = async (res, { status, schema, message }) => {
     throw errors;
   }
 };
-const validateResponseSync = (res, { status, schema, message }) => {
+const validateResponseSync = (res, { status, body, message }) => {
   const errors = {};
   let valid = true;
 
@@ -35,11 +37,13 @@ const validateResponseSync = (res, { status, schema, message }) => {
     valid = false;
   }
 
-  try {
-    res.body = schema.validateSync(res.body);
-  } catch (err) {
-    errors.body = err;
-    valid = false;
+  if (body) {
+    try {
+      res.body = body.validateSync(res.body);
+    } catch (err) {
+      errors.body = err;
+      valid = false;
+    }
   }
 
   if (valid) {

@@ -13,16 +13,26 @@ const {
 } = require("./../validation/request");
 const { Message } = require("./../../../utils/message");
 
-const toSchema = (schema, options, defaults, message) => {
+const toSchema = (schema, options, defaults, message, allowArray = false) => {
   if (!hasIn(schema, "constructor.name")) {
     throw message.error("invalid_schema", {});
   }
 
-  if (["OBJECT", "ARRAY"].indexOf(schema.constructor.name) === -1) {
-    if (isPlainObject(schema)) {
-      schema = ObjectFactory(schema, options, defaults);
-    } else {
-      throw message.error("express_object_or_array_schema", {});
+  switch (schema.constructor.name) {
+    case "OBJECT":
+      break;
+    case "ARRAY": {
+      if (!allowArray) {
+        throw message.error("invalid_schema", {});
+      }
+      break;
+    }
+    default: {
+      if (isPlainObject(schema)) {
+        schema = ObjectFactory(schema, options, defaults);
+      } else {
+        throw message.error("express_object_or_array_schema", {});
+      }
     }
   }
 
@@ -63,8 +73,7 @@ class REQUEST {
       return removeUndefinedProperties(
         Object.assign(settings, {
           type: "request",
-          description: this._description,
-          example: this.example()
+          description: this._description
         })
       );
     }
@@ -83,22 +92,13 @@ class REQUEST {
     return this;
   }
 
-  example(example) {
-    // TODO generate automatic example
-    if (example === undefined) {
-      return this._example;
-    } else {
-      this._example = example;
-      return this;
-    }
-  }
-
   params(schema, options = {}) {
     this._params = toSchema(
       schema,
       options,
       Object.assign({}, this._options, URI_OPTIONS),
-      this._message
+      this._message,
+      false
     );
     return this;
   }
@@ -108,7 +108,8 @@ class REQUEST {
       schema,
       options,
       Object.assign({}, this._options, QUERY_OPTIONS),
-      this._message
+      this._message,
+      false
     );
     return this;
   }
@@ -118,16 +119,17 @@ class REQUEST {
       schema,
       options,
       Object.assign({}, this._options, BODY_OPTIONS),
-      this._message
+      this._message,
+      true
     );
     return this;
   }
 
   toObject(options = {}) {
     const object = removeUndefinedProperties({
-      params: this._params ? this._params.options(options) : undefined,
-      query: this._query ? this._query.options(options) : undefined,
-      body: this._body ? this._body.options(options) : undefined
+      params: this._params ? this._params.toObject(options) : undefined,
+      query: this._query ? this._query.toObject(options) : undefined,
+      body: this._body ? this._body.toObject(options) : undefined
     });
     return toObject(Object.assign(this.options(), object), options);
   }

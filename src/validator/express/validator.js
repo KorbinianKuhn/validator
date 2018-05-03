@@ -22,47 +22,32 @@ class ExpressValidator extends Validator {
     return RequestFactory(options, this._options);
   }
 
-  Params(schema, options = {}) {
+  Params(object, options = {}) {
     return ObjectFactory(
-      schema,
+      object,
       options,
       Object.assign({}, this._defaults, this._options, URI_OPTIONS)
     );
   }
 
-  Query(schema, options = {}) {
+  Query(object, options = {}) {
     return ObjectFactory(
-      schema,
+      object,
       options,
       Object.assign({}, this._defaults, this._options, QUERY_OPTIONS)
     );
   }
 
-  Body(schema, options = {}) {
-    if (isArray(schema)) {
-      return ArrayFactory(
-        schema,
-        options,
-        Object.assign({}, this._defaults, this._options, BODY_OPTIONS)
-      );
-    } else if (isPlainObject(schema)) {
-      return ObjectFactory(
-        schema,
-        options,
-        Object.assign({}, this._defaults, this._options, BODY_OPTIONS)
-      );
-    } else {
-      throw this._message.error("express_object_or_array", {});
-    }
-  }
-
-  Response(status, object, options = {}) {
-    return ResponseFactory(
-      status,
+  Body(object, options = {}) {
+    return ObjectFactory(
       object,
       options,
-      Object.assign({}, this._options)
+      Object.assign({}, this._defaults, this._options, BODY_OPTIONS)
     );
+  }
+
+  Response(options = {}) {
+    return ResponseFactory(options, Object.assign({}, this._options));
   }
 
   middleware(options = {}) {

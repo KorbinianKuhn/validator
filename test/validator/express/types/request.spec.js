@@ -18,14 +18,12 @@ describe("validator/express/types/request", () => {
 
   it("options() should return options", () => {
     const description = "description";
-    const example = "example";
     const params = validator.Params({});
     const query = validator.Query({});
     const body = validator.Body({});
 
     const schema = RequestFactory()
       .description(description)
-      .example(example)
       .params(params)
       .query(query)
       .body(body);
@@ -41,23 +39,18 @@ describe("validator/express/types/request", () => {
     schema.options().should.deepEqual({
       type: "request",
       description,
-      example,
       unknown: true
     });
   });
 
   it("toObject() should return object", () => {
     const description = "description";
-    const example = "example";
 
-    const schema = RequestFactory()
-      .description(description)
-      .example(example);
+    const schema = RequestFactory().description(description);
 
     schema.toObject().should.deepEqual({
       type: "request",
       description,
-      example,
       unknown: true
     });
   });
@@ -122,9 +115,16 @@ describe("validator/express/types/request", () => {
     schema.constructor.name.should.equal("OBJECT");
   });
 
-  it("toSchema() should return givenschema", () => {
+  it("toSchema() should return given schema", () => {
     const expected = validator.Object({});
     const actual = toSchema(expected, {}, {}, message);
     actual.should.equal(expected);
+  });
+
+  it("toSchema() with array should fail", () => {
+    utils.shouldThrow(
+      () => toSchema(validator.Array(), {}, {}, message),
+      "Validator configuration error: Invalid schema."
+    );
   });
 });

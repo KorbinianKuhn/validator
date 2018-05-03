@@ -2,7 +2,8 @@ const { toObject } = require("./../../../utils/to-object");
 const {
   removeUndefinedProperties,
   defaultToAny,
-  hasIn
+  hasIn,
+  isPlainObject
 } = require("./../../../utils/lodash");
 const {
   validateResponse,
@@ -10,25 +11,17 @@ const {
 } = require("./../validation/response");
 const { Message } = require("./../../../utils/message");
 const { TYPES } = require("./../options");
+const { ObjectFactory } = require("./../../default/types/object");
 
 class RESPONSE {
-  constructor(schema, options, defaults) {
+  constructor(options, defaults) {
+    this._options = Object.assign({}, defaults, options);
     this._message = defaultToAny(
       options.message,
       defaults.message,
       Message("en")
     );
     this._status = 200;
-
-    if (!hasIn(schema, "constructor.name")) {
-      throw this._message.error("invalid_schema", {});
-    }
-
-    if (TYPES.indexOf(schema.constructor.name) === -1) {
-      throw this._message.error("unknown_schema", {});
-    }
-
-    this._schema = schema;
   }
 
   options(options = {}) {
@@ -38,15 +31,14 @@ class RESPONSE {
       return removeUndefinedProperties(
         Object.assign(settings, {
           message: this._message,
-          schema: this._schema
+          body: this._body
         })
       );
     } else {
       return removeUndefinedProperties(
         Object.assign(settings, {
           type: "response",
-          description: this._description,
-          example: this.example()
+          description: this._description
         })
       );
     }
@@ -65,30 +57,36 @@ class RESPONSE {
     return this;
   }
 
+  body(schema) {
+    if (isPlainObject(schema)) {
+      schema = ObjectFactory(schema, {}, this._options);
+    } else {
+      if (!hasIn(schema, "constructor.name")) {
+        throw this._message.error("invalid_schema", {});
+      }
+
+      if (TYPES.indexOf(schema.constructor.name) === -1) {
+        throw this._message.error("unknown_schema", {});
+      }
+    }
+
+    this._body = schema;
+    return this;
+  }
+
   description(text) {
     this._description = text;
     return this;
   }
 
-  example(example) {
-    // TODO generate automatic example
-    if (example === undefined) {
-      return this._example !== undefined
-        ? this._example
-        : this._schema.example();
-    } else {
-      this._example = example;
-      return this;
-    }
-  }
-
   toObject(options = {}) {
-    return toObject(
-      Object.assign(this.options(), { schema: this._schema.toObject(options) }),
-      options
-    );
+    const object = removeUndefinedProperties({
+      body: this._body ? this._body.toObject(options) : undefined
+    });
+
+    return toObject(Object.assign(this.options(), object), options);
   }
 }
 
-exports.ResponseFactory = (schema, options = {}, defaults = {}) =>
-  new RESPONSE(schema, options, defaults);
+exports.ResponseFactory = (options = {}, defaults = {}) =>
+  new RESPONSE(options, defaults);
