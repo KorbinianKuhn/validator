@@ -7,4 +7,3 @@ test
 .gitignore
 .travis.yml
 README.md
-/dist

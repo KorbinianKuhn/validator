@@ -4,7 +4,7 @@
     "prettier/prettier": [
       "error",
       {
-        "singleQuote": false
+        "singleQuote": true
       }
     ],
     "no-console": "off"
