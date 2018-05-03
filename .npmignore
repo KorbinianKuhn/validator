@@ -7,3 +7,4 @@ test
 .gitignore
 .travis.yml
 README.md
+webpack.config.js
