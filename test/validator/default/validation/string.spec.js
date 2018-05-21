@@ -24,6 +24,11 @@ describe('validator/default/validation/string', () => {
     actual.should.equal('test');
   });
 
+  it('validateString() with undefined should verify', () => {
+    const actual = validateString(undefined, {});
+    should.equal(actual, undefined);
+  });
+
   it('validateString() with null should verify', () => {
     const actual = validateString(null, {
       allowed: [null]
@@ -31,15 +36,15 @@ describe('validator/default/validation/string', () => {
     should.equal(actual, null);
   });
 
-  it('validateString() with null should throw', () => {
+  it('validateString() with undefined should throw', () => {
     helper.shouldThrow(
       () =>
-        validateString(null, {
+        validateString(undefined, {
           message,
           required: true,
           allowed: []
         }),
-      'Required but is null.'
+      'Required but is undefined.'
     );
   });
 

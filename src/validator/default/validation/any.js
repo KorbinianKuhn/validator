@@ -1,30 +1,29 @@
 const {
   isUndefined,
   isNotUndefined,
-  defaultTo,
-  isNil
+  defaultTo
 } = require('./../../../utils/lodash');
 const { getErrorMessage } = require('./../../../utils/error');
-
-const validateRequired = (value, required, message) => {
-  if (isNil(value) && required) {
-    throw message.get('required', { value });
-  }
-};
 
 const validateAny = (
   value,
   { defaultValue, allowed, required, message, not, only }
 ) => {
-  if (isUndefined(value) && isNotUndefined(defaultValue)) {
-    return defaultValue;
+  if (isUndefined(value)) {
+    if (isNotUndefined(defaultValue)) {
+      return defaultValue;
+    }
+    if (required) {
+      throw message.get('required', { value });
+    } else {
+      return undefined;
+    }
   }
 
   if (allowed && allowed.indexOf(value) !== -1) {
     return value;
   }
 
-  validateRequired(value, required, message);
   validateOnly(only, value, message);
   validateNot(not, value, message);
 
@@ -100,7 +99,6 @@ module.exports = {
   validate,
   validateSync,
   validateAny,
-  validateRequired,
   validateFunctionSync,
   validateFunctionAsync,
   validateOnly,

@@ -13,7 +13,7 @@ class AngularValidator extends Validator {
     super(Object.assign({}, VALIDATOR_OPTIONS, options));
   }
 
-  Any(type, options = {}) {
+  Any(options = {}) {
     return AnyFactory(options, this._options);
   }
 

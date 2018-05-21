@@ -7,8 +7,7 @@ const {
   validateFunctionSync,
   validateFunctionAsync,
   validateOnly,
-  validateNot,
-  validateRequired
+  validateNot
 } = require('./any');
 
 const validateString = (
@@ -28,15 +27,20 @@ const validateString = (
     only
   }
 ) => {
-  if (isUndefined(value) && isNotUndefined(defaultValue)) {
-    return defaultValue;
+  if (isUndefined(value)) {
+    if (isNotUndefined(defaultValue)) {
+      return defaultValue;
+    }
+    if (required) {
+      throw message.get('required', { value });
+    } else {
+      return undefined;
+    }
   }
 
   if (allowed && allowed.indexOf(value) !== -1) {
     return value;
   }
-
-  validateRequired(value, required, message);
 
   if (!isString(value)) {
     throw message.get('wrong_type', {

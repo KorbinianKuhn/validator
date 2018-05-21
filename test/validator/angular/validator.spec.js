@@ -23,7 +23,7 @@ describe('AngularValidator()', () => {
 
   it('Any().validate() should fail', async () => {
     const actual = await validator.Any().validate()({ value: '' });
-    actual.should.deepEqual({ validation: 'Required but is null.' });
+    actual.should.deepEqual({ validation: 'Required but is undefined.' });
   });
 
   it('Any().validateSync() should verify', () => {
@@ -33,7 +33,7 @@ describe('AngularValidator()', () => {
 
   it('Any().validateSync() should fail', () => {
     const actual = validator.Any().validateSync()({ value: '' });
-    actual.should.deepEqual({ validation: 'Required but is null.' });
+    actual.should.deepEqual({ validation: 'Required but is undefined.' });
   });
 
   it('Array().validate() should verify', async () => {
@@ -43,7 +43,7 @@ describe('AngularValidator()', () => {
 
   it('Array().validate() should fail', async () => {
     const actual = await validator.Array().validate()({ value: '' });
-    actual.should.deepEqual({ validation: 'Required but is null.' });
+    actual.should.deepEqual({ validation: 'Required but is undefined.' });
   });
 
   it('Array().validateSync() should verify', () => {
@@ -53,7 +53,7 @@ describe('AngularValidator()', () => {
 
   it('Array().validateSync() should fail', () => {
     const actual = validator.Array().validateSync()({ value: '' });
-    actual.should.deepEqual({ validation: 'Required but is null.' });
+    actual.should.deepEqual({ validation: 'Required but is undefined.' });
   });
 
   it('Boolean().validate() should verify', async () => {
@@ -63,7 +63,7 @@ describe('AngularValidator()', () => {
 
   it('Boolean().validate() should fail', async () => {
     const actual = await validator.Boolean().validate()({ value: '' });
-    actual.should.deepEqual({ validation: 'Required but is null.' });
+    actual.should.deepEqual({ validation: 'Required but is undefined.' });
   });
 
   it('Boolean().validateSync() should verify', () => {
@@ -73,7 +73,7 @@ describe('AngularValidator()', () => {
 
   it('Boolean().validateSync() should fail', () => {
     const actual = validator.Boolean().validateSync()({ value: '' });
-    actual.should.deepEqual({ validation: 'Required but is null.' });
+    actual.should.deepEqual({ validation: 'Required but is undefined.' });
   });
 
   it('Date().validate() should verify', async () => {
@@ -85,7 +85,7 @@ describe('AngularValidator()', () => {
 
   it('Date().validate() should fail', async () => {
     const actual = await validator.Date().validate()({ value: '' });
-    actual.should.deepEqual({ validation: 'Required but is null.' });
+    actual.should.deepEqual({ validation: 'Required but is undefined.' });
   });
 
   it('Date().validateSync() should verify', () => {
@@ -97,7 +97,7 @@ describe('AngularValidator()', () => {
 
   it('Date().validateSync() should fail', () => {
     const actual = validator.Date().validateSync()({ value: '' });
-    actual.should.deepEqual({ validation: 'Required but is null.' });
+    actual.should.deepEqual({ validation: 'Required but is undefined.' });
   });
 
   it('Number().validate() should verify', async () => {
@@ -107,7 +107,7 @@ describe('AngularValidator()', () => {
 
   it('Number().validate() should fail', async () => {
     const actual = await validator.Number().validate()({ value: '' });
-    actual.should.deepEqual({ validation: 'Required but is null.' });
+    actual.should.deepEqual({ validation: 'Required but is undefined.' });
   });
 
   it('Number().validateSync() should verify', () => {
@@ -117,7 +117,7 @@ describe('AngularValidator()', () => {
 
   it('Number().validateSync() should fail', () => {
     const actual = validator.Number().validateSync()({ value: '' });
-    actual.should.deepEqual({ validation: 'Required but is null.' });
+    actual.should.deepEqual({ validation: 'Required but is undefined.' });
   });
 
   it('Object().validate() should verify', async () => {
@@ -130,7 +130,7 @@ describe('AngularValidator()', () => {
 
   it('Object().validate() should fail', async () => {
     const actual = await validator.Object().validate()({ value: '' });
-    actual.should.deepEqual({ validation: 'Required but is null.' });
+    actual.should.deepEqual({ validation: 'Required but is undefined.' });
   });
 
   it('Object().validateSync() should verify', () => {
@@ -143,7 +143,7 @@ describe('AngularValidator()', () => {
 
   it('Object().validateSync() should fail', () => {
     const actual = validator.Object().validateSync()({ value: '' });
-    actual.should.deepEqual({ validation: 'Required but is null.' });
+    actual.should.deepEqual({ validation: 'Required but is undefined.' });
   });
 
   it('String().validate() should verify', async () => {
@@ -153,7 +153,7 @@ describe('AngularValidator()', () => {
 
   it('String().validate() should fail', async () => {
     const actual = await validator.String().validate()({ value: '' });
-    actual.should.deepEqual({ validation: 'Required but is null.' });
+    actual.should.deepEqual({ validation: 'Required but is undefined.' });
   });
 
   it('String().validateSync() should verify', () => {
@@ -163,6 +163,6 @@ describe('AngularValidator()', () => {
 
   it('String().validateSync() should fail', () => {
     const actual = validator.String().validateSync()({ value: '' });
-    actual.should.deepEqual({ validation: 'Required but is null.' });
+    actual.should.deepEqual({ validation: 'Required but is undefined.' });
   });
 });

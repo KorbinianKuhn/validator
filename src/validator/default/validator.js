@@ -112,7 +112,7 @@ class Validator {
     return types;
   }
 
-  Any(type, options = {}) {
+  Any(options = {}) {
     return AnyFactory(options, this._options);
   }
 

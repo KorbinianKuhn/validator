@@ -14,12 +14,6 @@ const should = require('should');
 
 describe('validator/default/validation/any', () => {
   const message = Message('en');
-  it('validateRequired() should throw', () => {
-    helper.shouldThrow(
-      () => validateRequired(undefined, true, message),
-      'Required but is undefined.'
-    );
-  });
 
   it('validateOnly() should throw', () => {
     helper.shouldThrow(
@@ -117,6 +111,11 @@ describe('validator/default/validation/any', () => {
     actual.should.equal('test');
   });
 
+  it('validateAny() with undefined should verify', () => {
+    const actual = validateAny(undefined, {});
+    should.equal(actual, undefined);
+  });
+
   it('validateAny() with null should verify', () => {
     const actual = validateAny(null, {
       allowed: [null]
@@ -124,15 +123,15 @@ describe('validator/default/validation/any', () => {
     should.equal(actual, null);
   });
 
-  it('validateAny() with null should throw', () => {
+  it('validateAny() with undefined should throw', () => {
     helper.shouldThrow(
       () =>
-        validateAny(null, {
+        validateAny(undefined, {
           message,
           required: true,
           allowed: []
         }),
-      'Required but is null.'
+      'Required but is undefined.'
     );
   });
 

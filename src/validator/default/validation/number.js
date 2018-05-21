@@ -9,8 +9,7 @@ const {
   validateFunctionSync,
   validateFunctionAsync,
   validateOnly,
-  validateNot,
-  validateRequired
+  validateNot
 } = require('./any');
 
 const validateNumber = (
@@ -32,15 +31,20 @@ const validateNumber = (
     not
   }
 ) => {
-  if (isUndefined(value) && isNotUndefined(defaultValue)) {
-    return defaultValue;
+  if (isUndefined(value)) {
+    if (isNotUndefined(defaultValue)) {
+      return defaultValue;
+    }
+    if (required) {
+      throw message.get('required', { value });
+    } else {
+      return undefined;
+    }
   }
 
   if (allowed && allowed.indexOf(value) !== -1) {
     return value;
   }
-
-  validateRequired(value, required, message);
 
   if (parse && isString(value)) {
     if (integer && value.match(/^[+-]?\d+$/)) {

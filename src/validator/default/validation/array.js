@@ -7,11 +7,7 @@ const {
   isEqual,
   keys
 } = require('./../../../utils/lodash');
-const {
-  validateFunctionSync,
-  validateFunctionAsync,
-  validateRequired
-} = require('./any');
+const { validateFunctionSync, validateFunctionAsync } = require('./any');
 
 const validateItemsSync = (value, itemSchema) => {
   if (itemSchema !== undefined) {
@@ -74,15 +70,20 @@ const validateArray = (
     only
   }
 ) => {
-  if (isUndefined(value) && isNotUndefined(defaultValue)) {
-    return defaultValue;
+  if (isUndefined(value)) {
+    if (isNotUndefined(defaultValue)) {
+      return defaultValue;
+    }
+    if (required) {
+      throw message.get('required', { value });
+    } else {
+      return undefined;
+    }
   }
 
   if (allowed && allowed.indexOf(value) !== -1) {
     return value;
   }
-
-  validateRequired(value, required, message);
 
   if (parse && isString(value)) {
     try {

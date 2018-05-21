@@ -24,6 +24,11 @@ describe('validator/default/validation/boolean', () => {
     actual.should.equal(false);
   });
 
+  it('validateBoolean() with undefined should verify', () => {
+    const actual = validateBoolean(undefined, {});
+    should.equal(actual, undefined);
+  });
+
   it('validateBoolean() with null should verify', () => {
     const actual = validateBoolean(null, {
       allowed: [null]
@@ -31,15 +36,15 @@ describe('validator/default/validation/boolean', () => {
     should.equal(actual, null);
   });
 
-  it('validateBoolean() with null should throw', () => {
+  it('validateBoolean() with undefined should throw', () => {
     helper.shouldThrow(
       () =>
-        validateBoolean(null, {
+        validateBoolean(undefined, {
           message,
           required: true,
           allowed: []
         }),
-      'Required but is null.'
+      'Required but is undefined.'
     );
   });
 

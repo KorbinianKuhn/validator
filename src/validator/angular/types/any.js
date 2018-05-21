@@ -9,7 +9,7 @@ class ANY_ANGULAR extends ANY {
   validate() {
     return async formControl => {
       try {
-        const value = formControl.value === '' ? null : formControl.value;
+        const value = formControl.value === '' ? undefined : formControl.value;
         await validate(value, this.options({ validation: true }));
         return null;
       } catch (err) {
@@ -21,7 +21,7 @@ class ANY_ANGULAR extends ANY {
   validateSync() {
     return formControl => {
       try {
-        const value = formControl.value === '' ? null : formControl.value;
+        const value = formControl.value === '' ? undefined : formControl.value;
         validateSync(value, this.options({ validation: true }));
         return null;
       } catch (err) {

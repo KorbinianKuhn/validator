@@ -9,7 +9,7 @@ class STRING_ANGULAR extends STRING {
   validate() {
     return async formControl => {
       try {
-        const value = formControl.value === '' ? null : formControl.value;
+        const value = formControl.value === '' ? undefined : formControl.value;
         await validate(value, this.options({ validation: true }));
         return null;
       } catch (err) {
@@ -21,7 +21,7 @@ class STRING_ANGULAR extends STRING {
   validateSync() {
     return formControl => {
       try {
-        const value = formControl.value === '' ? null : formControl.value;
+        const value = formControl.value === '' ? undefined : formControl.value;
         validateSync(value, this.options({ validation: true }));
         return null;
       } catch (err) {

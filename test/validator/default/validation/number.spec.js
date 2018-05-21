@@ -24,6 +24,11 @@ describe('validator/default/validation/number', () => {
     actual.should.equal(2);
   });
 
+  it('validateNumber() with undefined should verify', () => {
+    const actual = validateNumber(undefined, {});
+    should.equal(actual, undefined);
+  });
+
   it('validateNumber() with null should verify', () => {
     const actual = validateNumber(null, {
       allowed: [null]
@@ -31,15 +36,15 @@ describe('validator/default/validation/number', () => {
     should.equal(actual, null);
   });
 
-  it('validateNumber() with null should throw', () => {
+  it('validateNumber() with undefined should throw', () => {
     helper.shouldThrow(
       () =>
-        validateNumber(null, {
+        validateNumber(undefined, {
           message,
           required: true,
           allowed: []
         }),
-      'Required but is null.'
+      'Required but is undefined.'
     );
   });
 

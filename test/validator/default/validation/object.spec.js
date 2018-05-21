@@ -37,6 +37,11 @@ describe('validator/default/validation/object', () => {
     actual.should.deepEqual({});
   });
 
+  it('validateObjectBeforeProperties() with undefined should verify', () => {
+    const actual = validateObjectBeforeProperties(undefined, {});
+    should.equal(actual, undefined);
+  });
+
   it('validateObjectBeforeProperties() with null should verify', () => {
     const actual = validateObjectBeforeProperties(null, {
       allowed: [null]
@@ -44,15 +49,15 @@ describe('validator/default/validation/object', () => {
     should.equal(actual, null);
   });
 
-  it('validateObjectBeforeProperties() with null should throw', () => {
+  it('validateObjectBeforeProperties() with undefined should throw', () => {
     helper.shouldThrow(
       () =>
-        validateObjectBeforeProperties(null, {
+        validateObjectBeforeProperties(undefined, {
           message,
           required: true,
           allowed: []
         }),
-      'Required but is null.'
+      'Required but is undefined.'
     );
   });
 
@@ -190,9 +195,9 @@ describe('validator/default/validation/object', () => {
   it('validateObjectPropertiesSync() should fail', () => {
     const schema = StringFactory({}, { message });
     helper.shouldThrow(
-      () => validateObjectPropertiesSync({}, { key: schema }),
+      () => validateObjectPropertiesSync({ key: 2 }, { key: schema }),
       {
-        key: 'Must be type string but is undefined.'
+        key: 'Must be type string but is number.'
       }
     );
   });
@@ -209,9 +214,9 @@ describe('validator/default/validation/object', () => {
   it('validateObjectPropertiesAsync() should fail', async () => {
     const schema = StringFactory({}, { message });
     await helper.shouldEventuallyThrow(
-      validateObjectPropertiesAsync({}, { key: schema }),
+      validateObjectPropertiesAsync({ key: 2 }, { key: schema }),
       {
-        key: 'Must be type string but is undefined.'
+        key: 'Must be type string but is number.'
       }
     );
   });

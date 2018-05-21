@@ -26,6 +26,11 @@ describe('validator/default/validation/date', () => {
     actual.should.equal(validISOString);
   });
 
+  it('validateDate() with undefined should verify', () => {
+    const actual = validateDate(undefined, {});
+    should.equal(actual, undefined);
+  });
+
   it('validateDate() with null should verify', () => {
     const actual = validateDate(null, {
       allowed: [null]
@@ -33,15 +38,15 @@ describe('validator/default/validation/date', () => {
     should.equal(actual, null);
   });
 
-  it('validateDate() with null should throw', () => {
+  it('validateDate() with undefined should throw', () => {
     helper.shouldThrow(
       () =>
-        validateDate(null, {
+        validateDate(undefined, {
           message,
           required: true,
           allowed: []
         }),
-      'Required but is null.'
+      'Required but is undefined.'
     );
   });
 

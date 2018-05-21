@@ -29,6 +29,11 @@ describe('validator/default/validation/array', () => {
     actual.should.deepEqual([]);
   });
 
+  it('validateArray() with undefined should verify', () => {
+    const actual = validateArray(undefined, {});
+    should.equal(actual, undefined);
+  });
+
   it('validateArray() with null should verify', () => {
     const actual = validateArray(null, {
       allowed: [null]
@@ -36,15 +41,15 @@ describe('validator/default/validation/array', () => {
     should.equal(actual, null);
   });
 
-  it('validateArray() with null should throw', () => {
+  it('validateArray() with undefined should throw', () => {
     helper.shouldThrow(
       () =>
-        validateArray(null, {
+        validateArray(undefined, {
           message,
           required: true,
           allowed: []
         }),
-      'Required but is null.'
+      'Required but is undefined.'
     );
   });
 
