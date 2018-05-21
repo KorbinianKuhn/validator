@@ -14,9 +14,9 @@ You can pass a Object or Array schema to each function or and just an object.
 
 ```javascript
 const schema = validator.Request()
-  .params({ id: INTEGER() })
-  .body({ name: STRING() })
-  .query(validator.Object({ deleted: BOOLEAN() }))
+  .params({ id: validator.Integer() })
+  .body({ name: validator.String() })
+  .query(validator.Object({ deleted: validator.Boolean() }))
 
 const req = {
   params: { id: '20' },
