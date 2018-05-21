@@ -47,26 +47,24 @@ class DATE extends ANY {
       not: this._not
     };
     if (options.validation) {
-      return removeUndefinedProperties(
-        Object.assign(settings, {
-          defaultValue: this._default,
-          message: this._message,
-          func: this._func,
-          min: this._min,
-          max: this._max
-        })
-      );
+      return removeUndefinedProperties({
+        ...settings,
+        defaultValue: this._default,
+        message: this._message,
+        func: this._func,
+        min: this._min,
+        max: this._max
+      });
     } else {
-      return removeUndefinedProperties(
-        Object.assign(settings, {
-          type: 'date',
-          description: this._description,
-          example: this.example(),
-          default: this._default,
-          min: this._min ? this._min : undefined,
-          max: this._max ? this._max : undefined
-        })
-      );
+      return removeUndefinedProperties({
+        ...settings,
+        type: 'date',
+        description: this._description,
+        example: this.example(),
+        default: this._default,
+        min: this._min ? this._min : undefined,
+        max: this._max ? this._max : undefined
+      });
     }
   }
 

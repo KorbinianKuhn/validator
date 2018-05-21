@@ -42,7 +42,7 @@ exports.toSchema = toSchema;
 
 class REQUEST {
   constructor(options, defaults) {
-    this._options = Object.assign({}, defaults, options);
+    this._options = { ...defaults, ...options };
     this._message = defaultToAny(
       options.message,
       defaults.message,
@@ -61,21 +61,19 @@ class REQUEST {
     };
 
     if (options.validation) {
-      return removeUndefinedProperties(
-        Object.assign(settings, {
-          message: this._message,
-          params: this._params,
-          query: this._query,
-          body: this._body
-        })
-      );
+      return removeUndefinedProperties({
+        ...settings,
+        message: this._message,
+        params: this._params,
+        query: this._query,
+        body: this._body
+      });
     } else {
-      return removeUndefinedProperties(
-        Object.assign(settings, {
-          type: 'request',
-          description: this._description
-        })
-      );
+      return removeUndefinedProperties({
+        ...settings,
+        type: 'request',
+        description: this._description
+      });
     }
   }
 
@@ -96,7 +94,7 @@ class REQUEST {
     this._params = toSchema(
       schema,
       options,
-      Object.assign({}, this._options, URI_OPTIONS),
+      { ...this._options, ...URI_OPTIONS },
       this._message,
       false
     );
@@ -107,7 +105,7 @@ class REQUEST {
     this._query = toSchema(
       schema,
       options,
-      Object.assign({}, this._options, QUERY_OPTIONS),
+      { ...this._options, ...QUERY_OPTIONS },
       this._message,
       false
     );
@@ -118,7 +116,7 @@ class REQUEST {
     this._body = toSchema(
       schema,
       options,
-      Object.assign({}, this._options, BODY_OPTIONS),
+      { ...this._options, ...BODY_OPTIONS },
       this._message,
       true
     );
@@ -131,7 +129,7 @@ class REQUEST {
       query: this._query ? this._query.toObject(options) : undefined,
       body: this._body ? this._body.toObject(options) : undefined
     });
-    return toObject(Object.assign(this.options(), object), options);
+    return toObject({ ...this.options(), ...object }, options);
   }
 }
 

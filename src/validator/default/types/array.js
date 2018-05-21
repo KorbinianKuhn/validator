@@ -27,23 +27,21 @@ class ARRAY extends ANY {
       not: this._not
     };
     if (options.validation) {
-      return removeUndefinedProperties(
-        Object.assign(settings, {
-          defaultValue: this._default,
-          message: this._message,
-          itemSchema: this._type,
-          func: this._func
-        })
-      );
+      return removeUndefinedProperties({
+        ...settings,
+        defaultValue: this._default,
+        message: this._message,
+        itemSchema: this._type,
+        func: this._func
+      });
     } else {
-      return removeUndefinedProperties(
-        Object.assign(settings, {
-          type: 'array',
-          description: this._description,
-          example: this.example(),
-          default: this._default
-        })
-      );
+      return removeUndefinedProperties({
+        ...settings,
+        type: 'array',
+        description: this._description,
+        example: this.example(),
+        default: this._default
+      });
     }
   }
 
@@ -95,7 +93,7 @@ class ARRAY extends ANY {
 
   toObject(options = {}) {
     const items = this._type ? this._type.toObject(options) : undefined;
-    return toObject(Object.assign(this.options(), { items }), options);
+    return toObject({ ...this.options(), items }, options);
   }
 
   // TODO compact

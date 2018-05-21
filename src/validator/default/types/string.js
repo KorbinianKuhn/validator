@@ -31,24 +31,22 @@ class STRING extends ANY {
       length: this._length
     };
     if (options.validation) {
-      return removeUndefinedProperties(
-        Object.assign(settings, {
-          defaultValue: this._default,
-          message: this._message,
-          func: this._func,
-          regex: this._regex
-        })
-      );
+      return removeUndefinedProperties({
+        ...settings,
+        defaultValue: this._default,
+        message: this._message,
+        func: this._func,
+        regex: this._regex
+      });
     } else {
-      return removeUndefinedProperties(
-        Object.assign(settings, {
-          type: 'string',
-          description: this._description,
-          example: this.example(),
-          default: this._default,
-          pattern: this._regex ? this._regex.pattern : undefined
-        })
-      );
+      return removeUndefinedProperties({
+        ...settings,
+        type: 'string',
+        description: this._description,
+        example: this.example(),
+        default: this._default,
+        pattern: this._regex ? this._regex.pattern : undefined
+      });
     }
   }
 

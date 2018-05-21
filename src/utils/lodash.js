@@ -5,7 +5,6 @@ const isInteger = require('lodash/isInteger');
 const isPlainObject = require('lodash/isPlainObject');
 const isArray = require('lodash/isArray');
 const isFunction = require('lodash/isFunction');
-const isNil = require('lodash/isNil');
 const get = require('lodash/get');
 const set = require('lodash/set');
 const has = require('lodash/has');
@@ -17,12 +16,11 @@ const uniqWith = require('lodash/uniqWith');
 const isEqual = require('lodash/isEqual');
 const isRegExp = require('lodash/isRegExp');
 const isUndefined = require('lodash/isUndefined');
-const isNull = require('lodash/isNull');
 const isObject = require('lodash/isObject');
 
 const isAsyncFunction = func => func.constructor.name === 'AsyncFunction';
 
-const isNotNil = value => !isNil(value);
+const isNotNil = value => value != null;
 
 const isNotUndefined = value => !isUndefined(value);
 
@@ -47,7 +45,6 @@ module.exports = {
   isPlainObject,
   isArray,
   isFunction,
-  isNil,
   get,
   set,
   has,
@@ -63,7 +60,6 @@ module.exports = {
   isRegExp,
   isUndefined,
   isNotUndefined,
-  isNull,
   removeUndefinedProperties,
   isObject
 };

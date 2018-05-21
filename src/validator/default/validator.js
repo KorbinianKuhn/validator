@@ -14,7 +14,7 @@ const TYPES = ['ANY', 'ARRAY', 'BOOLEAN', 'DATE', 'NUMBER', 'OBJECT', 'STRING'];
 
 class Validator {
   constructor(options) {
-    this._options = Object.assign({}, VALIDATOR_OPTIONS, options);
+    this._options = { ...VALIDATOR_OPTIONS, ...options };
     this._customs = {};
     this._types = TYPES;
     this._message = Message(defaultTo(this._options.locale, 'en'));

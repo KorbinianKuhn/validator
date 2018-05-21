@@ -44,24 +44,22 @@ class OBJECT extends ANY {
       unknown: this._unknown
     };
     if (options.validation) {
-      return removeUndefinedProperties(
-        Object.assign(settings, {
-          defaultValue: this._default,
-          message: this._message,
-          object: this._object,
-          func: this._func,
-          conditions: this._conditions
-        })
-      );
+      return removeUndefinedProperties({
+        ...settings,
+        defaultValue: this._default,
+        message: this._message,
+        object: this._object,
+        func: this._func,
+        conditions: this._conditions
+      });
     } else {
-      return removeUndefinedProperties(
-        Object.assign(settings, {
-          type: 'object',
-          description: this._description,
-          example: this.example(),
-          default: this._default
-        })
-      );
+      return removeUndefinedProperties({
+        ...settings,
+        type: 'object',
+        description: this._description,
+        example: this.example(),
+        default: this._default
+      });
     }
   }
 
@@ -177,7 +175,7 @@ class OBJECT extends ANY {
     for (const key in this._object) {
       properties[key] = this._object[key].toObject(options);
     }
-    return toObject(Object.assign(this.options(), { properties }), options);
+    return toObject({ ...this.options(), properties }, options);
   }
 
   // TODO rename

@@ -10,7 +10,7 @@ class Message {
   }
 
   addLocale(name, messages) {
-    messages = Object.assign(this._locales['en'], messages);
+    messages = { ...this._locales['en'], ...messages };
     this._locales[name] = messages;
     return this;
   }

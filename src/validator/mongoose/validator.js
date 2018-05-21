@@ -10,7 +10,7 @@ const { StringFactory } = require('./types/string');
 
 class MongooseValidator extends Validator {
   constructor(options) {
-    super(Object.assign({}, VALIDATOR_OPTIONS, options));
+    super({ ...VALIDATOR_OPTIONS, ...options });
   }
 
   Any(options = {}) {

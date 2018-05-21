@@ -16,22 +16,20 @@ class BOOLEAN extends ANY {
       not: this._not
     };
     if (options.validation) {
-      return removeUndefinedProperties(
-        Object.assign(settings, {
-          defaultValue: this._default,
-          message: this._message,
-          func: this._func
-        })
-      );
+      return removeUndefinedProperties({
+        ...settings,
+        defaultValue: this._default,
+        message: this._message,
+        func: this._func
+      });
     } else {
-      return removeUndefinedProperties(
-        Object.assign(settings, {
-          type: 'boolean',
-          description: this._description,
-          example: this.example(),
-          default: this._default
-        })
-      );
+      return removeUndefinedProperties({
+        ...settings,
+        type: 'boolean',
+        description: this._description,
+        example: this.example(),
+        default: this._default
+      });
     }
   }
 

@@ -21,31 +21,31 @@ class ExpressValidator extends Validator {
   }
 
   Params(object, options = {}) {
-    return ObjectFactory(
-      object,
-      options,
-      Object.assign({}, this._defaults, this._options, URI_OPTIONS)
-    );
+    return ObjectFactory(object, options, {
+      ...this._defaults,
+      ...this._options,
+      ...URI_OPTIONS
+    });
   }
 
   Query(object, options = {}) {
-    return ObjectFactory(
-      object,
-      options,
-      Object.assign({}, this._defaults, this._options, QUERY_OPTIONS)
-    );
+    return ObjectFactory(object, options, {
+      ...this._defaults,
+      ...this._options,
+      ...QUERY_OPTIONS
+    });
   }
 
   Body(object, options = {}) {
-    return ObjectFactory(
-      object,
-      options,
-      Object.assign({}, this._defaults, this._options, BODY_OPTIONS)
-    );
+    return ObjectFactory(object, options, {
+      ...this._defaults,
+      ...this._options,
+      ...BODY_OPTIONS
+    });
   }
 
   Response(options = {}) {
-    return ResponseFactory(options, Object.assign({}, this._options));
+    return ResponseFactory(options, { ...this._options });
   }
 
   middleware(options = {}) {

@@ -15,7 +15,7 @@ const { ObjectFactory } = require('./../../default/types/object');
 
 class RESPONSE {
   constructor(options, defaults) {
-    this._options = Object.assign({}, defaults, options);
+    this._options = { ...defaults, ...options };
     this._message = defaultToAny(
       options.message,
       defaults.message,
@@ -28,19 +28,17 @@ class RESPONSE {
     const settings = { status: this._status };
 
     if (options.validation) {
-      return removeUndefinedProperties(
-        Object.assign(settings, {
-          message: this._message,
-          body: this._body
-        })
-      );
+      return removeUndefinedProperties({
+        ...settings,
+        message: this._message,
+        body: this._body
+      });
     } else {
-      return removeUndefinedProperties(
-        Object.assign(settings, {
-          type: 'response',
-          description: this._description
-        })
-      );
+      return removeUndefinedProperties({
+        ...settings,
+        type: 'response',
+        description: this._description
+      });
     }
   }
 
@@ -84,7 +82,7 @@ class RESPONSE {
       body: this._body ? this._body.toObject(options) : undefined
     });
 
-    return toObject(Object.assign(this.options(), object), options);
+    return toObject({ ...this.options(), ...object }, options);
   }
 }
 
