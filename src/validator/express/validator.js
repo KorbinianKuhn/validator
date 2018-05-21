@@ -49,7 +49,7 @@ class ExpressValidator extends Validator {
   }
 
   middleware(options = {}) {
-    return middleware(options);
+    return middleware(this._message, options);
   }
 }
 
