@@ -1,5 +1,5 @@
-const { STRING } = require("./../../default/types/string");
-const { validate, validateSync } = require("./../../default/validation/string");
+const { STRING } = require('./../../default/types/string');
+const { validate, validateSync } = require('./../../default/validation/string');
 
 class STRING_ANGULAR extends STRING {
   constructor(options, defaults) {
@@ -9,7 +9,7 @@ class STRING_ANGULAR extends STRING {
   validate() {
     return async formControl => {
       try {
-        const value = formControl.value === "" ? null : formControl.value;
+        const value = formControl.value === '' ? null : formControl.value;
         await validate(value, this.options({ validation: true }));
         return null;
       } catch (err) {
@@ -21,7 +21,7 @@ class STRING_ANGULAR extends STRING {
   validateSync() {
     return formControl => {
       try {
-        const value = formControl.value === "" ? null : formControl.value;
+        const value = formControl.value === '' ? null : formControl.value;
         validateSync(value, this.options({ validation: true }));
         return null;
       } catch (err) {

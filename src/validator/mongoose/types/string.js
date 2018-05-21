@@ -1,5 +1,5 @@
-const { STRING } = require("./../../default/types/string");
-const { validate, validateSync } = require("./../../default/validation/string");
+const { STRING } = require('./../../default/types/string');
+const { validate, validateSync } = require('./../../default/validation/string');
 
 class STRING_MONGOOSE extends STRING {
   constructor(options, defaults) {

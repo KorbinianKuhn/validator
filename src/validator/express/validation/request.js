@@ -1,13 +1,13 @@
-const { keys, isObject } = require("./../../../utils/lodash");
+const { keys, isObject } = require('./../../../utils/lodash');
 
 const isValidRequestObject = (req, message) => {
   if (!isObject(req)) {
-    throw message.get("express_invalid_request_object", {});
+    throw message.get('express_invalid_request_object', {});
   }
 
-  for (const key of ["params", "query", "body"]) {
+  for (const key of ['params', 'query', 'body']) {
     if (!(key in req)) {
-      throw message.get("express_invalid_request_object", {});
+      throw message.get('express_invalid_request_object', {});
     }
   }
 };
@@ -50,7 +50,7 @@ const validateRequest = async (
 
   const errors = {};
   let valid = true;
-  const keys = ["params", "query", "body"];
+  const keys = ['params', 'query', 'body'];
   const schemas = [params, query, body];
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
@@ -80,7 +80,7 @@ const validateRequestSync = (
 
   const errors = {};
   let valid = true;
-  const keys = ["params", "query", "body"];
+  const keys = ['params', 'query', 'body'];
   const schemas = [params, query, body];
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];

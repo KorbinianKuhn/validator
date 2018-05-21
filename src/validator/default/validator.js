@@ -1,40 +1,40 @@
-const { defaultTo, cloneDeep, hasIn } = require("./../../utils/lodash");
-const { ValidationError } = require("./../../utils/error");
-const { Message } = require("./../../utils/message");
-const { VALIDATOR_OPTIONS } = require("./options");
-const { AnyFactory } = require("./types/any");
-const { ArrayFactory } = require("./types/array");
-const { BooleanFactory } = require("./types/boolean");
-const { DateFactory } = require("./types/date");
-const { NumberFactory } = require("./types/number");
-const { ObjectFactory } = require("./types/object");
-const { StringFactory } = require("./types/string");
+const { defaultTo, cloneDeep, hasIn } = require('./../../utils/lodash');
+const { ValidationError } = require('./../../utils/error');
+const { Message } = require('./../../utils/message');
+const { VALIDATOR_OPTIONS } = require('./options');
+const { AnyFactory } = require('./types/any');
+const { ArrayFactory } = require('./types/array');
+const { BooleanFactory } = require('./types/boolean');
+const { DateFactory } = require('./types/date');
+const { NumberFactory } = require('./types/number');
+const { ObjectFactory } = require('./types/object');
+const { StringFactory } = require('./types/string');
 
-const TYPES = ["ANY", "ARRAY", "BOOLEAN", "DATE", "NUMBER", "OBJECT", "STRING"];
+const TYPES = ['ANY', 'ARRAY', 'BOOLEAN', 'DATE', 'NUMBER', 'OBJECT', 'STRING'];
 
 class Validator {
   constructor(options) {
     this._options = Object.assign({}, VALIDATOR_OPTIONS, options);
     this._customs = {};
     this._types = TYPES;
-    this._message = Message(defaultTo(this._options.locale, "en"));
+    this._message = Message(defaultTo(this._options.locale, 'en'));
     this._options.message = this._message;
   }
 
   async validate(schema, data) {
-    if (!hasIn(schema, "constructor.name")) {
-      throw this._message.error("invalid_schema");
+    if (!hasIn(schema, 'constructor.name')) {
+      throw this._message.error('invalid_schema');
     }
 
     if (this._types.indexOf(schema.constructor.name) === -1) {
-      throw this._message.error("unknown_schema");
+      throw this._message.error('unknown_schema');
     }
 
     try {
       return await schema.validate(data);
     } catch (err) {
       const error = new ValidationError(
-        this._message.get("validation_error"),
+        this._message.get('validation_error'),
         err
       );
       if (this._options.throwValidationErrors) {
@@ -46,19 +46,19 @@ class Validator {
   }
 
   validateSync(schema, data) {
-    if (!hasIn(schema, "constructor.name")) {
-      throw this._message.error("invalid_schema");
+    if (!hasIn(schema, 'constructor.name')) {
+      throw this._message.error('invalid_schema');
     }
 
     if (this._types.indexOf(schema.constructor.name) === -1) {
-      throw this._message.error("unknown_schema");
+      throw this._message.error('unknown_schema');
     }
 
     try {
       return schema.validateSync(data);
     } catch (err) {
       const error = new ValidationError(
-        this._message.get("validation_error"),
+        this._message.get('validation_error'),
         err
       );
       if (this._options.throwValidationErrors) {
@@ -81,11 +81,11 @@ class Validator {
 
   addType(name, schema) {
     if (name in this._customs) {
-      throw this._message.error("duplicate_custom_type", { name });
+      throw this._message.error('duplicate_custom_type', { name });
     }
 
     if (this._types.indexOf(schema.constructor.name) === -1) {
-      throw this._message.error("invalid_custom_type", {
+      throw this._message.error('invalid_custom_type', {
         name,
         type: schema.constructor.name
       });
@@ -100,7 +100,7 @@ class Validator {
     if (name in this._customs) {
       return cloneDeep(this._customs[name]);
     } else {
-      throw this._message.error("unknown_custom_type", { name });
+      throw this._message.error('unknown_custom_type', { name });
     }
   }
 

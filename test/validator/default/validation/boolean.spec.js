@@ -2,20 +2,20 @@ const {
   validateBoolean,
   validateSync,
   validate
-} = require("./../../../../src/validator/default/validation/boolean");
-const { Message } = require("./../../../../src/utils/message");
-const helper = require("./../../../helper");
-const should = require("should");
+} = require('./../../../../src/validator/default/validation/boolean');
+const { Message } = require('./../../../../src/utils/message');
+const helper = require('./../../../helper');
+const should = require('should');
 
-describe("validator/default/validation/boolean", () => {
-  const message = Message("en");
+describe('validator/default/validation/boolean', () => {
+  const message = Message('en');
 
-  it("validateBoolean() should return given value", () => {
+  it('validateBoolean() should return given value', () => {
     const actual = validateBoolean(true, { message, required: true });
     actual.should.equal(true);
   });
 
-  it("validateBoolean() should return defaultValue", () => {
+  it('validateBoolean() should return defaultValue', () => {
     const actual = validateBoolean(undefined, {
       message,
       required: true,
@@ -24,14 +24,14 @@ describe("validator/default/validation/boolean", () => {
     actual.should.equal(false);
   });
 
-  it("validateBoolean() with null should verify", () => {
+  it('validateBoolean() with null should verify', () => {
     const actual = validateBoolean(null, {
       allowed: [null]
     });
     should.equal(actual, null);
   });
 
-  it("validateBoolean() with null should throw", () => {
+  it('validateBoolean() with null should throw', () => {
     helper.shouldThrow(
       () =>
         validateBoolean(null, {
@@ -39,19 +39,19 @@ describe("validator/default/validation/boolean", () => {
           required: true,
           allowed: []
         }),
-      "Required but is null."
+      'Required but is null.'
     );
   });
 
-  it("validateBoolean() should throw", () => {
+  it('validateBoolean() should throw', () => {
     helper.shouldThrow(
-      () => validateBoolean("wrong", { message, required: true }),
-      "Must be type boolean but is string."
+      () => validateBoolean('wrong', { message, required: true }),
+      'Must be type boolean but is string.'
     );
   });
 
-  it("validateBoolean() should parse to boolean", () => {
-    let actual = validateBoolean("true", {
+  it('validateBoolean() should parse to boolean', () => {
+    let actual = validateBoolean('true', {
       message,
       required: true,
       parse: true
@@ -62,19 +62,19 @@ describe("validator/default/validation/boolean", () => {
     actual.should.equal(false);
   });
 
-  it("validateBoolean() should try parse to boolean but fail", () => {
+  it('validateBoolean() should try parse to boolean but fail', () => {
     helper.shouldThrow(
-      () => validateBoolean("wrong", { message, required: true, parse: true }),
-      "Must be type boolean but is string."
+      () => validateBoolean('wrong', { message, required: true, parse: true }),
+      'Must be type boolean but is string.'
     );
   });
 
-  it("validateSync() should return given value", () => {
+  it('validateSync() should return given value', () => {
     const actual = validateSync(true, {});
     actual.should.equal(true);
   });
 
-  it("validate() should return given value", async () => {
+  it('validate() should return given value', async () => {
     const actual = await validate(false, {});
     actual.should.equal(false);
   });

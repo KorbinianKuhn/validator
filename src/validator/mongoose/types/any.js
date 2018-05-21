@@ -1,5 +1,5 @@
-const { ANY } = require("./../../default/types/any");
-const { validate, validateSync } = require("./../../default/validation/any");
+const { ANY } = require('./../../default/types/any');
+const { validate, validateSync } = require('./../../default/validation/any');
 
 class ANY_MONGOOSE extends ANY {
   constructor(options, defaults) {

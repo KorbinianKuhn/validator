@@ -1,19 +1,18 @@
 const {
   isUndefined,
   isNotUndefined,
-  isNull,
   isBoolean
-} = require("./../../../utils/lodash");
+} = require('./../../../utils/lodash');
 const {
   validateFunctionSync,
   validateFunctionAsync,
   validateOnly,
   validateNot,
   validateRequired
-} = require("./any");
+} = require('./any');
 
-const FALSES = ["0", 0, "false"];
-const TRUES = ["1", 1, "true"];
+const FALSES = ['0', 0, 'false'];
+const TRUES = ['1', 1, 'true'];
 
 const validateBoolean = (
   value,
@@ -41,8 +40,8 @@ const validateBoolean = (
   validateNot(not, value, message);
 
   if (!isBoolean(value)) {
-    throw message.get("wrong_type", {
-      expected: "boolean",
+    throw message.get('wrong_type', {
+      expected: 'boolean',
       actual: typeof value
     });
   }

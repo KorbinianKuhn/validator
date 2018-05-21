@@ -1,5 +1,5 @@
-const { DATE } = require("./../../default/types/date");
-const { validate, validateSync } = require("./../../default/validation/date");
+const { DATE } = require('./../../default/types/date');
+const { validate, validateSync } = require('./../../default/validation/date');
 
 class DATE_MONGOOSE extends DATE {
   constructor(options, defaults) {

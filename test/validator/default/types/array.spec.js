@@ -1,28 +1,28 @@
 const {
   ArrayFactory
-} = require("./../../../../src/validator/default/types/array");
+} = require('./../../../../src/validator/default/types/array');
 const {
   StringFactory
-} = require("./../../../../src/validator/default/types/string");
-const { Message } = require("./../../../../src/utils/message");
-const helper = require("./../../../helper");
+} = require('./../../../../src/validator/default/types/string');
+const { Message } = require('./../../../../src/utils/message');
+const helper = require('./../../../helper');
 
-describe("validator/default/types/array", () => {
-  const message = Message("en");
+describe('validator/default/types/array', () => {
+  const message = Message('en');
 
-  it("ArrayFactory() should return ARRAY object", () => {
-    ArrayFactory().constructor.name.should.equal("ARRAY");
+  it('ArrayFactory() should return ARRAY object', () => {
+    ArrayFactory().constructor.name.should.equal('ARRAY');
   });
 
-  it("options() should return options", () => {
+  it('options() should return options', () => {
     const func = () => {};
-    const defaultValue = ["test"];
+    const defaultValue = ['test'];
     const allowed = [null];
-    const not = ["not"];
-    const only = ["only"];
+    const not = ['not'];
+    const only = ['only'];
     const parse = false;
-    const description = "description";
-    const example = "example";
+    const description = 'description';
+    const example = 'example';
     const min = 1;
     const max = 3;
     const length = 2;
@@ -63,7 +63,7 @@ describe("validator/default/types/array", () => {
     });
 
     schema.options().should.deepEqual({
-      type: "array",
+      type: 'array',
       description,
       example,
       default: defaultValue,
@@ -80,9 +80,9 @@ describe("validator/default/types/array", () => {
     });
   });
 
-  it("toObject() should return object", () => {
-    const description = "description";
-    const example = "example";
+  it('toObject() should return object', () => {
+    const description = 'description';
+    const example = 'example';
 
     const schema = ArrayFactory()
       .description(description)
@@ -90,7 +90,7 @@ describe("validator/default/types/array", () => {
       .required();
 
     schema.toObject().should.deepEqual({
-      type: "array",
+      type: 'array',
       description,
       example,
       required: true,
@@ -99,57 +99,57 @@ describe("validator/default/types/array", () => {
     });
   });
 
-  it("toObject() should return object with items", () => {
+  it('toObject() should return object with items', () => {
     const itemSchema = StringFactory();
 
     const schema = ArrayFactory(itemSchema);
 
     schema.toObject().should.deepEqual({
-      type: "array",
+      type: 'array',
       required: false,
       empty: true,
       parse: false,
       items: itemSchema.toObject(),
-      example: ["No example provided"]
+      example: ['No example provided']
     });
   });
 
-  it("validateSync() should verify", () => {
+  it('validateSync() should verify', () => {
     ArrayFactory()
-      .validateSync(["test"])
-      .should.deepEqual(["test"]);
+      .validateSync(['test'])
+      .should.deepEqual(['test']);
   });
 
-  it("validateSync() should fail", () => {
+  it('validateSync() should fail', () => {
     helper.shouldThrow(
       () =>
         ArrayFactory()
           .required()
           .validateSync(undefined),
-      "Required but is undefined."
+      'Required but is undefined.'
     );
   });
 
-  it("validateAsync() should verify", async () => {
+  it('validateAsync() should verify', async () => {
     await ArrayFactory()
-      .validate(["test"])
+      .validate(['test'])
       .then(value => {
-        value.should.deepEqual(["test"]);
+        value.should.deepEqual(['test']);
       });
   });
 
-  it("validateAsync() should fail", async () => {
+  it('validateAsync() should fail', async () => {
     await helper.shouldEventuallyThrow(
       ArrayFactory()
         .required()
         .validate(undefined),
-      "Required but is undefined."
+      'Required but is undefined.'
     );
   });
 
-  it("example() with no type should return empty array", () => {
+  it('example() with no type should return empty array', () => {
     ArrayFactory()
       .example()
-      .should.deepEqual("No example provided");
+      .should.deepEqual('No example provided');
   });
 });

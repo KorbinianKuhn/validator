@@ -2,14 +2,14 @@ const {
   isUndefined,
   isString,
   isNotUndefined
-} = require("./../../../utils/lodash");
+} = require('./../../../utils/lodash');
 const {
   validateFunctionSync,
   validateFunctionAsync,
   validateOnly,
   validateNot,
   validateRequired
-} = require("./any");
+} = require('./any');
 
 const validateString = (
   value,
@@ -39,8 +39,8 @@ const validateString = (
   validateRequired(value, required, message);
 
   if (!isString(value)) {
-    throw message.get("wrong_type", {
-      expected: "string",
+    throw message.get('wrong_type', {
+      expected: 'string',
       actual: typeof value
     });
   }
@@ -49,8 +49,8 @@ const validateString = (
     value = value.trim();
   }
 
-  if (value === "" && empty === false) {
-    throw message.get("string_empty");
+  if (value === '' && empty === false) {
+    throw message.get('string_empty');
   }
 
   validateOnly(only, value, message);
@@ -59,21 +59,21 @@ const validateString = (
   if (min || max || length) {
     const stringLength = value.length;
     if (min && stringLength < min) {
-      throw message.get("string_min", {
+      throw message.get('string_min', {
         expected: min,
         actual: stringLength
       });
     }
 
     if (max && stringLength > max) {
-      throw message.get("string_max", {
+      throw message.get('string_max', {
         expected: max,
         actual: stringLength
       });
     }
 
     if (length && stringLength !== length) {
-      throw message.get("string_length", {
+      throw message.get('string_length', {
         expected: length,
         actual: stringLength
       });
@@ -88,7 +88,7 @@ const validateString = (
         value
       });
     } else {
-      throw message.get("string_regex_invalid", {});
+      throw message.get('string_regex_invalid', {});
     }
   }
 

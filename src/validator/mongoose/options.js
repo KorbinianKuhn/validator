@@ -1,7 +1,7 @@
-const DATE_FORMAT = (exports.DATE_FORMAT = "YYYY-MM-DD[T]HH:mm:ss.SSSZ");
+const DATE_FORMAT = (exports.DATE_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ');
 
 exports.VALIDATOR_OPTIONS = {
-  locale: "en",
+  locale: 'en',
   requiredAsDefault: true,
   throwValidationErrors: true,
   parseToType: true,

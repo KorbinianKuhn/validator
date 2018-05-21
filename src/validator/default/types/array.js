@@ -1,10 +1,10 @@
 const {
   defaultToAny,
   removeUndefinedProperties
-} = require("./../../../utils/lodash");
-const { ANY } = require("./any");
-const { validate, validateSync } = require("./../validation/array");
-const { toObject } = require("./../../../utils/to-object");
+} = require('./../../../utils/lodash');
+const { ANY } = require('./any');
+const { validate, validateSync } = require('./../validation/array');
+const { toObject } = require('./../../../utils/to-object');
 
 class ARRAY extends ANY {
   constructor(type, options, defaults) {
@@ -38,7 +38,7 @@ class ARRAY extends ANY {
     } else {
       return removeUndefinedProperties(
         Object.assign(settings, {
-          type: "array",
+          type: 'array',
           description: this._description,
           example: this.example(),
           default: this._default
@@ -59,7 +59,7 @@ class ARRAY extends ANY {
     if (example === undefined) {
       return this._example === undefined
         ? this._type === undefined
-          ? this._message.get("no_example")
+          ? this._message.get('no_example')
           : [this._type.example()]
         : this._example;
     } else {

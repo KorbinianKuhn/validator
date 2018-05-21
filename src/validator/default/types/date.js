@@ -1,10 +1,10 @@
 const {
   defaultToAny,
   removeUndefinedProperties
-} = require("./../../../utils/lodash");
-const { ANY } = require("./any");
-const { validate, validateSync } = require("./../validation/date");
-const moment = require("moment");
+} = require('./../../../utils/lodash');
+const { ANY } = require('./any');
+const { validate, validateSync } = require('./../validation/date');
+const moment = require('moment');
 
 const toMoment = (message, date, utc, format, strict) => {
   const momentDate = utc
@@ -14,7 +14,7 @@ const toMoment = (message, date, utc, format, strict) => {
   if (momentDate.isValid()) {
     return momentDate;
   } else {
-    throw message.error("date_invalid", { format });
+    throw message.error('date_invalid', { format });
   }
 };
 exports.toMoment = toMoment;
@@ -25,7 +25,7 @@ class DATE extends ANY {
     this._format = defaultToAny(
       options.dateFormat,
       defaults.dateFormat,
-      "YYYY-MM-DD[T]HH:mm:ss.SSSZ"
+      'YYYY-MM-DD[T]HH:mm:ss.SSSZ'
     );
     this._utc = defaultToAny(options.utc, defaults.utc, false);
     this._strict = defaultToAny(
@@ -59,7 +59,7 @@ class DATE extends ANY {
     } else {
       return removeUndefinedProperties(
         Object.assign(settings, {
-          type: "date",
+          type: 'date',
           description: this._description,
           example: this.example(),
           default: this._default,

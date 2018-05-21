@@ -1,18 +1,18 @@
 const {
   defaultToAny,
   removeUndefinedProperties
-} = require("./../../../utils/lodash");
-const { toObject } = require("./../../../utils/to-object");
-const { validate, validateSync } = require("./../validation/any");
-const { isFunction } = require("./../../../utils/lodash");
-const { Message } = require("./../../../utils/message");
+} = require('./../../../utils/lodash');
+const { toObject } = require('./../../../utils/to-object');
+const { validate, validateSync } = require('./../validation/any');
+const { isFunction } = require('./../../../utils/lodash');
+const { Message } = require('./../../../utils/message');
 
 class ANY {
   constructor(options, defaults) {
     this._message = defaultToAny(
       options.message,
       defaults.message,
-      Message("en")
+      Message('en')
     );
     this._required = defaultToAny(
       options.requiredAsDefault,
@@ -45,7 +45,7 @@ class ANY {
     } else {
       return removeUndefinedProperties(
         Object.assign(settings, {
-          type: "any",
+          type: 'any',
           description: this._description,
           example: this.example(),
           default: this._default
@@ -81,7 +81,7 @@ class ANY {
     if (example === undefined) {
       return this._example !== undefined
         ? this._example
-        : this._message.get("no_example");
+        : this._message.get('no_example');
     } else {
       this._example = example;
       return this;
@@ -115,7 +115,7 @@ class ANY {
 
   func(func) {
     if (!isFunction(func)) {
-      throw this._message.error("invalid_function", {});
+      throw this._message.error('invalid_function', {});
     }
     this._func = func;
     return this;

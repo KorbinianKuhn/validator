@@ -1,5 +1,5 @@
-const { AssertionError } = require("assert");
-const should = require("should");
+const { AssertionError } = require('assert');
+const should = require('should');
 
 exports.shouldThrow = (func, code) => {
   let error;
@@ -9,7 +9,7 @@ exports.shouldThrow = (func, code) => {
     error = err;
   }
   if (!error) {
-    throw new AssertionError({ message: "Did not throw" });
+    throw new AssertionError({ message: 'Did not throw' });
   }
   should.deepEqual(error, code);
 };
@@ -22,7 +22,7 @@ exports.shouldEventuallyThrow = async (promise, code) => {
     error = err;
   }
   if (!error) {
-    throw new AssertionError({ message: "Did not throw" });
+    throw new AssertionError({ message: 'Did not throw' });
   }
   should.deepEqual(error, code);
 };

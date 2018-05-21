@@ -1,17 +1,17 @@
-const { toObject } = require("./../../../utils/to-object");
+const { toObject } = require('./../../../utils/to-object');
 const {
   removeUndefinedProperties,
   defaultToAny,
   hasIn,
   isPlainObject
-} = require("./../../../utils/lodash");
+} = require('./../../../utils/lodash');
 const {
   validateResponse,
   validateResponseSync
-} = require("./../validation/response");
-const { Message } = require("./../../../utils/message");
-const { TYPES } = require("./../options");
-const { ObjectFactory } = require("./../../default/types/object");
+} = require('./../validation/response');
+const { Message } = require('./../../../utils/message');
+const { TYPES } = require('./../options');
+const { ObjectFactory } = require('./../../default/types/object');
 
 class RESPONSE {
   constructor(options, defaults) {
@@ -19,7 +19,7 @@ class RESPONSE {
     this._message = defaultToAny(
       options.message,
       defaults.message,
-      Message("en")
+      Message('en')
     );
     this._status = 200;
   }
@@ -37,7 +37,7 @@ class RESPONSE {
     } else {
       return removeUndefinedProperties(
         Object.assign(settings, {
-          type: "response",
+          type: 'response',
           description: this._description
         })
       );
@@ -61,12 +61,12 @@ class RESPONSE {
     if (isPlainObject(schema)) {
       schema = ObjectFactory(schema, {}, this._options);
     } else {
-      if (!hasIn(schema, "constructor.name")) {
-        throw this._message.error("invalid_schema", {});
+      if (!hasIn(schema, 'constructor.name')) {
+        throw this._message.error('invalid_schema', {});
       }
 
       if (TYPES.indexOf(schema.constructor.name) === -1) {
-        throw this._message.error("unknown_schema", {});
+        throw this._message.error('unknown_schema', {});
       }
     }
 

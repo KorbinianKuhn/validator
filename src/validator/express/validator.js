@@ -1,16 +1,14 @@
-const { isArray, isPlainObject } = require("./../../utils/lodash");
-const { Validator } = require("./../default/validator");
-const middleware = require("./middleware");
-const { RequestFactory } = require("./types/request");
-const { ResponseFactory } = require("./types/response");
-const { ObjectFactory } = require("./../default/types/object");
-const { ArrayFactory } = require("./../default/types/array");
+const { Validator } = require('./../default/validator');
+const middleware = require('./middleware');
+const { RequestFactory } = require('./types/request');
+const { ResponseFactory } = require('./types/response');
+const { ObjectFactory } = require('./../default/types/object');
 const {
   TYPES,
   BODY_OPTIONS,
   QUERY_OPTIONS,
   URI_OPTIONS
-} = require("./options");
+} = require('./options');
 
 class ExpressValidator extends Validator {
   constructor(options) {

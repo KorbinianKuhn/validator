@@ -1,8 +1,8 @@
-const { BOOLEAN } = require("./../../default/types/boolean");
+const { BOOLEAN } = require('./../../default/types/boolean');
 const {
   validate,
   validateSync
-} = require("./../../default/validation/boolean");
+} = require('./../../default/validation/boolean');
 
 class BOOLEAN_MONGOOSE extends BOOLEAN {
   constructor(options, defaults) {

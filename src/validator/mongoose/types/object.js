@@ -1,5 +1,5 @@
-const { OBJECT } = require("./../../default/types/object");
-const { validate, validateSync } = require("./../../default/validation/object");
+const { OBJECT } = require('./../../default/types/object');
+const { validate, validateSync } = require('./../../default/validation/object');
 
 class OBJECT_MONGOOSE extends OBJECT {
   constructor(schema, options, defaults) {

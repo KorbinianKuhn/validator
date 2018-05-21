@@ -1,5 +1,5 @@
-const { ARRAY } = require("./../../default/types/array");
-const { validate, validateSync } = require("./../../default/validation/array");
+const { ARRAY } = require('./../../default/types/array');
+const { validate, validateSync } = require('./../../default/validation/array');
 
 class ARRAY_ANGULAR extends ARRAY {
   constructor(type, options, defaults) {
@@ -9,7 +9,7 @@ class ARRAY_ANGULAR extends ARRAY {
   validate() {
     return async formControl => {
       try {
-        const value = formControl.value === "" ? null : formControl.value;
+        const value = formControl.value === '' ? null : formControl.value;
         await validate(value, this.options({ validation: true }));
         return null;
       } catch (err) {
@@ -21,7 +21,7 @@ class ARRAY_ANGULAR extends ARRAY {
   validateSync() {
     return formControl => {
       try {
-        const value = formControl.value === "" ? null : formControl.value;
+        const value = formControl.value === '' ? null : formControl.value;
         validateSync(value, this.options({ validation: true }));
         return null;
       } catch (err) {

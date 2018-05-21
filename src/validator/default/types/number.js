@@ -1,6 +1,6 @@
-const { ANY } = require("./any");
-const { validate, validateSync } = require("./../validation/number");
-const { removeUndefinedProperties } = require("./../../../utils/lodash");
+const { ANY } = require('./any');
+const { validate, validateSync } = require('./../validation/number');
+const { removeUndefinedProperties } = require('./../../../utils/lodash');
 
 class NUMBER extends ANY {
   constructor(options, defaults) {
@@ -34,7 +34,7 @@ class NUMBER extends ANY {
     } else {
       return removeUndefinedProperties(
         Object.assign(settings, {
-          type: "number",
+          type: 'number',
           description: this._description,
           example: this.example(),
           default: this._default

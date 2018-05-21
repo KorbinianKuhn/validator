@@ -3,7 +3,7 @@ const validateResponse = async (res, { status, body, message }) => {
   let valid = true;
 
   if (res.status !== status) {
-    errors.status = message.get("express_invalid_status_code", {
+    errors.status = message.get('express_invalid_status_code', {
       expected: status,
       actual: res.status
     });
@@ -30,7 +30,7 @@ const validateResponseSync = (res, { status, body, message }) => {
   let valid = true;
 
   if (res.status !== status) {
-    errors.status = message.get("express_invalid_status_code", {
+    errors.status = message.get('express_invalid_status_code', {
       expected: status,
       actual: res.status
     });

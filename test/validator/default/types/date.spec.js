@@ -1,32 +1,32 @@
 const {
   DateFactory,
   toMoment
-} = require("./../../../../src/validator/default/types/date");
-const { Message } = require("./../../../../src/utils/message");
-const helper = require("./../../../helper");
-const moment = require("moment");
+} = require('./../../../../src/validator/default/types/date');
+const { Message } = require('./../../../../src/utils/message');
+const helper = require('./../../../helper');
+const moment = require('moment');
 
-describe("validator/default/types/date", () => {
-  const message = Message("en");
+describe('validator/default/types/date', () => {
+  const message = Message('en');
 
-  it("DateFactory() should return DATE object", () => {
-    DateFactory().constructor.name.should.equal("DATE");
+  it('DateFactory() should return DATE object', () => {
+    DateFactory().constructor.name.should.equal('DATE');
   });
 
-  it("options() should return options", () => {
+  it('options() should return options', () => {
     const func = () => {};
-    const defaultValue = "2018-01-01T00:00:00.000Z";
+    const defaultValue = '2018-01-01T00:00:00.000Z';
     const allowed = [null];
-    const not = ["not"];
-    const only = ["only"];
+    const not = ['not'];
+    const only = ['only'];
     const parse = false;
-    const description = "description";
-    const example = "example";
-    const format = "YYYY-MM-DD[T]HH:mm:ss.SSSZ";
+    const description = 'description';
+    const example = 'example';
+    const format = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
     const strict = true;
     const utc = true;
-    const min = "2018-01-01T00:00:00.000Z";
-    const max = "2019-01-01T00:00:00.000Z";
+    const min = '2018-01-01T00:00:00.000Z';
+    const max = '2019-01-01T00:00:00.000Z';
 
     const schema = DateFactory()
       .description(description)
@@ -62,7 +62,7 @@ describe("validator/default/types/date", () => {
     });
 
     schema.options().should.deepEqual({
-      type: "date",
+      type: 'date',
       description,
       example,
       default: defaultValue,
@@ -79,16 +79,16 @@ describe("validator/default/types/date", () => {
     });
   });
 
-  it("func() with invalid argument should fail", () => {
+  it('func() with invalid argument should fail', () => {
     helper.shouldThrow(
-      () => DateFactory().func("wrong"),
-      "Validator configuration error: Must be a function."
+      () => DateFactory().func('wrong'),
+      'Validator configuration error: Must be a function.'
     );
   });
 
-  it("toObject() should return object", () => {
-    const description = "description";
-    const example = "example";
+  it('toObject() should return object', () => {
+    const description = 'description';
+    const example = 'example';
 
     const schema = DateFactory()
       .description(description)
@@ -96,70 +96,70 @@ describe("validator/default/types/date", () => {
       .required();
 
     schema.toObject().should.deepEqual({
-      type: "date",
+      type: 'date',
       description,
       example,
       required: true,
       parse: false,
       strict: false,
       utc: false,
-      format: "YYYY-MM-DD[T]HH:mm:ss.SSSZ"
+      format: 'YYYY-MM-DD[T]HH:mm:ss.SSSZ'
     });
   });
 
-  it("validateSync() should verify", () => {
+  it('validateSync() should verify', () => {
     DateFactory()
-      .validateSync("2018-01-01T00:00:00.000Z")
-      .should.equal("2018-01-01T00:00:00.000Z");
+      .validateSync('2018-01-01T00:00:00.000Z')
+      .should.equal('2018-01-01T00:00:00.000Z');
   });
 
-  it("validateSync() should fail", () => {
+  it('validateSync() should fail', () => {
     helper.shouldThrow(
       () =>
         DateFactory()
           .required()
           .validateSync(undefined),
-      "Required but is undefined."
+      'Required but is undefined.'
     );
   });
 
-  it("validateAsync() should verify", async () => {
+  it('validateAsync() should verify', async () => {
     await DateFactory()
-      .validate("2018-01-01T00:00:00.000Z")
+      .validate('2018-01-01T00:00:00.000Z')
       .then(value => {
-        value.should.equal("2018-01-01T00:00:00.000Z");
+        value.should.equal('2018-01-01T00:00:00.000Z');
       });
   });
 
-  it("validateAsync() should fail", async () => {
+  it('validateAsync() should fail', async () => {
     await helper.shouldEventuallyThrow(
       DateFactory()
         .required()
         .validate(undefined),
-      "Required but is undefined."
+      'Required but is undefined.'
     );
   });
 
-  it("toMoment() should return date", () => {
-    const date = "2018-01-01T00:00:00.000Z";
+  it('toMoment() should return date', () => {
+    const date = '2018-01-01T00:00:00.000Z';
     const actual = toMoment(message, date);
     const expected = moment(date);
     actual.should.deepEqual(expected);
   });
 
-  it("toMoment() should return date", () => {
-    const date = "2018-01-01T00:00:00.000Z";
+  it('toMoment() should return date', () => {
+    const date = '2018-01-01T00:00:00.000Z';
     const actual = toMoment(message, date, true);
     const expected = moment.utc(date);
     actual.should.deepEqual(expected);
   });
 
-  it("toMoment() should fail", () => {
-    const date = "2018";
-    const format = "YYYY-MM-DD";
+  it('toMoment() should fail', () => {
+    const date = '2018';
+    const format = 'YYYY-MM-DD';
     helper.shouldThrow(
       () => toMoment(message, date, false, format, true),
-      "Validator configuration error: Must be a valid date with the format YYYY-MM-DD."
+      'Validator configuration error: Must be a valid date with the format YYYY-MM-DD.'
     );
   });
 });

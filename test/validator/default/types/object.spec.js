@@ -1,35 +1,35 @@
 const {
   ObjectFactory
-} = require("./../../../../src/validator/default/types/object");
+} = require('./../../../../src/validator/default/types/object');
 const {
   StringFactory
-} = require("./../../../../src/validator/default/types/string");
-const { Message } = require("./../../../../src/utils/message");
-const helper = require("./../../../helper");
+} = require('./../../../../src/validator/default/types/string');
+const { Message } = require('./../../../../src/utils/message');
+const helper = require('./../../../helper');
 
-describe("validator/default/types/object", () => {
-  const message = Message("en");
+describe('validator/default/types/object', () => {
+  const message = Message('en');
 
-  it("ObjectFactory() should return OBJECT object", () => {
-    ObjectFactory().constructor.name.should.equal("OBJECT");
+  it('ObjectFactory() should return OBJECT object', () => {
+    ObjectFactory().constructor.name.should.equal('OBJECT');
   });
 
-  it("ObjectFactory() should with invalid object should throw", () => {
+  it('ObjectFactory() should with invalid object should throw', () => {
     helper.shouldThrow(
-      () => ObjectFactory("wrong"),
-      "Validator configuration error: Must be an object."
+      () => ObjectFactory('wrong'),
+      'Validator configuration error: Must be an object.'
     );
   });
 
-  it("options() should return options", () => {
+  it('options() should return options', () => {
     const func = () => {};
-    const defaultValue = ["test"];
+    const defaultValue = ['test'];
     const allowed = [null];
-    const not = ["not"];
-    const only = ["only"];
+    const not = ['not'];
+    const only = ['only'];
     const parse = false;
-    const description = "description";
-    const example = "example";
+    const description = 'description';
+    const example = 'example';
     const min = 1;
     const max = 3;
     const length = 2;
@@ -47,7 +47,7 @@ describe("validator/default/types/object", () => {
       .parse(parse)
       .required()
       .optional()
-      .func(func, "test")
+      .func(func, 'test')
       .min(min)
       .max(max)
       .length(length)
@@ -59,7 +59,7 @@ describe("validator/default/types/object", () => {
       allowed,
       func: {
         fn: func,
-        keys: ["test"]
+        keys: ['test']
       },
       not,
       only,
@@ -76,7 +76,7 @@ describe("validator/default/types/object", () => {
     });
 
     schema.options().should.deepEqual({
-      type: "object",
+      type: 'object',
       description,
       example,
       default: defaultValue,
@@ -93,9 +93,9 @@ describe("validator/default/types/object", () => {
     });
   });
 
-  it("toObject() should return object", () => {
-    const description = "description";
-    const example = "example";
+  it('toObject() should return object', () => {
+    const description = 'description';
+    const example = 'example';
     const name = StringFactory();
 
     const schema = ObjectFactory({ name })
@@ -104,7 +104,7 @@ describe("validator/default/types/object", () => {
       .required();
 
     schema.toObject().should.deepEqual({
-      type: "object",
+      type: 'object',
       description,
       example,
       required: true,
@@ -117,23 +117,23 @@ describe("validator/default/types/object", () => {
     });
   });
 
-  it("validateSync() should verify", () => {
+  it('validateSync() should verify', () => {
     ObjectFactory()
       .validateSync({})
       .should.deepEqual({});
   });
 
-  it("validateSync() should fail", () => {
+  it('validateSync() should fail', () => {
     helper.shouldThrow(
       () =>
         ObjectFactory()
           .required()
           .validateSync(undefined),
-      "Required but is undefined."
+      'Required but is undefined.'
     );
   });
 
-  it("validateAsync() should verify", async () => {
+  it('validateAsync() should verify', async () => {
     await ObjectFactory()
       .validate({})
       .then(value => {
@@ -141,60 +141,60 @@ describe("validator/default/types/object", () => {
       });
   });
 
-  it("validateAsync() should fail", async () => {
+  it('validateAsync() should fail', async () => {
     await helper.shouldEventuallyThrow(
       ObjectFactory()
         .required()
         .validate(undefined),
-      "Required but is undefined."
+      'Required but is undefined.'
     );
   });
 
-  it("func() with invalid type should throw", () => {
+  it('func() with invalid type should throw', () => {
     helper.shouldThrow(
-      () => ObjectFactory({}).func("wrong"),
-      "Validator configuration error: Must be a function."
+      () => ObjectFactory({}).func('wrong'),
+      'Validator configuration error: Must be a function.'
     );
   });
 
-  it("conditions should get added", () => {
+  it('conditions should get added', () => {
     const schema = ObjectFactory({})
-      .gt("a", "b")
-      .gte("a", "b")
-      .lt("a", "b")
-      .lte("a", "b")
-      .equals("a", "b")
-      .notEquals("a", "b")
-      .dependsOn("a", "b")
-      .xor("a", "b")
-      .or("a", "b");
+      .gt('a', 'b')
+      .gte('a', 'b')
+      .lt('a', 'b')
+      .lte('a', 'b')
+      .equals('a', 'b')
+      .notEquals('a', 'b')
+      .dependsOn('a', 'b')
+      .xor('a', 'b')
+      .or('a', 'b');
     schema._conditions.should.deepEqual([
-      { keyA: "a", keyB: "b", method: "gt" },
-      { keyA: "a", keyB: "b", method: "gte" },
-      { keyA: "a", keyB: "b", method: "lt" },
-      { keyA: "a", keyB: "b", method: "lte" },
-      { keyA: "a", keyB: "b", method: "equals" },
-      { keyA: "a", keyB: "b", method: "notEquals" },
-      { keyA: "a", keyB: "b", method: "dependsOn" },
-      { keyA: "a", keyB: "b", method: "xor" },
-      { keyA: "a", keyB: "b", method: "or" }
+      { keyA: 'a', keyB: 'b', method: 'gt' },
+      { keyA: 'a', keyB: 'b', method: 'gte' },
+      { keyA: 'a', keyB: 'b', method: 'lt' },
+      { keyA: 'a', keyB: 'b', method: 'lte' },
+      { keyA: 'a', keyB: 'b', method: 'equals' },
+      { keyA: 'a', keyB: 'b', method: 'notEquals' },
+      { keyA: 'a', keyB: 'b', method: 'dependsOn' },
+      { keyA: 'a', keyB: 'b', method: 'xor' },
+      { keyA: 'a', keyB: 'b', method: 'or' }
     ]);
   });
 
-  it("example() should return generated example", () => {
-    const schema = ObjectFactory({ name: StringFactory().example("Jane Doe") });
-    schema.example().should.deepEqual({ name: "Jane Doe" });
+  it('example() should return generated example', () => {
+    const schema = ObjectFactory({ name: StringFactory().example('Jane Doe') });
+    schema.example().should.deepEqual({ name: 'Jane Doe' });
   });
 
-  it("example() should return generated example", () => {
+  it('example() should return generated example', () => {
     const schema = ObjectFactory({ name: StringFactory() });
-    schema.example().should.deepEqual({ name: "No example provided" });
+    schema.example().should.deepEqual({ name: 'No example provided' });
   });
 
-  it("example() should return set example", () => {
+  it('example() should return set example', () => {
     const schema = ObjectFactory({
-      name: StringFactory().example("Jane Doe")
-    }).example({ name: "John Doe" });
-    schema.example().should.deepEqual({ name: "John Doe" });
+      name: StringFactory().example('Jane Doe')
+    }).example({ name: 'John Doe' });
+    schema.example().should.deepEqual({ name: 'John Doe' });
   });
 });

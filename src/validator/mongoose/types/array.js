@@ -1,5 +1,5 @@
-const { ARRAY } = require("./../../default/types/array");
-const { validate, validateSync } = require("./../../default/validation/array");
+const { ARRAY } = require('./../../default/types/array');
+const { validate, validateSync } = require('./../../default/validation/array');
 
 class ARRAY_MONGOOSE extends ARRAY {
   constructor(type, options, defaults) {

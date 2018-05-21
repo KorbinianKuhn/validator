@@ -1,6 +1,6 @@
-const { ANY } = require("./any");
-const { validate, validateSync } = require("./../validation/boolean");
-const { removeUndefinedProperties } = require("./../../../utils/lodash");
+const { ANY } = require('./any');
+const { validate, validateSync } = require('./../validation/boolean');
+const { removeUndefinedProperties } = require('./../../../utils/lodash');
 
 class BOOLEAN extends ANY {
   constructor(options, defaults) {
@@ -26,7 +26,7 @@ class BOOLEAN extends ANY {
     } else {
       return removeUndefinedProperties(
         Object.assign(settings, {
-          type: "boolean",
+          type: 'boolean',
           description: this._description,
           example: this.example(),
           default: this._default

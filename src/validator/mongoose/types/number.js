@@ -1,5 +1,5 @@
-const { NUMBER } = require("./../../default/types/number");
-const { validate, validateSync } = require("./../../default/validation/number");
+const { NUMBER } = require('./../../default/types/number');
+const { validate, validateSync } = require('./../../default/validation/number');
 
 class NUMBER_MONGOOSE extends NUMBER {
   constructor(options, defaults) {

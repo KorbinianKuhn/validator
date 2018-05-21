@@ -1,18 +1,17 @@
 const {
   isUndefined,
   isNotUndefined,
-  isNull,
   isArray,
   isString,
   uniqWith,
   isEqual,
   keys
-} = require("./../../../utils/lodash");
+} = require('./../../../utils/lodash');
 const {
   validateFunctionSync,
   validateFunctionAsync,
   validateRequired
-} = require("./any");
+} = require('./any');
 
 const validateItemsSync = (value, itemSchema) => {
   if (itemSchema !== undefined) {
@@ -89,33 +88,33 @@ const validateArray = (
     try {
       value = JSON.parse(value);
     } catch (err) {
-      value = value.split(",");
+      value = value.split(',');
     }
   }
 
   if (!isArray(value)) {
-    throw message.get("wrong_type", {
-      expected: "array",
+    throw message.get('wrong_type', {
+      expected: 'array',
       actual: typeof value
     });
   }
 
   if (empty === false && value.length === 0) {
-    throw message.get("array_empty");
+    throw message.get('array_empty');
   }
 
   if (min || max || length) {
     const arrayLength = value.length;
     if (min && arrayLength < min) {
-      throw message.get("array_min", { expected: min, actual: arrayLength });
+      throw message.get('array_min', { expected: min, actual: arrayLength });
     }
 
     if (max && arrayLength > max) {
-      throw message.get("array_max", { expected: max, actual: arrayLength });
+      throw message.get('array_max', { expected: max, actual: arrayLength });
     }
 
     if (length && arrayLength !== length) {
-      throw message.get("array_length", {
+      throw message.get('array_length', {
         expected: length,
         actual: arrayLength
       });
@@ -123,7 +122,7 @@ const validateArray = (
   }
 
   if (unique && uniqWith(value, isEqual).length !== value.length) {
-    throw message.get("array_duplicate_items");
+    throw message.get('array_duplicate_items');
   }
 
   // TODO validateNot, validateOnly

@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "build": "webpack",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "precommit": "lint-staged"
   },
   "repository": {
     "type": "git",
@@ -64,8 +65,5 @@
       "prettier --write",
       "git add"
     ]
-  },
-  "pre-commit": [
-    "lint-staged"
-  ]
+  }
 }

@@ -2,9 +2,9 @@ const {
   defaultToAny,
   isRegExp,
   removeUndefinedProperties
-} = require("./../../../utils/lodash");
-const { ANY } = require("./any");
-const { validate, validateSync } = require("./../validation/string");
+} = require('./../../../utils/lodash');
+const { ANY } = require('./any');
+const { validate, validateSync } = require('./../validation/string');
 
 class STRING extends ANY {
   constructor(options, defaults) {
@@ -42,7 +42,7 @@ class STRING extends ANY {
     } else {
       return removeUndefinedProperties(
         Object.assign(settings, {
-          type: "string",
+          type: 'string',
           description: this._description,
           example: this.example(),
           default: this._default,
@@ -87,7 +87,7 @@ class STRING extends ANY {
 
   regex(pattern, locales = {}) {
     if (!isRegExp(pattern)) {
-      throw this._message.error("invalid_regular_expression");
+      throw this._message.error('invalid_regular_expression');
     }
     this._regex = {
       pattern,

@@ -1,32 +1,32 @@
 const {
   StringFactory
-} = require("./../../../../src/validator/default/types/string");
-const { Message } = require("./../../../../src/utils/message");
-const helper = require("./../../../helper");
+} = require('./../../../../src/validator/default/types/string');
+const { Message } = require('./../../../../src/utils/message');
+const helper = require('./../../../helper');
 
-describe("validator/default/types/string", () => {
-  const message = Message("en");
+describe('validator/default/types/string', () => {
+  const message = Message('en');
 
-  it("StringFactory() should return STRING object", () => {
-    StringFactory().constructor.name.should.equal("STRING");
+  it('StringFactory() should return STRING object', () => {
+    StringFactory().constructor.name.should.equal('STRING');
   });
 
-  it("options() should return options", () => {
+  it('options() should return options', () => {
     const func = () => {};
-    const defaultValue = "test";
+    const defaultValue = 'test';
     const allowed = [null];
-    const not = ["not"];
-    const only = ["only"];
+    const not = ['not'];
+    const only = ['only'];
     const parse = false;
-    const description = "description";
-    const example = "example";
+    const description = 'description';
+    const example = 'example';
     const min = 1;
     const max = 3;
     const length = 2;
     const trim = true;
     const pattern = /A-Z/;
     const empty = false;
-    const locales = { key: "value" };
+    const locales = { key: 'value' };
 
     const schema = StringFactory()
       .description(description)
@@ -67,7 +67,7 @@ describe("validator/default/types/string", () => {
     });
 
     schema.options().should.deepEqual({
-      type: "string",
+      type: 'string',
       description,
       example,
       default: defaultValue,
@@ -85,16 +85,16 @@ describe("validator/default/types/string", () => {
     });
   });
 
-  it("regex() invalid regex should throw", () => {
+  it('regex() invalid regex should throw', () => {
     helper.shouldThrow(
       () => StringFactory().regex(true),
-      "Validator configuration error: Must be a regular expression."
+      'Validator configuration error: Must be a regular expression.'
     );
   });
 
-  it("toObject() should return object", () => {
-    const description = "description";
-    const example = "example";
+  it('toObject() should return object', () => {
+    const description = 'description';
+    const example = 'example';
 
     const schema = StringFactory()
       .description(description)
@@ -102,7 +102,7 @@ describe("validator/default/types/string", () => {
       .required();
 
     schema.toObject().should.deepEqual({
-      type: "string",
+      type: 'string',
       description,
       example,
       required: true,
@@ -112,36 +112,36 @@ describe("validator/default/types/string", () => {
     });
   });
 
-  it("validateSync() should verify", () => {
+  it('validateSync() should verify', () => {
     StringFactory()
-      .validateSync("test")
-      .should.equal("test");
+      .validateSync('test')
+      .should.equal('test');
   });
 
-  it("validateSync() should fail", () => {
+  it('validateSync() should fail', () => {
     helper.shouldThrow(
       () =>
         StringFactory()
           .required()
           .validateSync(undefined),
-      "Required but is undefined."
+      'Required but is undefined.'
     );
   });
 
-  it("validateAsync() should verify", async () => {
+  it('validateAsync() should verify', async () => {
     await StringFactory()
-      .validate("test")
+      .validate('test')
       .then(value => {
-        value.should.equal("test");
+        value.should.equal('test');
       });
   });
 
-  it("validateAsync() should fail", async () => {
+  it('validateAsync() should fail', async () => {
     await helper.shouldEventuallyThrow(
       StringFactory()
         .required()
         .validate(undefined),
-      "Required but is undefined."
+      'Required but is undefined.'
     );
   });
 });

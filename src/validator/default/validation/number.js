@@ -1,18 +1,17 @@
 const {
   isUndefined,
   isNotUndefined,
-  isNull,
   isNumber,
   isString,
   isInteger
-} = require("./../../../utils/lodash");
+} = require('./../../../utils/lodash');
 const {
   validateFunctionSync,
   validateFunctionAsync,
   validateOnly,
   validateNot,
   validateRequired
-} = require("./any");
+} = require('./any');
 
 const validateNumber = (
   value,
@@ -57,57 +56,57 @@ const validateNumber = (
   if (integer) {
     if (!isInteger(value)) {
       if (isNumber(value)) {
-        throw message.get("integer_is_number", { value, actual: "number" });
+        throw message.get('integer_is_number', { value, actual: 'number' });
       } else {
-        throw message.get("integer_wrong_type", {
-          expected: "integer",
+        throw message.get('integer_wrong_type', {
+          expected: 'integer',
           actual: typeof value
         });
       }
     }
   } else if (!isNumber(value)) {
-    throw message.get("number_wrong_type", {
-      expected: "number",
+    throw message.get('number_wrong_type', {
+      expected: 'number',
       actual: typeof value
     });
   }
 
   if (min && value < min) {
-    throw message.get("number_min", {
+    throw message.get('number_min', {
       expected: min,
       actual: value
     });
   }
 
   if (max && value > max) {
-    throw message.get("number_max", {
+    throw message.get('number_max', {
       expected: max,
       actual: value
     });
   }
 
   if (less && value >= less) {
-    throw message.get("number_less", {
+    throw message.get('number_less', {
       expected: less,
       actual: value
     });
   }
 
   if (greater && value <= greater) {
-    throw message.get("number_greater", {
+    throw message.get('number_greater', {
       expected: greater,
       actual: value
     });
   }
 
   if (positive && value <= 0) {
-    throw message.get("number_positive", {
+    throw message.get('number_positive', {
       value
     });
   }
 
   if (negative && value >= 0) {
-    throw message.get("number_negative", {
+    throw message.get('number_negative', {
       value
     });
   }

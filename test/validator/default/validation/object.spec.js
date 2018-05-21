@@ -9,18 +9,18 @@ const {
   validateObjectFunctionAsync,
   validateSync,
   validate
-} = require("./../../../../src/validator/default/validation/object");
-const { Message } = require("./../../../../src/utils/message");
-const helper = require("./../../../helper");
+} = require('./../../../../src/validator/default/validation/object');
+const { Message } = require('./../../../../src/utils/message');
+const helper = require('./../../../helper');
 const {
   StringFactory
-} = require("./../../../../src/validator/default/types/string");
-const should = require("should");
+} = require('./../../../../src/validator/default/types/string');
+const should = require('should');
 
-describe("validator/default/validation/object", () => {
-  const message = Message("en");
+describe('validator/default/validation/object', () => {
+  const message = Message('en');
 
-  it("validateObjectBeforeProperties() should return given value", () => {
+  it('validateObjectBeforeProperties() should return given value', () => {
     const actual = validateObjectBeforeProperties(
       {},
       { message, required: true }
@@ -28,7 +28,7 @@ describe("validator/default/validation/object", () => {
     actual.should.deepEqual({});
   });
 
-  it("validateObjectBeforeProperties() should return defaultValue", () => {
+  it('validateObjectBeforeProperties() should return defaultValue', () => {
     const actual = validateObjectBeforeProperties(undefined, {
       message,
       required: true,
@@ -37,14 +37,14 @@ describe("validator/default/validation/object", () => {
     actual.should.deepEqual({});
   });
 
-  it("validateObjectBeforeProperties() with null should verify", () => {
+  it('validateObjectBeforeProperties() with null should verify', () => {
     const actual = validateObjectBeforeProperties(null, {
       allowed: [null]
     });
     should.equal(actual, null);
   });
 
-  it("validateObjectBeforeProperties() with null should throw", () => {
+  it('validateObjectBeforeProperties() with null should throw', () => {
     helper.shouldThrow(
       () =>
         validateObjectBeforeProperties(null, {
@@ -52,37 +52,37 @@ describe("validator/default/validation/object", () => {
           required: true,
           allowed: []
         }),
-      "Required but is null."
+      'Required but is null.'
     );
   });
 
-  it("validateObjectBeforeProperties() should throw", () => {
+  it('validateObjectBeforeProperties() should throw', () => {
     helper.shouldThrow(
       () =>
-        validateObjectBeforeProperties("wrong", { message, required: true }),
-      "Must be type object but is string."
+        validateObjectBeforeProperties('wrong', { message, required: true }),
+      'Must be type object but is string.'
     );
   });
 
-  it("validateObjectBeforeProperties() should parse to object", () => {
-    let actual = validateObjectBeforeProperties("{}", {
+  it('validateObjectBeforeProperties() should parse to object', () => {
+    let actual = validateObjectBeforeProperties('{}', {
       parse: true
     });
     actual.should.deepEqual({});
   });
 
-  it("validateObjectBeforeProperties() should try parse to object but fail", () => {
+  it('validateObjectBeforeProperties() should try parse to object but fail', () => {
     helper.shouldThrow(
       () =>
-        validateObjectBeforeProperties("wrong", {
+        validateObjectBeforeProperties('wrong', {
           message,
           parse: true
         }),
-      "Must be type object but is string."
+      'Must be type object but is string.'
     );
   });
 
-  it("validateObjectBeforeProperties() empty object should verify", () => {
+  it('validateObjectBeforeProperties() empty object should verify', () => {
     let actual = validateObjectBeforeProperties(
       {},
       {
@@ -92,7 +92,7 @@ describe("validator/default/validation/object", () => {
     actual.should.deepEqual({});
   });
 
-  it("validateObjectBeforeProperties() empty object should fail", () => {
+  it('validateObjectBeforeProperties() empty object should fail', () => {
     helper.shouldThrow(
       () =>
         validateObjectBeforeProperties(
@@ -102,21 +102,21 @@ describe("validator/default/validation/object", () => {
             empty: false
           }
         ),
-      "Object is empty."
+      'Object is empty.'
     );
   });
 
-  it("validateObjectBeforeProperties() length should verify", () => {
+  it('validateObjectBeforeProperties() length should verify', () => {
     let actual = validateObjectBeforeProperties(
-      { key: "value" },
+      { key: 'value' },
       {
         length: 1
       }
     );
-    actual.should.deepEqual({ key: "value" });
+    actual.should.deepEqual({ key: 'value' });
   });
 
-  it("validateObjectBeforeProperties() min length should fail", () => {
+  it('validateObjectBeforeProperties() min length should fail', () => {
     helper.shouldThrow(
       () =>
         validateObjectBeforeProperties(
@@ -126,45 +126,45 @@ describe("validator/default/validation/object", () => {
             min: 1
           }
         ),
-      "Must have at least 1 keys."
+      'Must have at least 1 keys.'
     );
   });
 
-  it("validateObjectBeforeProperties() min length should verify", () => {
+  it('validateObjectBeforeProperties() min length should verify', () => {
     let actual = validateObjectBeforeProperties(
-      { key: "value" },
+      { key: 'value' },
       {
         min: 1
       }
     );
-    actual.should.deepEqual({ key: "value" });
+    actual.should.deepEqual({ key: 'value' });
   });
 
-  it("validateObjectBeforeProperties() max length should fail", () => {
+  it('validateObjectBeforeProperties() max length should fail', () => {
     helper.shouldThrow(
       () =>
         validateObjectBeforeProperties(
-          { key: "value", invalid: "value" },
+          { key: 'value', invalid: 'value' },
           {
             message,
             max: 1
           }
         ),
-      "Must have at most 1 keys."
+      'Must have at most 1 keys.'
     );
   });
 
-  it("validateObjectBeforeProperties() max length should verify", () => {
+  it('validateObjectBeforeProperties() max length should verify', () => {
     let actual = validateObjectBeforeProperties(
-      { key: "value" },
+      { key: 'value' },
       {
         max: 1
       }
     );
-    actual.should.deepEqual({ key: "value" });
+    actual.should.deepEqual({ key: 'value' });
   });
 
-  it("validateObjectBeforeProperties() length should fail", () => {
+  it('validateObjectBeforeProperties() length should fail', () => {
     helper.shouldThrow(
       () =>
         validateObjectBeforeProperties(
@@ -174,301 +174,301 @@ describe("validator/default/validation/object", () => {
             length: 1
           }
         ),
-      "Must have exactly 1 keys."
+      'Must have exactly 1 keys.'
     );
   });
 
-  it("validateObjectPropertiesSync() should verify", () => {
+  it('validateObjectPropertiesSync() should verify', () => {
     const schema = StringFactory({}, { message });
     const actual = validateObjectPropertiesSync(
-      { key: "test" },
+      { key: 'test' },
       { key: schema }
     );
-    actual.should.deepEqual({ key: "test" });
+    actual.should.deepEqual({ key: 'test' });
   });
 
-  it("validateObjectPropertiesSync() should fail", () => {
+  it('validateObjectPropertiesSync() should fail', () => {
     const schema = StringFactory({}, { message });
     helper.shouldThrow(
       () => validateObjectPropertiesSync({}, { key: schema }),
       {
-        key: "Must be type string but is undefined."
+        key: 'Must be type string but is undefined.'
       }
     );
   });
 
-  it("validateObjectPropertiesAsync() should verify", async () => {
+  it('validateObjectPropertiesAsync() should verify', async () => {
     const schema = StringFactory({}, { message });
     const actual = await validateObjectPropertiesAsync(
-      { key: "test" },
+      { key: 'test' },
       { key: schema }
     );
-    actual.should.deepEqual({ key: "test" });
+    actual.should.deepEqual({ key: 'test' });
   });
 
-  it("validateObjectPropertiesAsync() should fail", async () => {
+  it('validateObjectPropertiesAsync() should fail', async () => {
     const schema = StringFactory({}, { message });
     await helper.shouldEventuallyThrow(
       validateObjectPropertiesAsync({}, { key: schema }),
       {
-        key: "Must be type string but is undefined."
+        key: 'Must be type string but is undefined.'
       }
     );
   });
 
-  it("validateObjectAfterProperties() should verify", () => {
+  it('validateObjectAfterProperties() should verify', () => {
     validateObjectAfterProperties({}, {});
   });
 
-  it("validateObjectAfterProperties() with unknown key should fail", () => {
+  it('validateObjectAfterProperties() with unknown key should fail', () => {
     helper.shouldThrow(
       () =>
         validateObjectAfterProperties(
-          { key: "value" },
+          { key: 'value' },
           { message, unknown: false, object: {} }
         ),
-      { key: "Unknown key." }
+      { key: 'Unknown key.' }
     );
   });
 
-  it("validateObjectAfterProperties() with keys should verify", () => {
+  it('validateObjectAfterProperties() with keys should verify', () => {
     const schema = StringFactory({}, { message });
     validateObjectAfterProperties(
-      { key: "value" },
+      { key: 'value' },
       { unknown: false, object: { key: schema } }
     );
   });
 
-  it("validateObjectAfterProperties() with conditions should verify", () => {
+  it('validateObjectAfterProperties() with conditions should verify', () => {
     validateObjectAfterProperties({}, { conditions: [] });
   });
 
-  it("validateCondition() gt should verify", () => {
-    validateCondition(message, "gt", "a", "b", 2, 1);
-    validateCondition(message, "gt", "a", "b", {}, {});
+  it('validateCondition() gt should verify', () => {
+    validateCondition(message, 'gt', 'a', 'b', 2, 1);
+    validateCondition(message, 'gt', 'a', 'b', {}, {});
   });
 
-  it("validateCondition() gt should fail", () => {
+  it('validateCondition() gt should fail', () => {
     helper.shouldThrow(
-      () => validateCondition(message, "gt", "a", "b", 1, 2),
-      "Must be greater than b."
+      () => validateCondition(message, 'gt', 'a', 'b', 1, 2),
+      'Must be greater than b.'
     );
   });
 
-  it("validateCondition() gte should verify", () => {
-    validateCondition(message, "gte", "a", "b", 2, 1);
-    validateCondition(message, "gte", "a", "b", {}, {});
+  it('validateCondition() gte should verify', () => {
+    validateCondition(message, 'gte', 'a', 'b', 2, 1);
+    validateCondition(message, 'gte', 'a', 'b', {}, {});
   });
 
-  it("validateCondition() gte should fail", () => {
+  it('validateCondition() gte should fail', () => {
     helper.shouldThrow(
-      () => validateCondition(message, "gte", "a", "b", 1, 2),
-      "Must be greater than or equal b."
+      () => validateCondition(message, 'gte', 'a', 'b', 1, 2),
+      'Must be greater than or equal b.'
     );
   });
 
-  it("validateCondition() lt should verify", () => {
-    validateCondition(message, "lt", "a", "b", 1, 2);
-    validateCondition(message, "lt", "a", "b", {}, {});
+  it('validateCondition() lt should verify', () => {
+    validateCondition(message, 'lt', 'a', 'b', 1, 2);
+    validateCondition(message, 'lt', 'a', 'b', {}, {});
   });
 
-  it("validateCondition() lt should fail", () => {
+  it('validateCondition() lt should fail', () => {
     helper.shouldThrow(
-      () => validateCondition(message, "lt", "a", "b", 2, 1),
-      "Must be less than b."
+      () => validateCondition(message, 'lt', 'a', 'b', 2, 1),
+      'Must be less than b.'
     );
   });
 
-  it("validateCondition() lte should verify", () => {
-    validateCondition(message, "lte", "a", "b", 1, 2);
-    validateCondition(message, "lte", "a", "b", {}, {});
+  it('validateCondition() lte should verify', () => {
+    validateCondition(message, 'lte', 'a', 'b', 1, 2);
+    validateCondition(message, 'lte', 'a', 'b', {}, {});
   });
 
-  it("validateCondition() lte should fail", () => {
+  it('validateCondition() lte should fail', () => {
     helper.shouldThrow(
-      () => validateCondition(message, "lte", "a", "b", 2, 1),
-      "Must be less than or equal b."
+      () => validateCondition(message, 'lte', 'a', 'b', 2, 1),
+      'Must be less than or equal b.'
     );
   });
 
-  it("validateCondition() equals should verify", () => {
-    validateCondition(message, "equals", "a", "b", 2, 2);
+  it('validateCondition() equals should verify', () => {
+    validateCondition(message, 'equals', 'a', 'b', 2, 2);
   });
 
-  it("validateCondition() equals should fail", () => {
+  it('validateCondition() equals should fail', () => {
     helper.shouldThrow(
-      () => validateCondition(message, "equals", "a", "b", 2, 1),
-      "Must equal b."
+      () => validateCondition(message, 'equals', 'a', 'b', 2, 1),
+      'Must equal b.'
     );
   });
 
-  it("validateCondition() notEquals should verify", () => {
-    validateCondition(message, "notEquals", "a", "b", 1, 2);
+  it('validateCondition() notEquals should verify', () => {
+    validateCondition(message, 'notEquals', 'a', 'b', 1, 2);
   });
 
-  it("validateCondition() notEquals should fail", () => {
+  it('validateCondition() notEquals should fail', () => {
     helper.shouldThrow(
-      () => validateCondition(message, "notEquals", "a", "b", 2, 2),
-      "Must not equal b."
+      () => validateCondition(message, 'notEquals', 'a', 'b', 2, 2),
+      'Must not equal b.'
     );
   });
 
-  it("validateCondition() xor should verify", () => {
-    validateCondition(message, "xor", "a", "b", 1, undefined);
+  it('validateCondition() xor should verify', () => {
+    validateCondition(message, 'xor', 'a', 'b', 1, undefined);
   });
 
-  it("validateCondition() xor should fail", () => {
+  it('validateCondition() xor should fail', () => {
     helper.shouldThrow(
-      () => validateCondition(message, "xor", "a", "b", 1, 2),
-      "Either a or b must be set."
+      () => validateCondition(message, 'xor', 'a', 'b', 1, 2),
+      'Either a or b must be set.'
     );
 
     helper.shouldThrow(
-      () => validateCondition(message, "xor", "a", "b", undefined, undefined),
-      "Either a or b must be set."
+      () => validateCondition(message, 'xor', 'a', 'b', undefined, undefined),
+      'Either a or b must be set.'
     );
   });
 
-  it("validateCondition() or should verify", () => {
-    validateCondition(message, "or", "a", "b", 1, undefined);
-    validateCondition(message, "or", "a", "b", undefined, 1);
+  it('validateCondition() or should verify', () => {
+    validateCondition(message, 'or', 'a', 'b', 1, undefined);
+    validateCondition(message, 'or', 'a', 'b', undefined, 1);
   });
 
-  it("validateCondition() or should fail", () => {
+  it('validateCondition() or should fail', () => {
     helper.shouldThrow(
-      () => validateCondition(message, "or", "a", "b", 1, 2),
-      "Either a or b can be set."
+      () => validateCondition(message, 'or', 'a', 'b', 1, 2),
+      'Either a or b can be set.'
     );
   });
 
-  it("validateCondition() dependsOn should verify", () => {
-    validateCondition(message, "dependsOn", "a", "b", 1, 2);
+  it('validateCondition() dependsOn should verify', () => {
+    validateCondition(message, 'dependsOn', 'a', 'b', 1, 2);
   });
 
-  it("validateCondition() dependsOn should fail", () => {
+  it('validateCondition() dependsOn should fail', () => {
     helper.shouldThrow(
-      () => validateCondition(message, "dependsOn", "a", "b", 1, undefined),
-      "Depends on b."
+      () => validateCondition(message, 'dependsOn', 'a', 'b', 1, undefined),
+      'Depends on b.'
     );
   });
 
-  it("validateObjectConditions() with no conditions should verify", () => {
+  it('validateObjectConditions() with no conditions should verify', () => {
     validateObjectConditions(message, {}, []);
   });
 
-  it("validateObjectConditions() with conditions should verify", () => {
+  it('validateObjectConditions() with conditions should verify', () => {
     validateObjectConditions(message, { a: 1, b: 2 }, [
       {
-        keyA: "a",
-        keyB: "b",
-        method: "lt"
+        keyA: 'a',
+        keyB: 'b',
+        method: 'lt'
       }
     ]);
   });
 
-  it("validateObjectConditions() with conditions should fail", () => {
+  it('validateObjectConditions() with conditions should fail', () => {
     helper.shouldThrow(
       () =>
         validateObjectConditions(message, { a: 3, b: 2 }, [
           {
-            keyA: "a",
-            keyB: "b",
-            method: "lt"
+            keyA: 'a',
+            keyB: 'b',
+            method: 'lt'
           }
         ]),
       {
-        a: "Must be less than b."
+        a: 'Must be less than b.'
       }
     );
   });
 
-  it("validateObjectConditions() with multiple failing conditions should fail", () => {
+  it('validateObjectConditions() with multiple failing conditions should fail', () => {
     helper.shouldThrow(
       () =>
         validateObjectConditions(message, { a: 3, b: 2 }, [
           {
-            keyA: "a",
-            keyB: "b",
-            method: "lt"
+            keyA: 'a',
+            keyB: 'b',
+            method: 'lt'
           },
           {
-            keyA: "a",
-            keyB: "b",
-            method: "xor"
+            keyA: 'a',
+            keyB: 'b',
+            method: 'xor'
           }
         ]),
       {
-        a: "Must be less than b. Either a or b must be set."
+        a: 'Must be less than b. Either a or b must be set.'
       }
     );
   });
 
-  it("validateObjectFunctionSync() without function should verify", () => {
+  it('validateObjectFunctionSync() without function should verify', () => {
     validateObjectFunctionSync({}, undefined);
   });
 
-  it("validateObjectFunctionSync() should verify", () => {
+  it('validateObjectFunctionSync() should verify', () => {
     const func = {
       fn: value => value,
-      keys: ["a"]
+      keys: ['a']
     };
     validateObjectFunctionSync({}, func);
   });
 
-  it("validateObjectFunctionSync() should fail", () => {
+  it('validateObjectFunctionSync() should fail', () => {
     const func = {
       fn: () => {
-        throw new Error("test");
+        throw new Error('test');
       },
-      keys: ["a", "b"]
+      keys: ['a', 'b']
     };
     helper.shouldThrow(() => validateObjectFunctionSync({}, func), {
-      "[a, b]": "test"
+      '[a, b]': 'test'
     });
   });
 
-  it("validateObjectFunctionAsync() without function should verify", async () => {
+  it('validateObjectFunctionAsync() without function should verify', async () => {
     await validateObjectFunctionAsync({}, undefined);
   });
 
-  it("validateObjectFunctionAsync() should verify", async () => {
+  it('validateObjectFunctionAsync() should verify', async () => {
     const func = {
       fn: value => value,
-      keys: ["a"]
+      keys: ['a']
     };
     await validateObjectFunctionAsync({}, func);
   });
 
-  it("validateObjectFunctionAsync() should fail", async () => {
+  it('validateObjectFunctionAsync() should fail', async () => {
     const func = {
       fn: () => {
-        throw new Error("test");
+        throw new Error('test');
       },
-      keys: ["a", "b"]
+      keys: ['a', 'b']
     };
     await helper.shouldEventuallyThrow(validateObjectFunctionAsync({}, func), {
-      "[a, b]": "test"
+      '[a, b]': 'test'
     });
   });
 
-  it("validateObjectFunctionAsync() with Async function should fail", async () => {
+  it('validateObjectFunctionAsync() with Async function should fail', async () => {
     const func = {
       fn: async () => {
-        throw new Error("test");
+        throw new Error('test');
       },
-      keys: ["a", "b"]
+      keys: ['a', 'b']
     };
     await helper.shouldEventuallyThrow(validateObjectFunctionAsync({}, func), {
-      "[a, b]": "test"
+      '[a, b]': 'test'
     });
   });
 
-  it("validateSync() should return given value", () => {
+  it('validateSync() should return given value', () => {
     const actual = validateSync({}, {});
     actual.should.deepEqual({});
   });
 
-  it("validate() should return given value", async () => {
+  it('validate() should return given value', async () => {
     const actual = await validate({}, {});
     actual.should.deepEqual({});
   });

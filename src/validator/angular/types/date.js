@@ -1,5 +1,5 @@
-const { DATE } = require("./../../default/types/date");
-const { validate, validateSync } = require("./../../default/validation/date");
+const { DATE } = require('./../../default/types/date');
+const { validate, validateSync } = require('./../../default/validation/date');
 
 class DATE_ANGULAR extends DATE {
   constructor(options, defaults) {
@@ -9,7 +9,7 @@ class DATE_ANGULAR extends DATE {
   validate() {
     return async formControl => {
       try {
-        const value = formControl.value === "" ? null : formControl.value;
+        const value = formControl.value === '' ? null : formControl.value;
         await validate(value, this.options({ validation: true }));
         return null;
       } catch (err) {
@@ -21,7 +21,7 @@ class DATE_ANGULAR extends DATE {
   validateSync() {
     return formControl => {
       try {
-        const value = formControl.value === "" ? null : formControl.value;
+        const value = formControl.value === '' ? null : formControl.value;
         validateSync(value, this.options({ validation: true }));
         return null;
       } catch (err) {

@@ -1,12 +1,12 @@
-const { isUndefined, isNotUndefined } = require("./../../../utils/lodash");
-const moment = require("moment");
+const { isUndefined, isNotUndefined } = require('./../../../utils/lodash');
+const moment = require('moment');
 const {
   validateFunctionSync,
   validateFunctionAsync,
   validateOnly,
   validateNot,
   validateRequired
-} = require("./any");
+} = require('./any');
 
 const validateDate = (
   value,
@@ -40,15 +40,15 @@ const validateDate = (
     : moment(value, format, strict);
 
   if (!date.isValid()) {
-    throw message.get("date_invalid", { format });
+    throw message.get('date_invalid', { format });
   }
 
   if (min && date.toISOString() < min) {
-    throw message.get("date_min", { min });
+    throw message.get('date_min', { min });
   }
 
   if (max && date.toISOString() > max) {
-    throw message.get("date_max", { max });
+    throw message.get('date_max', { max });
   }
 
   validateOnly(only, value, message);

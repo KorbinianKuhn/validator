@@ -1,77 +1,77 @@
-const { pickBy, isNotNil } = require("./lodash");
+const { pickBy, isNotNil } = require('./lodash');
 
 const RAML_TYPES = {
   any: {
-    rename: { only: "enum" },
-    whitelist: ["type", "description", "required", "default", "example", "enum"]
+    rename: { only: 'enum' },
+    whitelist: ['type', 'description', 'required', 'default', 'example', 'enum']
   },
   array: {
     rename: {
-      only: "enum",
-      unique: "uniqueItems",
-      min: "minItems",
-      max: "maxItems"
+      only: 'enum',
+      unique: 'uniqueItems',
+      min: 'minItems',
+      max: 'maxItems'
     },
     whitelist: [
-      "type",
-      "description",
-      "required",
-      "default",
-      "example",
-      "enum",
-      "items",
-      "uniqueItems",
-      "minItems",
-      "maxItems"
+      'type',
+      'description',
+      'required',
+      'default',
+      'example',
+      'enum',
+      'items',
+      'uniqueItems',
+      'minItems',
+      'maxItems'
     ]
   },
   boolean: {
-    rename: { only: "enum" },
-    whitelist: ["type", "description", "required", "default", "example", "enum"]
+    rename: { only: 'enum' },
+    whitelist: ['type', 'description', 'required', 'default', 'example', 'enum']
   },
   date: {
-    rename: { only: "enum" },
-    whitelist: ["type", "description", "required", "default", "example", "enum"]
+    rename: { only: 'enum' },
+    whitelist: ['type', 'description', 'required', 'default', 'example', 'enum']
   },
   number: {
-    rename: { only: "enum", min: "minimum", max: "maximum" },
+    rename: { only: 'enum', min: 'minimum', max: 'maximum' },
     whitelist: [
-      "type",
-      "description",
-      "required",
-      "default",
-      "example",
-      "enum",
-      "minimum",
-      "maximum"
+      'type',
+      'description',
+      'required',
+      'default',
+      'example',
+      'enum',
+      'minimum',
+      'maximum'
     ]
   },
   object: {
-    rename: { only: "enum", min: "minProperties", max: "maxProperties" },
+    rename: { only: 'enum', min: 'minProperties', max: 'maxProperties' },
     whitelist: [
-      "type",
-      "description",
-      "required",
-      "default",
-      "example",
-      "enum",
-      "minProperties",
-      "maxProperties",
-      "properties"
+      'type',
+      'description',
+      'required',
+      'default',
+      'example',
+      'enum',
+      'minProperties',
+      'maxProperties',
+      'properties'
     ]
   },
   string: {
-    rename: { only: "enum", min: "minLength", max: "maxLength" },
+    rename: { only: 'enum', min: 'minLength', max: 'maxLength' },
     whitelist: [
-      "type",
-      "description",
-      "required",
-      "default",
-      "example",
-      "enum",
-      "pattern",
-      "minLength",
-      "maxLength"
+      'type',
+      'description',
+      'required',
+      'default',
+      'example',
+      'enum',
+      'pattern',
+      'minLength',
+      'maxLength'
     ]
   }
 };
@@ -98,36 +98,36 @@ const convertToRamlType = (object, type) => {
 
 const toRAML = object => {
   switch (object.type) {
-    case "any":
+    case 'any':
       return convertToRamlType(object, RAML_TYPES.any);
-    case "array":
+    case 'array':
       return convertToRamlType(object, RAML_TYPES.array);
-    case "boolean":
+    case 'boolean':
       return convertToRamlType(object, RAML_TYPES.boolean);
-    case "date":
-      object.type = "datetime";
+    case 'date':
+      object.type = 'datetime';
       return convertToRamlType(object, RAML_TYPES.date);
-    case "number":
+    case 'number':
       if (object.integer) {
-        object.type = "integer";
+        object.type = 'integer';
       }
       return convertToRamlType(object, RAML_TYPES.number);
-    case "object":
+    case 'object':
       return convertToRamlType(object, RAML_TYPES.object);
-    case "string":
+    case 'string':
       return convertToRamlType(object, RAML_TYPES.string);
-    case "request":
+    case 'request':
       return removeUndefined({
         description: object.description,
         uriParameters: object.params ? object.params.properties : undefined,
         queryParameters: object.query ? object.query.properties : undefined,
-        body: object.body ? { "application/json": object.body } : undefined
+        body: object.body ? { 'application/json': object.body } : undefined
       });
-    case "response": {
+    case 'response': {
       return {
         [object.status]: removeUndefined({
           description: object.description,
-          body: object.body ? { "application/json": object.body } : undefined
+          body: object.body ? { 'application/json': object.body } : undefined
         })
       };
     }
@@ -140,7 +140,7 @@ exports.toObject = (object, options = {}) => {
   const values = removeUndefined(object);
 
   switch (options.type) {
-    case "raml": {
+    case 'raml': {
       return toRAML(values);
     }
     default:

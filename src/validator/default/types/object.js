@@ -3,17 +3,17 @@ const {
   isPlainObject,
   isFunction,
   removeUndefinedProperties
-} = require("./../../../utils/lodash");
-const { ANY } = require("./any");
-const { validate, validateSync } = require("./../validation/object");
-const { toObject } = require("./../../../utils/to-object");
+} = require('./../../../utils/lodash');
+const { ANY } = require('./any');
+const { validate, validateSync } = require('./../validation/object');
+const { toObject } = require('./../../../utils/to-object');
 
 class OBJECT extends ANY {
   constructor(object = {}, options, defaults) {
     super(options, defaults);
 
     if (!isPlainObject(object)) {
-      throw this._message.error("object_invalid_type");
+      throw this._message.error('object_invalid_type');
     }
 
     this._object = object;
@@ -56,7 +56,7 @@ class OBJECT extends ANY {
     } else {
       return removeUndefinedProperties(
         Object.assign(settings, {
-          type: "object",
+          type: 'object',
           description: this._description,
           example: this.example(),
           default: this._default
@@ -96,53 +96,53 @@ class OBJECT extends ANY {
   }
 
   gt(a, b) {
-    this._conditions.push({ keyA: a, keyB: b, method: "gt" });
+    this._conditions.push({ keyA: a, keyB: b, method: 'gt' });
     return this;
   }
 
   gte(a, b) {
-    this._conditions.push({ keyA: a, keyB: b, method: "gte" });
+    this._conditions.push({ keyA: a, keyB: b, method: 'gte' });
     return this;
   }
 
   lt(a, b) {
-    this._conditions.push({ keyA: a, keyB: b, method: "lt" });
+    this._conditions.push({ keyA: a, keyB: b, method: 'lt' });
     return this;
   }
 
   lte(a, b) {
-    this._conditions.push({ keyA: a, keyB: b, method: "lte" });
+    this._conditions.push({ keyA: a, keyB: b, method: 'lte' });
     return this;
   }
 
   equals(a, b) {
-    this._conditions.push({ keyA: a, keyB: b, method: "equals" });
+    this._conditions.push({ keyA: a, keyB: b, method: 'equals' });
     return this;
   }
 
   notEquals(a, b) {
-    this._conditions.push({ keyA: a, keyB: b, method: "notEquals" });
+    this._conditions.push({ keyA: a, keyB: b, method: 'notEquals' });
     return this;
   }
 
   dependsOn(a, b) {
-    this._conditions.push({ keyA: a, keyB: b, method: "dependsOn" });
+    this._conditions.push({ keyA: a, keyB: b, method: 'dependsOn' });
     return this;
   }
 
   xor(a, b) {
-    this._conditions.push({ keyA: a, keyB: b, method: "xor" });
+    this._conditions.push({ keyA: a, keyB: b, method: 'xor' });
     return this;
   }
 
   or(a, b) {
-    this._conditions.push({ keyA: a, keyB: b, method: "or" });
+    this._conditions.push({ keyA: a, keyB: b, method: 'or' });
     return this;
   }
 
   func(fn, ...keys) {
     if (!isFunction(fn)) {
-      throw this._message.error("invalid_function");
+      throw this._message.error('invalid_function');
     }
 
     this._func = {

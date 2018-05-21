@@ -3,27 +3,27 @@ const {
   defaultToAny,
   isPlainObject,
   removeUndefinedProperties
-} = require("./../../../utils/lodash");
-const { ObjectFactory } = require("./../../default/types/object");
-const { URI_OPTIONS, QUERY_OPTIONS, BODY_OPTIONS } = require("./../options");
-const { toObject } = require("./../../../utils/to-object");
+} = require('./../../../utils/lodash');
+const { ObjectFactory } = require('./../../default/types/object');
+const { URI_OPTIONS, QUERY_OPTIONS, BODY_OPTIONS } = require('./../options');
+const { toObject } = require('./../../../utils/to-object');
 const {
   validateRequest,
   validateRequestSync
-} = require("./../validation/request");
-const { Message } = require("./../../../utils/message");
+} = require('./../validation/request');
+const { Message } = require('./../../../utils/message');
 
 const toSchema = (schema, options, defaults, message, allowArray = false) => {
-  if (!hasIn(schema, "constructor.name")) {
-    throw message.error("invalid_schema", {});
+  if (!hasIn(schema, 'constructor.name')) {
+    throw message.error('invalid_schema', {});
   }
 
   switch (schema.constructor.name) {
-    case "OBJECT":
+    case 'OBJECT':
       break;
-    case "ARRAY": {
+    case 'ARRAY': {
       if (!allowArray) {
-        throw message.error("invalid_schema", {});
+        throw message.error('invalid_schema', {});
       }
       break;
     }
@@ -31,7 +31,7 @@ const toSchema = (schema, options, defaults, message, allowArray = false) => {
       if (isPlainObject(schema)) {
         schema = ObjectFactory(schema, options, defaults);
       } else {
-        throw message.error("express_object_or_array_schema", {});
+        throw message.error('express_object_or_array_schema', {});
       }
     }
   }
@@ -46,7 +46,7 @@ class REQUEST {
     this._message = defaultToAny(
       options.message,
       defaults.message,
-      Message("en")
+      Message('en')
     );
     this._unknown = defaultToAny(
       options.unknownObjectKeys,
@@ -72,7 +72,7 @@ class REQUEST {
     } else {
       return removeUndefinedProperties(
         Object.assign(settings, {
-          type: "request",
+          type: 'request',
           description: this._description
         })
       );

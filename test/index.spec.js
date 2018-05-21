@@ -1,23 +1,23 @@
-const lib = require("./../index");
+const lib = require('./../index');
 
-describe("Library", () => {
-  it("should return default validator", () => {
-    lib.Validator().constructor.name.should.equal("Validator");
+describe('Library', () => {
+  it('should return default validator', () => {
+    lib.Validator().constructor.name.should.equal('Validator');
   });
 
-  it("should return angular validator", () => {
-    lib.AngularValidator().constructor.name.should.equal("AngularValidator");
+  it('should return angular validator', () => {
+    lib.AngularValidator().constructor.name.should.equal('AngularValidator');
   });
 
-  it("should return express validator", () => {
-    lib.ExpressValidator().constructor.name.should.equal("ExpressValidator");
+  it('should return express validator', () => {
+    lib.ExpressValidator().constructor.name.should.equal('ExpressValidator');
   });
 
-  it("should return mongoose validator", () => {
-    lib.MongooseValidator().constructor.name.should.equal("MongooseValidator");
+  it('should return mongoose validator', () => {
+    lib.MongooseValidator().constructor.name.should.equal('MongooseValidator');
   });
 
-  it("should return validation error", () => {
-    new lib.ValidationError().constructor.name.should.equal("ValidationError");
+  it('should return validation error', () => {
+    new lib.ValidationError().constructor.name.should.equal('ValidationError');
   });
 });

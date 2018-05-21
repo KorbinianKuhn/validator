@@ -1,25 +1,25 @@
 const {
   BooleanFactory
-} = require("./../../../../src/validator/default/types/boolean");
-const { Message } = require("./../../../../src/utils/message");
-const helper = require("./../../../helper");
+} = require('./../../../../src/validator/default/types/boolean');
+const { Message } = require('./../../../../src/utils/message');
+const helper = require('./../../../helper');
 
-describe("validator/default/types/boolean", () => {
-  const message = Message("en");
+describe('validator/default/types/boolean', () => {
+  const message = Message('en');
 
-  it("BooleanFactory() should return BOOLEAN object", () => {
-    BooleanFactory().constructor.name.should.equal("BOOLEAN");
+  it('BooleanFactory() should return BOOLEAN object', () => {
+    BooleanFactory().constructor.name.should.equal('BOOLEAN');
   });
 
-  it("options() should return options", () => {
+  it('options() should return options', () => {
     const func = () => {};
     const defaultValue = true;
     const allowed = [null];
-    const not = ["not"];
-    const only = ["only"];
+    const not = ['not'];
+    const only = ['only'];
     const parse = false;
-    const description = "description";
-    const example = "example";
+    const description = 'description';
+    const example = 'example';
 
     const schema = BooleanFactory()
       .description(description)
@@ -45,7 +45,7 @@ describe("validator/default/types/boolean", () => {
     });
 
     schema.options().should.deepEqual({
-      type: "boolean",
+      type: 'boolean',
       description,
       example,
       default: defaultValue,
@@ -57,9 +57,9 @@ describe("validator/default/types/boolean", () => {
     });
   });
 
-  it("toObject() should return object", () => {
-    const description = "description";
-    const example = "example";
+  it('toObject() should return object', () => {
+    const description = 'description';
+    const example = 'example';
 
     const schema = BooleanFactory()
       .description(description)
@@ -67,7 +67,7 @@ describe("validator/default/types/boolean", () => {
       .required();
 
     schema.toObject().should.deepEqual({
-      type: "boolean",
+      type: 'boolean',
       description,
       example,
       required: true,
@@ -75,23 +75,23 @@ describe("validator/default/types/boolean", () => {
     });
   });
 
-  it("validateSync() should verify", () => {
+  it('validateSync() should verify', () => {
     BooleanFactory()
       .validateSync(true)
       .should.equal(true);
   });
 
-  it("validateSync() should fail", () => {
+  it('validateSync() should fail', () => {
     helper.shouldThrow(
       () =>
         BooleanFactory()
           .required()
           .validateSync(undefined),
-      "Required but is undefined."
+      'Required but is undefined.'
     );
   });
 
-  it("validateAsync() should verify", async () => {
+  it('validateAsync() should verify', async () => {
     await BooleanFactory()
       .validate(false)
       .then(value => {
@@ -99,12 +99,12 @@ describe("validator/default/types/boolean", () => {
       });
   });
 
-  it("validateAsync() should fail", async () => {
+  it('validateAsync() should fail', async () => {
     await helper.shouldEventuallyThrow(
       BooleanFactory()
         .required()
         .validate(undefined),
-      "Required but is undefined."
+      'Required but is undefined.'
     );
   });
 });

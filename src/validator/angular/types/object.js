@@ -1,5 +1,5 @@
-const { OBJECT } = require("./../../default/types/object");
-const { validate, validateSync } = require("./../../default/validation/object");
+const { OBJECT } = require('./../../default/types/object');
+const { validate, validateSync } = require('./../../default/validation/object');
 
 class OBJECT_ANGULAR extends OBJECT {
   constructor(schema, options, defaults) {
@@ -9,7 +9,7 @@ class OBJECT_ANGULAR extends OBJECT {
   validate() {
     return async formControl => {
       try {
-        const value = formControl.value === "" ? null : formControl.value;
+        const value = formControl.value === '' ? null : formControl.value;
         await validate(value, this.options({ validation: true }));
         return null;
       } catch (err) {
@@ -21,7 +21,7 @@ class OBJECT_ANGULAR extends OBJECT {
   validateSync() {
     return formControl => {
       try {
-        const value = formControl.value === "" ? null : formControl.value;
+        const value = formControl.value === '' ? null : formControl.value;
         validateSync(value, this.options({ validation: true }));
         return null;
       } catch (err) {
