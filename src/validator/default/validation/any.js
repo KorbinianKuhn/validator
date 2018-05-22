@@ -1,7 +1,7 @@
 const {
   isUndefined,
   isNotUndefined,
-  defaultTo
+  defaultToAny
 } = require('./../../../utils/lodash');
 const { getErrorMessage } = require('./../../../utils/error');
 
@@ -33,7 +33,7 @@ const validateAny = (
 const validateFunctionSync = (func, value) => {
   if (func) {
     try {
-      return defaultTo(func(value), value);
+      return defaultToAny(func(value), value);
     } catch (err) {
       throw getErrorMessage(err);
     }
@@ -47,7 +47,7 @@ const validateFunctionAsync = async (func, value) => {
     const result = await Promise.resolve(func(value)).catch(err => {
       throw getErrorMessage(err);
     });
-    return defaultTo(result, value);
+    return defaultToAny(result, value);
   } else {
     return value;
   }

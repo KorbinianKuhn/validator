@@ -74,7 +74,7 @@ describe('validator/default/validation/date', () => {
       .should.equal(validISOString);
   });
 
-  it('validateDate() should parse to utc date', () => {
+  it.only('validateDate() should parse to utc date', () => {
     let actual = validateDate(validISOString, {
       message,
       required: true,

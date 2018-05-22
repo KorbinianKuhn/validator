@@ -1,5 +1,5 @@
 const { isUndefined, isNotUndefined } = require('./../../../utils/lodash');
-const moment = require('moment');
+const { toDate, isValidDate } = require('./../../../utils/date');
 const {
   validateFunctionSync,
   validateFunctionAsync,
@@ -17,7 +17,6 @@ const validateDate = (
     parse,
     utc,
     format,
-    strict,
     min,
     max,
     only,
@@ -39,11 +38,11 @@ const validateDate = (
     return value;
   }
 
-  const date = utc
-    ? moment.utc(value, format, strict)
-    : moment(value, format, strict);
+  console.log('here');
+  const date = toDate(value, utc);
+  console.log(date);
 
-  if (!date.isValid()) {
+  if (!isValidDate(date)) {
     throw message.get('date_invalid', { format });
   }
 
@@ -59,7 +58,7 @@ const validateDate = (
   validateNot(not, value, message);
 
   if (parse) {
-    value = date.toDate();
+    value = date;
   }
 
   return value;

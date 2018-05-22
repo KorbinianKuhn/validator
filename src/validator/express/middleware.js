@@ -1,10 +1,10 @@
-const { defaultTo } = require('./../../utils/lodash');
+const { defaultToAny } = require('./../../utils/lodash');
 
 const { MIDDLEWARE_OPTIONS } = require('./options');
 
 module.exports = (message, options = {}) => {
-  const details = defaultTo(options.details, MIDDLEWARE_OPTIONS.details);
-  const nextError = defaultTo(options.next, MIDDLEWARE_OPTIONS.next);
+  const details = defaultToAny(options.details, MIDDLEWARE_OPTIONS.details);
+  const nextError = defaultToAny(options.next, MIDDLEWARE_OPTIONS.next);
 
   return (err, req, res, next) => {
     if (err.name === 'ValidationError' && err.type === 'validator') {

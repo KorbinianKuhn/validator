@@ -1,30 +1,41 @@
-const defaultTo = require('lodash/defaultTo');
-const isString = require('lodash/isString');
-const isBoolean = require('lodash/isBoolean');
 const isInteger = require('lodash/isInteger');
 const isPlainObject = require('lodash/isPlainObject');
-const isArray = require('lodash/isArray');
-const isFunction = require('lodash/isFunction');
 const get = require('lodash/get');
 const set = require('lodash/set');
 const has = require('lodash/has');
 const hasIn = require('lodash/hasIn');
-const isNumber = require('lodash/isNumber');
 const cloneDeep = require('lodash/cloneDeep');
-const pickBy = require('lodash/pickBy');
 const uniqWith = require('lodash/uniqWith');
 const isEqual = require('lodash/isEqual');
-const isRegExp = require('lodash/isRegExp');
-const isUndefined = require('lodash/isUndefined');
+
 const isObject = require('lodash/isObject');
 
 const isAsyncFunction = func => func.constructor.name === 'AsyncFunction';
 
 const isNotNil = value => value != null;
 
+const isUndefined = value => value === undefined;
+
 const isNotUndefined = value => !isUndefined(value);
 
 const keys = Object.keys;
+
+const isString = value =>
+  Object.prototype.toString.call(value) === '[object String]';
+
+const isBoolean = value =>
+  Object.prototype.toString.call(value) === '[object Boolean]';
+
+const isNumber = value =>
+  Object.prototype.toString.call(value) === '[object Number]';
+
+const isFunction = value =>
+  Object.prototype.toString.call(value) === '[object Function]';
+
+const isRegExp = value =>
+  Object.prototype.toString.call(value) === '[object RegExp]';
+
+const isArray = value => Array.isArray(value);
 
 const defaultToAny = (...values) => {
   for (const value of values) {
@@ -33,11 +44,19 @@ const defaultToAny = (...values) => {
   return undefined;
 };
 
-const removeUndefinedProperties = object =>
-  pickBy(object, v => v !== undefined);
+const removeUndefinedProperties = object => {
+  Object.keys(object).forEach(
+    key => object[key] === undefined && delete object[key]
+  );
+  return object;
+};
+
+const removeNilProperties = object => {
+  Object.keys(object).forEach(key => object[key] == null && delete object[key]);
+  return object;
+};
 
 module.exports = {
-  defaultTo,
   defaultToAny,
   isString,
   isBoolean,
@@ -52,7 +71,6 @@ module.exports = {
   hasIn,
   isNumber,
   cloneDeep,
-  pickBy,
   isAsyncFunction,
   isNotNil,
   uniqWith,
@@ -61,5 +79,6 @@ module.exports = {
   isUndefined,
   isNotUndefined,
   removeUndefinedProperties,
-  isObject
+  isObject,
+  removeNilProperties
 };
