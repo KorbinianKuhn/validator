@@ -12,7 +12,10 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         options: {
-          plugins: ['lodash'],
+          plugins: [
+            'lodash',
+            ['transform-object-rest-spread', { useBuiltIns: true }]
+          ],
           presets: [['env', { modules: false, targets: { node: 6 } }]]
         }
       }
