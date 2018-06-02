@@ -16,7 +16,7 @@ module.exports = {
             'lodash',
             ['transform-object-rest-spread', { useBuiltIns: true }]
           ],
-          presets: [['env', { modules: false, targets: { node: 6 } }]]
+          presets: [['env', { modules: false, targets: { node: 8 } }]]
         }
       }
     ]

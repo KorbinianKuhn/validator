@@ -1,10 +1,8 @@
 const {
-  DateFactory,
-  toMoment
+  DateFactory
 } = require('./../../../../src/validator/default/types/date');
 const { Message } = require('./../../../../src/utils/message');
 const helper = require('./../../../helper');
-const moment = require('moment');
 
 describe('validator/default/types/date', () => {
   const message = Message('en');
@@ -137,29 +135,6 @@ describe('validator/default/types/date', () => {
         .required()
         .validate(undefined),
       'Required but is undefined.'
-    );
-  });
-
-  it('toMoment() should return date', () => {
-    const date = '2018-01-01T00:00:00.000Z';
-    const actual = toMoment(message, date);
-    const expected = moment(date);
-    actual.should.deepEqual(expected);
-  });
-
-  it('toMoment() should return date', () => {
-    const date = '2018-01-01T00:00:00.000Z';
-    const actual = toMoment(message, date, true);
-    const expected = moment.utc(date);
-    actual.should.deepEqual(expected);
-  });
-
-  it('toMoment() should fail', () => {
-    const date = '2018';
-    const format = 'YYYY-MM-DD';
-    helper.shouldThrow(
-      () => toMoment(message, date, false, format, true),
-      'Validator configuration error: Must be a valid date with the format YYYY-MM-DD.'
     );
   });
 });

@@ -1,4 +1,4 @@
-const { pickBy, isNotNil } = require('./lodash');
+const { removeNilProperties } = require('./lodash');
 
 const RAML_TYPES = {
   any: {
@@ -76,8 +76,6 @@ const RAML_TYPES = {
   }
 };
 
-const removeUndefined = object => pickBy(object, isNotNil);
-
 const convertToRamlType = (object, type) => {
   for (const src in type.rename) {
     if (src in object) {
@@ -117,7 +115,7 @@ const toRAML = object => {
     case 'string':
       return convertToRamlType(object, RAML_TYPES.string);
     case 'request':
-      return removeUndefined({
+      return removeNilProperties({
         description: object.description,
         uriParameters: object.params ? object.params.properties : undefined,
         queryParameters: object.query ? object.query.properties : undefined,
@@ -125,7 +123,7 @@ const toRAML = object => {
       });
     case 'response': {
       return {
-        [object.status]: removeUndefined({
+        [object.status]: removeNilProperties({
           description: object.description,
           body: object.body ? { 'application/json': object.body } : undefined
         })
@@ -137,7 +135,7 @@ const toRAML = object => {
 };
 
 exports.toObject = (object, options = {}) => {
-  const values = removeUndefined(object);
+  const values = removeNilProperties(object);
 
   switch (options.type) {
     case 'raml': {

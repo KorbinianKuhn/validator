@@ -1,4 +1,4 @@
-const { defaultTo, cloneDeep, hasIn } = require('./../../utils/lodash');
+const { defaultToAny, cloneDeep, hasIn } = require('./../../utils/lodash');
 const { ValidationError } = require('./../../utils/error');
 const { Message } = require('./../../utils/message');
 const { VALIDATOR_OPTIONS } = require('./options');
@@ -17,7 +17,7 @@ class Validator {
     this._options = { ...VALIDATOR_OPTIONS, ...options };
     this._customs = {};
     this._types = TYPES;
-    this._message = Message(defaultTo(this._options.locale, 'en'));
+    this._message = Message(defaultToAny(this._options.locale, 'en'));
     this._options.message = this._message;
   }
 

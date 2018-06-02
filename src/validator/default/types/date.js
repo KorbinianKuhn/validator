@@ -4,20 +4,7 @@ const {
 } = require('./../../../utils/lodash');
 const { ANY } = require('./any');
 const { validate, validateSync } = require('./../validation/date');
-const moment = require('moment');
-
-const toMoment = (message, date, utc, format, strict) => {
-  const momentDate = utc
-    ? moment.utc(date, format, strict)
-    : moment(date, format, strict);
-
-  if (momentDate.isValid()) {
-    return momentDate;
-  } else {
-    throw message.error('date_invalid', { format });
-  }
-};
-exports.toMoment = toMoment;
+const { toMomentDate } = require('./../../../utils/date');
 
 class DATE extends ANY {
   constructor(options, defaults) {
@@ -91,10 +78,10 @@ class DATE extends ANY {
     return this;
   }
 
-  min(date) {
-    this._min = toMoment(
+  min(value) {
+    this._min = toMomentDate(
       this._message,
-      date,
+      value,
       this._utc,
       this._format,
       this._strict
@@ -102,10 +89,10 @@ class DATE extends ANY {
     return this;
   }
 
-  max(date) {
-    this._max = toMoment(
+  max(value) {
+    this._max = toMomentDate(
       this._message,
-      date,
+      value,
       this._utc,
       this._format,
       this._strict
