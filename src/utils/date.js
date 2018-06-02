@@ -1,13 +1,14 @@
-exports.toDate = (value, utc) => {
-  console.log(value);
-  console.log(new Date(value));
-  if (utc) {
-    return new Date(Date.UTC(value));
+const moment = require('moment');
+
+const toMomentDate = (message, value, utc, format, strict) => {
+  const momentDate = utc
+    ? moment.utc(value, format, strict)
+    : moment(value, format, strict);
+
+  if (momentDate.isValid()) {
+    return momentDate;
   } else {
-    return new Date(value);
+    throw message.get('date_invalid', { format });
   }
 };
-
-exports.isValidDate = date => {
-  return !isNaN(date.getTime());
-};
+exports.toMomentDate = toMomentDate;
