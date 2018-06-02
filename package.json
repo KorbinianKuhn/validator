@@ -1,6 +1,6 @@
 {
   "name": "@korbiniankuhn/validator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Validate object schemas for js, expressjs, angular and mongoose.",
   "main": "index.js",
   "scripts": {
