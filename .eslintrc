@@ -16,7 +16,8 @@
   "parser": "babel-eslint",
   "plugins": ["prettier"],
   "env": {
-    "mocha": true,
-    "node": true
+    "jest": true,
+    "node": true,
+    "es6": true
   }
 }

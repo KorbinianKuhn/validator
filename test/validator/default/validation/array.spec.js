@@ -10,38 +10,37 @@ const helper = require('./../../../helper');
 const {
   StringFactory
 } = require('./../../../../src/validator/default/types/string');
-const should = require('should');
 
 describe('validator/default/validation/array', () => {
   const message = Message('en');
 
-  it('validateArray() should return given value', () => {
+  test('validateArray() should return given value', () => {
     const actual = validateArray([], { message, required: true });
-    actual.should.deepEqual([]);
+    expect(actual).toEqual([]);
   });
 
-  it('validateArray() should return defaultValue', () => {
+  test('validateArray() should return defaultValue', () => {
     const actual = validateArray(undefined, {
       message,
       required: true,
       defaultValue: []
     });
-    actual.should.deepEqual([]);
+    expect(actual).toEqual([]);
   });
 
-  it('validateArray() with undefined should verify', () => {
+  test('validateArray() with undefined should verify', () => {
     const actual = validateArray(undefined, {});
-    should.equal(actual, undefined);
+    expect(actual).toBe(undefined);
   });
 
-  it('validateArray() with null should verify', () => {
+  test('validateArray() with null should verify', () => {
     const actual = validateArray(null, {
       allowed: [null]
     });
-    should.equal(actual, null);
+    expect(actual).toBe(null);
   });
 
-  it('validateArray() with undefined should throw', () => {
+  test('validateArray() with undefined should throw', () => {
     helper.shouldThrow(
       () =>
         validateArray(undefined, {
@@ -53,142 +52,142 @@ describe('validator/default/validation/array', () => {
     );
   });
 
-  it('validateArray() should throw', () => {
+  test('validateArray() should throw', () => {
     helper.shouldThrow(
       () => validateArray('wrong', { message, required: true }),
       'Must be type array but is string.'
     );
   });
 
-  it('validateArray() should parse to array', () => {
+  test('validateArray() should parse to array', () => {
     const actual = validateArray('true,false', {
       message,
       required: true,
       parse: true
     });
-    actual.should.deepEqual(['true', 'false']);
+    expect(actual).toEqual(['true', 'false']);
   });
 
-  it('validateArray() should try parse to array but fail', () => {
+  test('validateArray() should try parse to array but fail', () => {
     helper.shouldThrow(
       () => validateArray(2, { message, required: true, parse: true }),
       'Must be type array but is number.'
     );
   });
 
-  it('validateArray() empty array should fail', () => {
+  test('validateArray() empty array should fail', () => {
     helper.shouldThrow(
       () => validateArray([], { message, empty: false }),
       'Array is empty.'
     );
   });
 
-  it('validateArray() empty array should verify', () => {
+  test('validateArray() empty array should verify', () => {
     const actual = validateArray([], {
       empty: true
     });
-    actual.should.deepEqual([]);
+    expect(actual).toEqual([]);
   });
 
-  it('validateArray() min length should fail', () => {
+  test('validateArray() min length should fail', () => {
     helper.shouldThrow(
       () => validateArray([], { message, min: 1 }),
       'Must have at least 1 items.'
     );
   });
 
-  it('validateArray() min length should verify', () => {
+  test('validateArray() min length should verify', () => {
     const actual = validateArray(['test'], {
       min: 1
     });
-    actual.should.deepEqual(['test']);
+    expect(actual).toEqual(['test']);
   });
 
-  it('validateArray() max length should fail', () => {
+  test('validateArray() max length should fail', () => {
     helper.shouldThrow(
       () => validateArray(['test', 'test'], { message, max: 1 }),
       'Must have at most 1 items.'
     );
   });
 
-  it('validateArray() max length should verify', () => {
+  test('validateArray() max length should verify', () => {
     const actual = validateArray(['test'], {
       max: 1
     });
-    actual.should.deepEqual(['test']);
+    expect(actual).toEqual(['test']);
   });
 
-  it('validateArray() length should fail', () => {
+  test('validateArray() length should fail', () => {
     helper.shouldThrow(
       () => validateArray(['test', 'test'], { message, length: 1 }),
       'Must have exactly 1 items.'
     );
   });
 
-  it('validateArray() length should verify', () => {
+  test('validateArray() length should verify', () => {
     const actual = validateArray(['test'], {
       length: 1
     });
-    actual.should.deepEqual(['test']);
+    expect(actual).toEqual(['test']);
   });
 
-  it('validateArray() duplicate items should fail', () => {
+  test('validateArray() duplicate items should fail', () => {
     helper.shouldThrow(
       () => validateArray(['test', 'test'], { message, unique: true }),
       'Items must be unique.'
     );
   });
 
-  it('validateArray() duplicate items should verify', () => {
+  test('validateArray() duplicate items should verify', () => {
     const actual = validateArray(['test', 'test'], {
       unique: false
     });
-    actual.should.deepEqual(['test', 'test']);
+    expect(actual).toEqual(['test', 'test']);
   });
 
-  it('validateItemsSync() should verify', () => {
+  test('validateItemsSync() should verify', () => {
     const itemSchema = StringFactory({}, { message });
     const actual = validateItemsSync(['test'], itemSchema);
-    actual.should.deepEqual(['test']);
+    expect(actual).toEqual(['test']);
   });
 
-  it('validateItemsSync() should fail', () => {
+  test('validateItemsSync() should fail', () => {
     const itemSchema = StringFactory({}, { message });
     helper.shouldThrow(() => validateItemsSync([true], itemSchema), {
       '0': 'Must be type string but is boolean.'
     });
   });
 
-  it('validateItemsSync() without itemSchema should verify', () => {
+  test('validateItemsSync() without itemSchema should verify', () => {
     const actual = validateItemsSync(['test']);
-    actual.should.deepEqual(['test']);
+    expect(actual).toEqual(['test']);
   });
 
-  it('validateItemsAsync() should verify', async () => {
+  test('validateItemsAsync() should verify', async () => {
     const itemSchema = StringFactory({}, { message });
     const actual = await validateItemsAsync(['test'], itemSchema);
-    actual.should.deepEqual(['test']);
+    expect(actual).toEqual(['test']);
   });
 
-  it('validateItemsAsync() should fail', async () => {
+  test('validateItemsAsync() should fail', async () => {
     const itemSchema = StringFactory({}, { message });
     await helper.shouldEventuallyThrow(validateItemsAsync([true], itemSchema), {
       '0': 'Must be type string but is boolean.'
     });
   });
 
-  it('validateItemsAsync() without itemSchema should verify', async () => {
+  test('validateItemsAsync() without itemSchema should verify', async () => {
     const actual = await validateItemsAsync(['test']);
-    actual.should.deepEqual(['test']);
+    expect(actual).toEqual(['test']);
   });
 
-  it('validateSync() should return given value', () => {
+  test('validateSync() should return given value', () => {
     const actual = validateSync([], {});
-    actual.should.deepEqual([]);
+    expect(actual).toEqual([]);
   });
 
-  it('validate() should return given value', async () => {
+  test('validate() should return given value', async () => {
     const actual = await validate([], {});
-    actual.should.deepEqual([]);
+    expect(actual).toEqual([]);
   });
 });

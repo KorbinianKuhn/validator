@@ -5,38 +5,37 @@ const {
 } = require('./../../../../src/validator/default/validation/number');
 const { Message } = require('./../../../../src/utils/message');
 const helper = require('./../../../helper');
-const should = require('should');
 
 describe('validator/default/validation/number', () => {
   const message = Message('en');
 
-  it('validateNumber() should return given value', () => {
+  test('validateNumber() should return given value', () => {
     const actual = validateNumber(2.4, { message, required: true });
-    actual.should.equal(2.4);
+    expect(actual).toBe(2.4);
   });
 
-  it('validateNumber() should return defaultValue', () => {
+  test('validateNumber() should return defaultValue', () => {
     const actual = validateNumber(undefined, {
       message,
       required: true,
       defaultValue: 2
     });
-    actual.should.equal(2);
+    expect(actual).toBe(2);
   });
 
-  it('validateNumber() with undefined should verify', () => {
+  test('validateNumber() with undefined should verify', () => {
     const actual = validateNumber(undefined, {});
-    should.equal(actual, undefined);
+    expect(actual).toBe(undefined);
   });
 
-  it('validateNumber() with null should verify', () => {
+  test('validateNumber() with null should verify', () => {
     const actual = validateNumber(null, {
       allowed: [null]
     });
-    should.equal(actual, null);
+    expect(actual).toBe(null);
   });
 
-  it('validateNumber() with undefined should throw', () => {
+  test('validateNumber() with undefined should throw', () => {
     helper.shouldThrow(
       () =>
         validateNumber(undefined, {
@@ -48,33 +47,33 @@ describe('validator/default/validation/number', () => {
     );
   });
 
-  it('validateNumber() should throw', () => {
+  test('validateNumber() should throw', () => {
     helper.shouldThrow(
       () => validateNumber('wrong', { message, required: true }),
       'Must be a number.'
     );
   });
 
-  it('validateNumber() should parse to number', () => {
+  test('validateNumber() should parse to number', () => {
     let actual = validateNumber('2.2', {
       message,
       required: true,
       parse: true
     });
-    actual.should.equal(2.2);
+    expect(actual).toBe(2.2);
   });
 
-  it('validateNumber() should parse to integer', () => {
+  test('validateNumber() should parse to integer', () => {
     let actual = validateNumber('2', {
       message,
       required: true,
       parse: true,
       integer: true
     });
-    actual.should.equal(2);
+    expect(actual).toBe(2);
   });
 
-  it('validateNumber() should not parse to integer', () => {
+  test('validateNumber() should not parse to integer', () => {
     helper.shouldThrow(
       () =>
         validateNumber('2.2', {
@@ -87,28 +86,28 @@ describe('validator/default/validation/number', () => {
     );
   });
 
-  it('validateNumber() should try parse to number but fail', () => {
+  test('validateNumber() should try parse to number but fail', () => {
     helper.shouldThrow(
       () => validateNumber('wrong', { message, required: true, parse: true }),
       'Must be a number.'
     );
   });
 
-  it('validateNumber() number for integer should fail', () => {
+  test('validateNumber() number for integer should fail', () => {
     helper.shouldThrow(
       () => validateNumber(2.2, { message, required: true, integer: true }),
       'No decimal places allowed.'
     );
   });
 
-  it('validateNumber() string for integer should fail', () => {
+  test('validateNumber() string for integer should fail', () => {
     helper.shouldThrow(
       () => validateNumber('2.2', { message, required: true, integer: true }),
       'Must be an integer.'
     );
   });
 
-  it('validateNumber() min should fail', () => {
+  test('validateNumber() min should fail', () => {
     helper.shouldThrow(
       () => validateNumber(1.2, { message, min: 2 }),
       'Must be at minimum 2.'
@@ -120,15 +119,15 @@ describe('validator/default/validation/number', () => {
     );
   });
 
-  it('validateNumber() min should verify', () => {
+  test('validateNumber() min should verify', () => {
     let actual = validateNumber(2.2, { message, min: 2 });
-    actual.should.equal(2.2);
+    expect(actual).toBe(2.2);
 
     actual = validateNumber(3, { message, min: 2, integer: true });
-    actual.should.equal(3);
+    expect(actual).toBe(3);
   });
 
-  it('validateNumber() max should fail', () => {
+  test('validateNumber() max should fail', () => {
     helper.shouldThrow(
       () => validateNumber(3.2, { message, max: 2 }),
       'Must be at maximum 2.'
@@ -140,15 +139,15 @@ describe('validator/default/validation/number', () => {
     );
   });
 
-  it('validateNumber() max should verify', () => {
+  test('validateNumber() max should verify', () => {
     let actual = validateNumber(1.2, { message, max: 2 });
-    actual.should.equal(1.2);
+    expect(actual).toBe(1.2);
 
     actual = validateNumber(1, { message, max: 2, integer: true });
-    actual.should.equal(1);
+    expect(actual).toBe(1);
   });
 
-  it('validateNumber() less should fail', () => {
+  test('validateNumber() less should fail', () => {
     helper.shouldThrow(
       () => validateNumber(3.2, { message, less: 2 }),
       'Must be less than 2.'
@@ -160,15 +159,15 @@ describe('validator/default/validation/number', () => {
     );
   });
 
-  it('validateNumber() less should verify', () => {
+  test('validateNumber() less should verify', () => {
     let actual = validateNumber(1.2, { message, less: 2 });
-    actual.should.equal(1.2);
+    expect(actual).toBe(1.2);
 
     actual = validateNumber(1, { message, less: 2, integer: true });
-    actual.should.equal(1);
+    expect(actual).toBe(1);
   });
 
-  it('validateNumber() greater should fail', () => {
+  test('validateNumber() greater should fail', () => {
     helper.shouldThrow(
       () => validateNumber(1.2, { message, greater: 2 }),
       'Must be greater than 2.'
@@ -180,15 +179,15 @@ describe('validator/default/validation/number', () => {
     );
   });
 
-  it('validateNumber() greater should verify', () => {
+  test('validateNumber() greater should verify', () => {
     let actual = validateNumber(2.2, { message, greater: 2 });
-    actual.should.equal(2.2);
+    expect(actual).toBe(2.2);
 
     actual = validateNumber(3, { message, greater: 2, integer: true });
-    actual.should.equal(3);
+    expect(actual).toBe(3);
   });
 
-  it('validateNumber() positive should fail', () => {
+  test('validateNumber() positive should fail', () => {
     helper.shouldThrow(
       () => validateNumber(-1.3, { message, positive: true }),
       'Must be a positive number.'
@@ -200,15 +199,15 @@ describe('validator/default/validation/number', () => {
     );
   });
 
-  it('validateNumber() positive should verify', () => {
+  test('validateNumber() positive should verify', () => {
     let actual = validateNumber(1.2, { message, positive: true });
-    actual.should.equal(1.2);
+    expect(actual).toBe(1.2);
 
     actual = validateNumber(3, { message, positive: true, integer: true });
-    actual.should.equal(3);
+    expect(actual).toBe(3);
   });
 
-  it('validateNumber() negative should fail', () => {
+  test('validateNumber() negative should fail', () => {
     helper.shouldThrow(
       () => validateNumber(1.3, { message, negative: true }),
       'Must be a negative number.'
@@ -220,21 +219,21 @@ describe('validator/default/validation/number', () => {
     );
   });
 
-  it('validateNumber() negative should verify', () => {
+  test('validateNumber() negative should verify', () => {
     let actual = validateNumber(-1.2, { message, negative: true });
-    actual.should.equal(-1.2);
+    expect(actual).toBe(-1.2);
 
     actual = validateNumber(-3, { message, negative: true, integer: true });
-    actual.should.equal(-3);
+    expect(actual).toBe(-3);
   });
 
-  it('validateSync() should return given value', () => {
+  test('validateSync() should return given value', () => {
     const actual = validateSync(2, {});
-    actual.should.equal(2);
+    expect(actual).toBe(2);
   });
 
-  it('validate() should return given value', async () => {
+  test('validate() should return given value', async () => {
     const actual = await validate(2.5812, {});
-    actual.should.equal(2.5812);
+    expect(actual).toBe(2.5812);
   });
 });

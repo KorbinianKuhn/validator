@@ -7,11 +7,11 @@ const helper = require('./../../../helper');
 describe('validator/default/types/number', () => {
   const message = Message('en');
 
-  it('NumberFactory() should return NUMBER object', () => {
-    NumberFactory().constructor.name.should.equal('NUMBER');
+  test('NumberFactory() should return NUMBER object', () => {
+    expect(NumberFactory().constructor.name).toBe('NUMBER');
   });
 
-  it('options() should return options', () => {
+  test('options() should return options', () => {
     const func = () => {};
     const defaultValue = 2;
     const allowed = [null];
@@ -46,7 +46,7 @@ describe('validator/default/types/number', () => {
       .positive(positive)
       .negative(negative);
 
-    schema.options({ validation: true }).should.deepEqual({
+    expect(schema.options({ validation: true })).toEqual({
       defaultValue,
       allowed,
       func,
@@ -64,7 +64,7 @@ describe('validator/default/types/number', () => {
       integer: true
     });
 
-    schema.options().should.deepEqual({
+    expect(schema.options()).toEqual({
       type: 'number',
       description,
       example,
@@ -84,7 +84,7 @@ describe('validator/default/types/number', () => {
     });
   });
 
-  it('toObject() should return object', () => {
+  test('toObject() should return object', () => {
     const description = 'description';
     const example = 'example';
 
@@ -93,7 +93,7 @@ describe('validator/default/types/number', () => {
       .example(example)
       .required();
 
-    schema.toObject().should.deepEqual({
+    expect(schema.toObject()).toEqual({
       type: 'number',
       description,
       example,
@@ -103,13 +103,11 @@ describe('validator/default/types/number', () => {
     });
   });
 
-  it('validateSync() should verify', () => {
-    NumberFactory()
-      .validateSync(2)
-      .should.equal(2);
+  test('validateSync() should verify', () => {
+    expect(NumberFactory().validateSync(2)).toBe(2);
   });
 
-  it('validateSync() should fail', () => {
+  test('validateSync() should fail', () => {
     helper.shouldThrow(
       () =>
         NumberFactory()
@@ -119,15 +117,15 @@ describe('validator/default/types/number', () => {
     );
   });
 
-  it('validateAsync() should verify', async () => {
+  test('validateAsync() should verify', async () => {
     await NumberFactory()
       .validate(2)
       .then(value => {
-        value.should.equal(2);
+        expect(value).toBe(2);
       });
   });
 
-  it('validateAsync() should fail', async () => {
+  test('validateAsync() should fail', async () => {
     await helper.shouldEventuallyThrow(
       NumberFactory()
         .required()

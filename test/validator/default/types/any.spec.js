@@ -5,11 +5,11 @@ const helper = require('./../../../helper');
 describe('validator/default/types/any', () => {
   const message = Message('en');
 
-  it('AnyFactory() should return ANY object', () => {
-    AnyFactory().constructor.name.should.equal('ANY');
+  test('AnyFactory() should return ANY object', () => {
+    expect(AnyFactory().constructor.name).toBe('ANY');
   });
 
-  it('options() should return options', () => {
+  test('options() should return options', () => {
     const func = () => {};
     const defaultValue = 'default';
     const allowed = [null];
@@ -31,7 +31,7 @@ describe('validator/default/types/any', () => {
       .optional()
       .func(func);
 
-    schema.options({ validation: true }).should.deepEqual({
+    expect(schema.options({ validation: true })).toEqual({
       defaultValue,
       allowed,
       func,
@@ -42,7 +42,7 @@ describe('validator/default/types/any', () => {
       message
     });
 
-    schema.options().should.deepEqual({
+    expect(schema.options()).toEqual({
       type: 'any',
       description,
       example,
@@ -55,14 +55,14 @@ describe('validator/default/types/any', () => {
     });
   });
 
-  it('func() with invalid argument should fail', () => {
+  test('func() with invalid argument should fail', () => {
     helper.shouldThrow(
       () => AnyFactory().func('wrong'),
       'Validator configuration error: Must be a function.'
     );
   });
 
-  it('toObject() should return object', () => {
+  test('toObject() should return object', () => {
     const description = 'description';
     const example = 'example';
 
@@ -71,7 +71,7 @@ describe('validator/default/types/any', () => {
       .example(example)
       .required();
 
-    schema.toObject().should.deepEqual({
+    expect(schema.toObject()).toEqual({
       type: 'any',
       description,
       example,
@@ -80,13 +80,11 @@ describe('validator/default/types/any', () => {
     });
   });
 
-  it('validateSync() should verify', () => {
-    AnyFactory()
-      .validateSync('test')
-      .should.equal('test');
+  test('validateSync() should verify', () => {
+    expect(AnyFactory().validateSync('test')).toBe('test');
   });
 
-  it('validateSync() should fail', () => {
+  test('validateSync() should fail', () => {
     helper.shouldThrow(
       () =>
         AnyFactory()
@@ -96,15 +94,15 @@ describe('validator/default/types/any', () => {
     );
   });
 
-  it('validateAsync() should verify', async () => {
+  test('validateAsync() should verify', async () => {
     await AnyFactory()
       .validate('test')
       .then(value => {
-        value.should.equal('test');
+        expect(value).toBe('test');
       });
   });
 
-  it('validateAsync() should fail', async () => {
+  test('validateAsync() should fail', async () => {
     await helper.shouldEventuallyThrow(
       AnyFactory()
         .required()

@@ -10,11 +10,11 @@ const helper = require('./../../../helper');
 describe('validator/default/types/array', () => {
   const message = Message('en');
 
-  it('ArrayFactory() should return ARRAY object', () => {
-    ArrayFactory().constructor.name.should.equal('ARRAY');
+  test('ArrayFactory() should return ARRAY object', () => {
+    expect(ArrayFactory().constructor.name).toBe('ARRAY');
   });
 
-  it('options() should return options', () => {
+  test('options() should return options', () => {
     const func = () => {};
     const defaultValue = ['test'];
     const allowed = [null];
@@ -46,7 +46,7 @@ describe('validator/default/types/array', () => {
       .unique(unique)
       .empty(empty);
 
-    schema.options({ validation: true }).should.deepEqual({
+    expect(schema.options({ validation: true })).toEqual({
       defaultValue,
       allowed,
       func,
@@ -62,7 +62,7 @@ describe('validator/default/types/array', () => {
       unique
     });
 
-    schema.options().should.deepEqual({
+    expect(schema.options()).toEqual({
       type: 'array',
       description,
       example,
@@ -80,7 +80,7 @@ describe('validator/default/types/array', () => {
     });
   });
 
-  it('toObject() should return object', () => {
+  test('toObject() should return object', () => {
     const description = 'description';
     const example = 'example';
 
@@ -89,7 +89,7 @@ describe('validator/default/types/array', () => {
       .example(example)
       .required();
 
-    schema.toObject().should.deepEqual({
+    expect(schema.toObject()).toEqual({
       type: 'array',
       description,
       example,
@@ -99,12 +99,12 @@ describe('validator/default/types/array', () => {
     });
   });
 
-  it('toObject() should return object with items', () => {
+  test('toObject() should return object with items', () => {
     const itemSchema = StringFactory();
 
     const schema = ArrayFactory(itemSchema);
 
-    schema.toObject().should.deepEqual({
+    expect(schema.toObject()).toEqual({
       type: 'array',
       required: false,
       empty: true,
@@ -114,13 +114,11 @@ describe('validator/default/types/array', () => {
     });
   });
 
-  it('validateSync() should verify', () => {
-    ArrayFactory()
-      .validateSync(['test'])
-      .should.deepEqual(['test']);
+  test('validateSync() should verify', () => {
+    expect(ArrayFactory().validateSync(['test'])).toEqual(['test']);
   });
 
-  it('validateSync() should fail', () => {
+  test('validateSync() should fail', () => {
     helper.shouldThrow(
       () =>
         ArrayFactory()
@@ -130,15 +128,15 @@ describe('validator/default/types/array', () => {
     );
   });
 
-  it('validateAsync() should verify', async () => {
+  test('validateAsync() should verify', async () => {
     await ArrayFactory()
       .validate(['test'])
       .then(value => {
-        value.should.deepEqual(['test']);
+        expect(value).toEqual(['test']);
       });
   });
 
-  it('validateAsync() should fail', async () => {
+  test('validateAsync() should fail', async () => {
     await helper.shouldEventuallyThrow(
       ArrayFactory()
         .required()
@@ -147,9 +145,7 @@ describe('validator/default/types/array', () => {
     );
   });
 
-  it('example() with no type should return empty array', () => {
-    ArrayFactory()
-      .example()
-      .should.deepEqual('No example provided');
+  test('example() with no type should return empty array', () => {
+    expect(ArrayFactory().example()).toEqual('No example provided');
   });
 });

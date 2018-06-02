@@ -5,23 +5,23 @@ const {
 describe('ExpressValidator()', () => {
   const validator = ExpressValidatorFactory();
 
-  it('should create all types', () => {
-    validator.Any().constructor.name.should.equal('ANY');
-    validator.Array().constructor.name.should.equal('ARRAY');
-    validator.Boolean().constructor.name.should.equal('BOOLEAN');
-    validator.Date().constructor.name.should.equal('DATE');
-    validator.Number().constructor.name.should.equal('NUMBER');
-    validator.Object().constructor.name.should.equal('OBJECT');
-    validator.String().constructor.name.should.equal('STRING');
-    validator.Request().constructor.name.should.equal('REQUEST');
-    validator.Response().constructor.name.should.equal('RESPONSE');
-    validator.Params({}).constructor.name.should.equal('OBJECT');
-    validator.Query({}).constructor.name.should.equal('OBJECT');
-    validator.Body({}).constructor.name.should.equal('OBJECT');
+  test('should create all types', () => {
+    expect(validator.Any().constructor.name).toBe('ANY');
+    expect(validator.Array().constructor.name).toBe('ARRAY');
+    expect(validator.Boolean().constructor.name).toBe('BOOLEAN');
+    expect(validator.Date().constructor.name).toBe('DATE');
+    expect(validator.Number().constructor.name).toBe('NUMBER');
+    expect(validator.Object().constructor.name).toBe('OBJECT');
+    expect(validator.String().constructor.name).toBe('STRING');
+    expect(validator.Request().constructor.name).toBe('REQUEST');
+    expect(validator.Response().constructor.name).toBe('RESPONSE');
+    expect(validator.Params({}).constructor.name).toBe('OBJECT');
+    expect(validator.Query({}).constructor.name).toBe('OBJECT');
+    expect(validator.Body({}).constructor.name).toBe('OBJECT');
   });
 
-  it('middleware() should return middleware', () => {
+  test('middleware() should return middleware', () => {
     const middleware = validator.middleware();
-    (typeof middleware).should.equal('function');
+    expect(typeof middleware).toBe('function');
   });
 });

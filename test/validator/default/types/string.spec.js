@@ -7,11 +7,11 @@ const helper = require('./../../../helper');
 describe('validator/default/types/string', () => {
   const message = Message('en');
 
-  it('StringFactory() should return STRING object', () => {
-    StringFactory().constructor.name.should.equal('STRING');
+  test('StringFactory() should return STRING object', () => {
+    expect(StringFactory().constructor.name).toBe('STRING');
   });
 
-  it('options() should return options', () => {
+  test('options() should return options', () => {
     const func = () => {};
     const defaultValue = 'test';
     const allowed = [null];
@@ -46,7 +46,7 @@ describe('validator/default/types/string', () => {
       .regex(pattern, locales)
       .empty(empty);
 
-    schema.options({ validation: true }).should.deepEqual({
+    expect(schema.options({ validation: true })).toEqual({
       defaultValue,
       allowed,
       func,
@@ -66,7 +66,7 @@ describe('validator/default/types/string', () => {
       empty
     });
 
-    schema.options().should.deepEqual({
+    expect(schema.options()).toEqual({
       type: 'string',
       description,
       example,
@@ -85,14 +85,14 @@ describe('validator/default/types/string', () => {
     });
   });
 
-  it('regex() invalid regex should throw', () => {
+  test('regex() invalid regex should throw', () => {
     helper.shouldThrow(
       () => StringFactory().regex(true),
       'Validator configuration error: Must be a regular expression.'
     );
   });
 
-  it('toObject() should return object', () => {
+  test('toObject() should return object', () => {
     const description = 'description';
     const example = 'example';
 
@@ -101,7 +101,7 @@ describe('validator/default/types/string', () => {
       .example(example)
       .required();
 
-    schema.toObject().should.deepEqual({
+    expect(schema.toObject()).toEqual({
       type: 'string',
       description,
       example,
@@ -112,13 +112,11 @@ describe('validator/default/types/string', () => {
     });
   });
 
-  it('validateSync() should verify', () => {
-    StringFactory()
-      .validateSync('test')
-      .should.equal('test');
+  test('validateSync() should verify', () => {
+    expect(StringFactory().validateSync('test')).toBe('test');
   });
 
-  it('validateSync() should fail', () => {
+  test('validateSync() should fail', () => {
     helper.shouldThrow(
       () =>
         StringFactory()
@@ -128,15 +126,15 @@ describe('validator/default/types/string', () => {
     );
   });
 
-  it('validateAsync() should verify', async () => {
+  test('validateAsync() should verify', async () => {
     await StringFactory()
       .validate('test')
       .then(value => {
-        value.should.equal('test');
+        expect(value).toBe('test');
       });
   });
 
-  it('validateAsync() should fail', async () => {
+  test('validateAsync() should fail', async () => {
     await helper.shouldEventuallyThrow(
       StringFactory()
         .required()

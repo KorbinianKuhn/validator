@@ -2,19 +2,19 @@ const { Message } = require('./../../src/utils/message');
 const helper = require('./../helper');
 
 describe('Message()', () => {
-  it('addLocale() should verify', () => {
+  test('addLocale() should verify', () => {
     const message = Message();
     const actual = message.addLocale('test', {});
-    actual.should.equal(message);
+    expect(actual).toBe(message);
   });
 
-  it('setLocale() should verify', () => {
+  test('setLocale() should verify', () => {
     const message = Message();
     const actual = message.setLocale('en-alt');
-    actual.should.equal(message);
+    expect(actual).toBe(message);
   });
 
-  it('setLocale() should throw', () => {
+  test('setLocale() should throw', () => {
     const message = Message();
 
     helper.shouldThrow(
@@ -23,9 +23,7 @@ describe('Message()', () => {
     );
   });
 
-  it('get() should default text', () => {
-    Message()
-      .get('unknown_text')
-      .should.equal('Invalid.');
+  test('get() should default text', () => {
+    expect(Message().get('unknown_text')).toBe('Invalid.');
   });
 });

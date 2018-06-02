@@ -12,7 +12,7 @@ describe('validator/express/validation/response', () => {
   const message = Message('en');
   const validator = ExpressValidatorFactory();
 
-  it('validateResponse() with wrong status should fail', async () => {
+  test('validateResponse() with wrong status should fail', async () => {
     const res = { status: 400 };
     await helper.shouldEventuallyThrow(
       validateResponse(res, { status: 200, message }),
@@ -20,13 +20,13 @@ describe('validator/express/validation/response', () => {
     );
   });
 
-  it('validateResponse() with correct status should verify', async () => {
+  test('validateResponse() with correct status should verify', async () => {
     const res = { status: 200 };
     const actual = await validateResponse(res, { status: 200, message });
-    actual.should.deepEqual(res);
+    expect(actual).toEqual(res);
   });
 
-  it('validateResponse() with wrong body should fail', async () => {
+  test('validateResponse() with wrong body should fail', async () => {
     const res = { status: 200, body: {} };
     await helper.shouldEventuallyThrow(
       validateResponse(res, {
@@ -38,7 +38,7 @@ describe('validator/express/validation/response', () => {
     );
   });
 
-  it('validateResponse() with correct body should verify', async () => {
+  test('validateResponse() with correct body should verify', async () => {
     const res = { status: 200, body: { name: 'test' } };
     const actual = await validateResponse(res, {
       status: 200,
@@ -47,10 +47,10 @@ describe('validator/express/validation/response', () => {
         name: validator.String()
       })
     });
-    actual.should.deepEqual(res);
+    expect(actual).toEqual(res);
   });
 
-  it('validateResponseSync() with wrong status should fail', () => {
+  test('validateResponseSync() with wrong status should fail', () => {
     const res = { status: 400 };
     helper.shouldThrow(
       () => validateResponseSync(res, { status: 200, message }),
@@ -58,13 +58,13 @@ describe('validator/express/validation/response', () => {
     );
   });
 
-  it('validateResponseSync() with correct status should verify', () => {
+  test('validateResponseSync() with correct status should verify', () => {
     const res = { status: 200 };
     const actual = validateResponseSync(res, { status: 200, message });
-    actual.should.deepEqual(res);
+    expect(actual).toEqual(res);
   });
 
-  it('validateResponseSync() with wrong body should fail', () => {
+  test('validateResponseSync() with wrong body should fail', () => {
     const res = { status: 200, body: {} };
     helper.shouldThrow(
       () =>
@@ -77,7 +77,7 @@ describe('validator/express/validation/response', () => {
     );
   });
 
-  it('validateResponseSync() with correct body should verify', () => {
+  test('validateResponseSync() with correct body should verify', () => {
     const res = { status: 200, body: { name: 'test' } };
     const actual = validateResponseSync(res, {
       status: 200,
@@ -86,6 +86,6 @@ describe('validator/express/validation/response', () => {
         name: validator.String()
       })
     });
-    actual.should.deepEqual(res);
+    expect(actual).toEqual(res);
   });
 });

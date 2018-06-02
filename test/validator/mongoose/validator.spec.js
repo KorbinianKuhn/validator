@@ -1,195 +1,195 @@
 const {
   MongooseValidatorFactory
 } = require('./../../../src/validator/mongoose/validator');
-const should = require('should');
+
 const helper = require('./../../helper');
 describe('MongooseValidator()', () => {
   const validator = MongooseValidatorFactory();
 
-  it('should create all types', () => {
-    validator.Any().constructor.name.should.equal('ANY_MONGOOSE');
-    validator.Array().constructor.name.should.equal('ARRAY_MONGOOSE');
-    validator.Boolean().constructor.name.should.equal('BOOLEAN_MONGOOSE');
-    validator.Date().constructor.name.should.equal('DATE_MONGOOSE');
-    validator.Number().constructor.name.should.equal('NUMBER_MONGOOSE');
-    validator.Object().constructor.name.should.equal('OBJECT_MONGOOSE');
-    validator.String().constructor.name.should.equal('STRING_MONGOOSE');
+  test('should create all types', () => {
+    expect(validator.Any().constructor.name).toBe('ANY_MONGOOSE');
+    expect(validator.Array().constructor.name).toBe('ARRAY_MONGOOSE');
+    expect(validator.Boolean().constructor.name).toBe('BOOLEAN_MONGOOSE');
+    expect(validator.Date().constructor.name).toBe('DATE_MONGOOSE');
+    expect(validator.Number().constructor.name).toBe('NUMBER_MONGOOSE');
+    expect(validator.Object().constructor.name).toBe('OBJECT_MONGOOSE');
+    expect(validator.String().constructor.name).toBe('STRING_MONGOOSE');
   });
 
-  it('Any().validate() should verify', async () => {
+  test('Any().validate() should verify', async () => {
     const actual = await validator.Any().validate()('test');
-    should.equal(actual, 'test');
+    expect(actual).toBe('test');
   });
 
-  it('Any().validate() should fail', async () => {
+  test('Any().validate() should fail', async () => {
     await helper.shouldEventuallyThrow(
       validator.Any().validate()(),
       'Required but is undefined.'
     );
   });
 
-  it('Any().validateSync() should verify', () => {
+  test('Any().validateSync() should verify', () => {
     const actual = validator.Any().validateSync()('test');
-    should.equal(actual, 'test');
+    expect(actual).toBe('test');
   });
 
-  it('Any().validateSync() should fail', () => {
+  test('Any().validateSync() should fail', () => {
     helper.shouldThrow(
       () => validator.Any().validateSync()(),
       'Required but is undefined.'
     );
   });
 
-  it('Array().validate() should verify', async () => {
+  test('Array().validate() should verify', async () => {
     const actual = await validator.Array().validate()(['test']);
-    should.deepEqual(actual, ['test']);
+    expect(actual).toEqual(['test']);
   });
 
-  it('Array().validate() should fail', async () => {
+  test('Array().validate() should fail', async () => {
     await helper.shouldEventuallyThrow(
       validator.Array().validate()(),
       'Required but is undefined.'
     );
   });
 
-  it('Array().validateSync() should verify', () => {
+  test('Array().validateSync() should verify', () => {
     const actual = validator.Array().validateSync()(['test']);
-    should.deepEqual(actual, ['test']);
+    expect(actual).toEqual(['test']);
   });
 
-  it('Array().validateSync() should fail', () => {
+  test('Array().validateSync() should fail', () => {
     helper.shouldThrow(
       () => validator.Array().validateSync()(),
       'Required but is undefined.'
     );
   });
 
-  it('Boolean().validate() should verify', async () => {
+  test('Boolean().validate() should verify', async () => {
     const actual = await validator.Boolean().validate()(true);
-    should.equal(actual, true);
+    expect(actual).toBe(true);
   });
 
-  it('Boolean().validate() should fail', async () => {
+  test('Boolean().validate() should fail', async () => {
     await helper.shouldEventuallyThrow(
       validator.Boolean().validate()(),
       'Required but is undefined.'
     );
   });
 
-  it('Boolean().validateSync() should verify', () => {
+  test('Boolean().validateSync() should verify', () => {
     const actual = validator.Boolean().validateSync()(true);
-    should.equal(actual, true);
+    expect(actual).toBe(true);
   });
 
-  it('Boolean().validateSync() should fail', () => {
+  test('Boolean().validateSync() should fail', () => {
     helper.shouldThrow(
       () => validator.Any().validateSync()(),
       'Required but is undefined.'
     );
   });
 
-  it('Date().validate() should verify', async () => {
+  test('Date().validate() should verify', async () => {
     const actual = await validator
       .Date()
       .parse(false)
       .validate()('2018-01-01T00:00:00.000Z');
-    should.equal(actual, '2018-01-01T00:00:00.000Z');
+    expect(actual).toBe('2018-01-01T00:00:00.000Z');
   });
 
-  it('Date().validate() should fail', async () => {
+  test('Date().validate() should fail', async () => {
     await helper.shouldEventuallyThrow(
       validator.Date().validate()(),
       'Required but is undefined.'
     );
   });
 
-  it('Date().validateSync() should verify', () => {
+  test('Date().validateSync() should verify', () => {
     const actual = validator
       .Date()
       .parse(false)
       .validateSync()('2018-01-01T00:00:00.000Z');
-    should.equal(actual, '2018-01-01T00:00:00.000Z');
+    expect(actual).toBe('2018-01-01T00:00:00.000Z');
   });
 
-  it('Date().validateSync() should fail', () => {
+  test('Date().validateSync() should fail', () => {
     helper.shouldThrow(
       () => validator.Any().validateSync()(),
       'Required but is undefined.'
     );
   });
 
-  it('Number().validate() should verify', async () => {
+  test('Number().validate() should verify', async () => {
     const actual = await validator.Number().validate()(2);
-    should.equal(actual, 2);
+    expect(actual).toBe(2);
   });
 
-  it('Number().validate() should fail', async () => {
+  test('Number().validate() should fail', async () => {
     await helper.shouldEventuallyThrow(
       validator.Number().validate()(),
       'Required but is undefined.'
     );
   });
 
-  it('Number().validateSync() should verify', () => {
+  test('Number().validateSync() should verify', () => {
     const actual = validator.Number().validateSync()(2);
-    should.equal(actual, 2);
+    expect(actual).toBe(2);
   });
 
-  it('Number().validateSync() should fail', () => {
+  test('Number().validateSync() should fail', () => {
     helper.shouldThrow(
       () => validator.Number().validateSync()(),
       'Required but is undefined.'
     );
   });
 
-  it('Object().validate() should verify', async () => {
+  test('Object().validate() should verify', async () => {
     const actual = await validator
       .Object()
       .empty(true)
       .validate()({});
-    should.deepEqual(actual, {});
+    expect(actual).toEqual({});
   });
 
-  it('Object().validate() should fail', async () => {
+  test('Object().validate() should fail', async () => {
     await helper.shouldEventuallyThrow(
       validator.Object().validate()(),
       'Required but is undefined.'
     );
   });
 
-  it('Object().validateSync() should verify', () => {
+  test('Object().validateSync() should verify', () => {
     const actual = validator
       .Object()
       .empty(true)
       .validateSync()({});
-    should.deepEqual(actual, {});
+    expect(actual).toEqual({});
   });
 
-  it('Object().validateSync() should fail', () => {
+  test('Object().validateSync() should fail', () => {
     helper.shouldThrow(
       () => validator.Object().validateSync()(),
       'Required but is undefined.'
     );
   });
 
-  it('String().validate() should verify', async () => {
+  test('String().validate() should verify', async () => {
     const actual = await validator.String().validate()('test');
-    should.equal(actual, 'test');
+    expect(actual).toBe('test');
   });
 
-  it('String().validate() should fail', async () => {
+  test('String().validate() should fail', async () => {
     await helper.shouldEventuallyThrow(
       validator.String().validate()(),
       'Required but is undefined.'
     );
   });
 
-  it('String().validateSync() should verify', () => {
+  test('String().validateSync() should verify', () => {
     const actual = validator.String().validateSync()('test');
-    should.equal(actual, 'test');
+    expect(actual).toBe('test');
   });
 
-  it('String().validateSync() should fail', () => {
+  test('String().validateSync() should fail', () => {
     helper.shouldThrow(
       () => validator.String().validateSync()(),
       'Required but is undefined.'

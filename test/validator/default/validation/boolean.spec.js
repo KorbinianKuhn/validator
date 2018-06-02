@@ -5,38 +5,37 @@ const {
 } = require('./../../../../src/validator/default/validation/boolean');
 const { Message } = require('./../../../../src/utils/message');
 const helper = require('./../../../helper');
-const should = require('should');
 
 describe('validator/default/validation/boolean', () => {
   const message = Message('en');
 
-  it('validateBoolean() should return given value', () => {
+  test('validateBoolean() should return given value', () => {
     const actual = validateBoolean(true, { message, required: true });
-    actual.should.equal(true);
+    expect(actual).toBe(true);
   });
 
-  it('validateBoolean() should return defaultValue', () => {
+  test('validateBoolean() should return defaultValue', () => {
     const actual = validateBoolean(undefined, {
       message,
       required: true,
       defaultValue: false
     });
-    actual.should.equal(false);
+    expect(actual).toBe(false);
   });
 
-  it('validateBoolean() with undefined should verify', () => {
+  test('validateBoolean() with undefined should verify', () => {
     const actual = validateBoolean(undefined, {});
-    should.equal(actual, undefined);
+    expect(actual).toBe(undefined);
   });
 
-  it('validateBoolean() with null should verify', () => {
+  test('validateBoolean() with null should verify', () => {
     const actual = validateBoolean(null, {
       allowed: [null]
     });
-    should.equal(actual, null);
+    expect(actual).toBe(null);
   });
 
-  it('validateBoolean() with undefined should throw', () => {
+  test('validateBoolean() with undefined should throw', () => {
     helper.shouldThrow(
       () =>
         validateBoolean(undefined, {
@@ -48,39 +47,39 @@ describe('validator/default/validation/boolean', () => {
     );
   });
 
-  it('validateBoolean() should throw', () => {
+  test('validateBoolean() should throw', () => {
     helper.shouldThrow(
       () => validateBoolean('wrong', { message, required: true }),
       'Must be type boolean but is string.'
     );
   });
 
-  it('validateBoolean() should parse to boolean', () => {
+  test('validateBoolean() should parse to boolean', () => {
     let actual = validateBoolean('true', {
       message,
       required: true,
       parse: true
     });
-    actual.should.equal(true);
+    expect(actual).toBe(true);
 
     actual = validateBoolean(0, { message, required: true, parse: true });
-    actual.should.equal(false);
+    expect(actual).toBe(false);
   });
 
-  it('validateBoolean() should try parse to boolean but fail', () => {
+  test('validateBoolean() should try parse to boolean but fail', () => {
     helper.shouldThrow(
       () => validateBoolean('wrong', { message, required: true, parse: true }),
       'Must be type boolean but is string.'
     );
   });
 
-  it('validateSync() should return given value', () => {
+  test('validateSync() should return given value', () => {
     const actual = validateSync(true, {});
-    actual.should.equal(true);
+    expect(actual).toBe(true);
   });
 
-  it('validate() should return given value', async () => {
+  test('validate() should return given value', async () => {
     const actual = await validate(false, {});
-    actual.should.equal(false);
+    expect(actual).toBe(false);
   });
 });

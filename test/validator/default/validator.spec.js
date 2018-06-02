@@ -5,44 +5,44 @@ const helper = require('./../../helper');
 const { ValidationError } = require('./../../../src/utils/error');
 
 describe('Validator()', () => {
-  it('should create all types', () => {
+  test('should create all types', () => {
     const validator = ValidatorFactory();
 
-    validator.Any().constructor.name.should.equal('ANY');
-    validator.Array().constructor.name.should.equal('ARRAY');
-    validator.Boolean().constructor.name.should.equal('BOOLEAN');
-    validator.Date().constructor.name.should.equal('DATE');
-    validator.Number().constructor.name.should.equal('NUMBER');
-    validator.Object().constructor.name.should.equal('OBJECT');
-    validator.String().constructor.name.should.equal('STRING');
+    expect(validator.Any().constructor.name).toBe('ANY');
+    expect(validator.Array().constructor.name).toBe('ARRAY');
+    expect(validator.Boolean().constructor.name).toBe('BOOLEAN');
+    expect(validator.Date().constructor.name).toBe('DATE');
+    expect(validator.Number().constructor.name).toBe('NUMBER');
+    expect(validator.Object().constructor.name).toBe('OBJECT');
+    expect(validator.String().constructor.name).toBe('STRING');
   });
 
-  it('should add custom locale', () => {
+  test('should add custom locale', () => {
     const validator = ValidatorFactory();
 
     validator.addLocale('custom', {});
 
-    validator._message._locales.should.have.property('custom');
+    expect(validator._message._locales).toHaveProperty('custom');
   });
 
-  it('should set locale', () => {
+  test('should set locale', () => {
     const validator = ValidatorFactory();
 
     validator.setLocale('de');
 
-    validator._message.getLocale().should.equal('de');
+    expect(validator._message.getLocale()).toBe('de');
   });
 
-  it('should add custom type', () => {
+  test('should add custom type', () => {
     const validator = ValidatorFactory();
     const custom = validator.String();
 
     validator.addType('custom', custom);
 
-    validator._customs['custom'].should.deepEqual(custom);
+    expect(validator._customs['custom']).toEqual(custom);
   });
 
-  it('duplicate custom type should throw', () => {
+  test('duplicate custom type should throw', () => {
     const validator = ValidatorFactory();
     const custom = validator.String();
 
@@ -54,7 +54,7 @@ describe('Validator()', () => {
     );
   });
 
-  it('invalid type should throw', () => {
+  test('invalid type should throw', () => {
     const validator = ValidatorFactory();
 
     helper.shouldThrow(
@@ -63,17 +63,17 @@ describe('Validator()', () => {
     );
   });
 
-  it('should return custom type', () => {
+  test('should return custom type', () => {
     const validator = ValidatorFactory();
 
     const custom = validator.String();
 
     validator.addType('custom', custom);
 
-    validator.Custom('custom').should.deepEqual(custom);
+    expect(validator.Custom('custom')).toEqual(custom);
   });
 
-  it('unknown custom type should throw', () => {
+  test('unknown custom type should throw', () => {
     const validator = ValidatorFactory();
 
     helper.shouldThrow(
@@ -82,7 +82,7 @@ describe('Validator()', () => {
     );
   });
 
-  it('validateSync() with invalid schema should throw', () => {
+  test('validateSync() with invalid schema should throw', () => {
     const validator = ValidatorFactory();
 
     helper.shouldThrow(
@@ -91,7 +91,7 @@ describe('Validator()', () => {
     );
   });
 
-  it('validateSync() with unknown schema should throw', () => {
+  test('validateSync() with unknown schema should throw', () => {
     const validator = ValidatorFactory();
 
     helper.shouldThrow(
@@ -100,7 +100,7 @@ describe('Validator()', () => {
     );
   });
 
-  it('validateSync() should throw', () => {
+  test('validateSync() should throw', () => {
     const validator = ValidatorFactory();
 
     const expected = new ValidationError(
@@ -114,7 +114,7 @@ describe('Validator()', () => {
     );
   });
 
-  it('validateSync() should return error', () => {
+  test('validateSync() should return error', () => {
     const validator = ValidatorFactory({ throwValidationErrors: false });
 
     const expected = new ValidationError(
@@ -123,16 +123,16 @@ describe('Validator()', () => {
     );
 
     const actual = validator.validateSync(validator.String(), undefined);
-    actual.should.deepEqual(expected);
+    expect(actual).toEqual(expected);
   });
 
-  it('validateSync() should verify', () => {
+  test('validateSync() should verify', () => {
     const validator = ValidatorFactory();
 
-    validator.validateSync(validator.String(), 'test').should.equal('test');
+    expect(validator.validateSync(validator.String(), 'test')).toBe('test');
   });
 
-  it('validate() with invalid schema should throw', async () => {
+  test('validate() with invalid schema should throw', async () => {
     const validator = ValidatorFactory();
 
     await helper.shouldEventuallyThrow(
@@ -141,7 +141,7 @@ describe('Validator()', () => {
     );
   });
 
-  it('validate() with unknown schema should throw', async () => {
+  test('validate() with unknown schema should throw', async () => {
     const validator = ValidatorFactory();
 
     await helper.shouldEventuallyThrow(
@@ -150,7 +150,7 @@ describe('Validator()', () => {
     );
   });
 
-  it('validate() should throw', async () => {
+  test('validate() should throw', async () => {
     const validator = ValidatorFactory();
 
     const expected = new ValidationError(
@@ -164,7 +164,7 @@ describe('Validator()', () => {
     );
   });
 
-  it('validate() should return error', async () => {
+  test('validate() should return error', async () => {
     const validator = ValidatorFactory({ throwValidationErrors: false });
 
     const expected = new ValidationError(
@@ -173,23 +173,24 @@ describe('Validator()', () => {
     );
 
     const actual = await validator.validate(validator.String(), undefined);
-    actual.should.deepEqual(expected);
+    expect(actual).toEqual(expected);
   });
 
-  it('validate() should verify', async () => {
+  test('validate() should verify', async () => {
     const validator = ValidatorFactory();
 
     const actual = await validator.validate(validator.String(), 'test');
-    actual.should.equal('test');
+    expect(actual).toBe('test');
   });
 
-  it('listCustomTypes() should return array of custom type descriptions', async () => {
+  test('listCustomTypes() should return array of custom type descriptions', async () => {
     const validator = ValidatorFactory();
     validator.addType('name', validator.String());
     validator.addType('age', validator.Number());
 
-    validator
-      .listCustomTypes()
-      .should.deepEqual(['name: STRING', 'age: NUMBER']);
+    expect(validator.listCustomTypes()).toEqual([
+      'name: STRING',
+      'age: NUMBER'
+    ]);
   });
 });

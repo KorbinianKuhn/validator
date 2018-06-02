@@ -1,5 +1,4 @@
 const {
-  validateRequired,
   validateOnly,
   validateNot,
   validateFunctionSync,
@@ -10,43 +9,42 @@ const {
 } = require('./../../../../src/validator/default/validation/any');
 const { Message } = require('./../../../../src/utils/message');
 const helper = require('./../../../helper');
-const should = require('should');
 
 describe('validator/default/validation/any', () => {
   const message = Message('en');
 
-  it('validateOnly() should throw', () => {
+  test('validateOnly() should throw', () => {
     helper.shouldThrow(
       () => validateOnly(['test', 'test2'], 'hello', message),
       "Only 'test, test2' is allowed."
     );
   });
 
-  it('validateOnly() should not throw', () => {
+  test('validateOnly() should not throw', () => {
     validateOnly(['test'], 'test', message);
   });
 
-  it('validateOnly() with undefined only should not throw', () => {
+  test('validateOnly() with undefined only should not throw', () => {
     validateOnly(undefined, 'test', message);
   });
 
-  it('validateNot() should throw', () => {
+  test('validateNot() should throw', () => {
     helper.shouldThrow(
       () => validateNot(['test'], 'test', message),
       'Is not allowed.'
     );
   });
 
-  it('validateNot() should not throw', () => {
+  test('validateNot() should not throw', () => {
     validateNot(['test'], 'hello', message);
   });
 
-  it('validateNot() with undefined not should not throw', () => {
+  test('validateNot() with undefined not should not throw', () => {
     validateNot(undefined, 'test', message);
   });
 
-  it('validateFunctionSync() should throw', () => {
-    const func = value => {
+  test('validateFunctionSync() should throw', () => {
+    const func = () => {
       throw new Error('message');
     };
     helper.shouldThrow(
@@ -55,75 +53,75 @@ describe('validator/default/validation/any', () => {
     );
   });
 
-  it('validateFunctionSync() should not throw', () => {
+  test('validateFunctionSync() should not throw', () => {
     const func = value => value;
     const actual = validateFunctionSync(func, 'test', message);
-    actual.should.equal('test');
+    expect(actual).toBe('test');
   });
 
-  it('validateFunctionSync() without function should not throw', () => {
+  test('validateFunctionSync() without function should not throw', () => {
     const actual = validateFunctionSync(undefined, 'test', message);
-    actual.should.equal('test');
+    expect(actual).toBe('test');
   });
 
-  it('validateFunctionSync() should return function value', () => {
-    const func = value => 'hello';
+  test('validateFunctionSync() should return function value', () => {
+    const func = () => 'hello';
     const actual = validateFunctionSync(func, 'test', message);
-    actual.should.equal('hello');
+    expect(actual).toBe('hello');
   });
 
-  it('validateFunctionAsync() should throw', async () => {
-    const func = value => Promise.reject('message');
+  test('validateFunctionAsync() should throw', async () => {
+    const func = () => Promise.reject('message');
     await helper.shouldEventuallyThrow(
       validateFunctionAsync(func, 'test', message),
       'message'
     );
   });
 
-  it('validateFunctionAsync() should not throw', async () => {
+  test('validateFunctionAsync() should not throw', async () => {
     const func = value => Promise.resolve(value);
     const actual = await validateFunctionAsync(func, 'test', message);
-    actual.should.equal('test');
+    expect(actual).toBe('test');
   });
 
-  it('validateFunctionAsync() without function should not throw', async () => {
+  test('validateFunctionAsync() without function should not throw', async () => {
     const actual = await validateFunctionAsync(undefined, 'test', message);
-    actual.should.equal('test');
+    expect(actual).toBe('test');
   });
 
-  it('validateFunctionAsync() should return function value', async () => {
-    const func = value => Promise.resolve('hello');
+  test('validateFunctionAsync() should return function value', async () => {
+    const func = () => Promise.resolve('hello');
     const actual = await validateFunctionAsync(func, 'test', message);
-    actual.should.equal('hello');
+    expect(actual).toBe('hello');
   });
 
-  it('validateAny() should return given value', () => {
+  test('validateAny() should return given value', () => {
     const actual = validateAny('test', { message, required: true });
-    actual.should.equal('test');
+    expect(actual).toBe('test');
   });
 
-  it('validateAny() should return defaultValue', () => {
+  test('validateAny() should return defaultValue', () => {
     const actual = validateAny(undefined, {
       message,
       required: true,
       defaultValue: 'test'
     });
-    actual.should.equal('test');
+    expect(actual).toBe('test');
   });
 
-  it('validateAny() with undefined should verify', () => {
+  test('validateAny() with undefined should verify', () => {
     const actual = validateAny(undefined, {});
-    should.equal(actual, undefined);
+    expect(actual).toBe(undefined);
   });
 
-  it('validateAny() with null should verify', () => {
+  test('validateAny() with null should verify', () => {
     const actual = validateAny(null, {
       allowed: [null]
     });
-    should.equal(actual, null);
+    expect(actual).toBe(null);
   });
 
-  it('validateAny() with undefined should throw', () => {
+  test('validateAny() with undefined should throw', () => {
     helper.shouldThrow(
       () =>
         validateAny(undefined, {
@@ -135,13 +133,13 @@ describe('validator/default/validation/any', () => {
     );
   });
 
-  it('validateSync() should return given value', () => {
+  test('validateSync() should return given value', () => {
     const actual = validateSync('test', {});
-    actual.should.equal('test');
+    expect(actual).toBe('test');
   });
 
-  it('validate() should return given value', async () => {
+  test('validate() should return given value', async () => {
     const actual = await validate('test', {});
-    actual.should.equal('test');
+    expect(actual).toBe('test');
   });
 });

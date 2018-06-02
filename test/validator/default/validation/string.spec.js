@@ -5,38 +5,37 @@ const {
 } = require('./../../../../src/validator/default/validation/string');
 const { Message } = require('./../../../../src/utils/message');
 const helper = require('./../../../helper');
-const should = require('should');
 
 describe('validator/default/validation/string', () => {
   const message = Message('en');
 
-  it('validateString() should return given value', () => {
+  test('validateString() should return given value', () => {
     const actual = validateString('test', { message, required: true });
-    actual.should.equal('test');
+    expect(actual).toBe('test');
   });
 
-  it('validateString() should return defaultValue', () => {
+  test('validateString() should return defaultValue', () => {
     const actual = validateString(undefined, {
       message,
       required: true,
       defaultValue: 'test'
     });
-    actual.should.equal('test');
+    expect(actual).toBe('test');
   });
 
-  it('validateString() with undefined should verify', () => {
+  test('validateString() with undefined should verify', () => {
     const actual = validateString(undefined, {});
-    should.equal(actual, undefined);
+    expect(actual).toBe(undefined);
   });
 
-  it('validateString() with null should verify', () => {
+  test('validateString() with null should verify', () => {
     const actual = validateString(null, {
       allowed: [null]
     });
-    should.equal(actual, null);
+    expect(actual).toBe(null);
   });
 
-  it('validateString() with undefined should throw', () => {
+  test('validateString() with undefined should throw', () => {
     helper.shouldThrow(
       () =>
         validateString(undefined, {
@@ -48,76 +47,76 @@ describe('validator/default/validation/string', () => {
     );
   });
 
-  it('validateString() should throw', () => {
+  test('validateString() should throw', () => {
     helper.shouldThrow(
       () => validateString(true, { message, required: true }),
       'Must be type string but is boolean.'
     );
   });
 
-  it('validateString() should return trimmed value', () => {
+  test('validateString() should return trimmed value', () => {
     const actual = validateString(' test  ', {
       trim: true
     });
-    actual.should.equal('test');
+    expect(actual).toBe('test');
   });
 
-  it('validateString() empty string should throw', () => {
+  test('validateString() empty string should throw', () => {
     helper.shouldThrow(
       () => validateString('', { message, empty: false }),
       'String is empty.'
     );
   });
 
-  it('validateString() empty string should verify', () => {
+  test('validateString() empty string should verify', () => {
     const actual = validateString('', {});
-    actual.should.equal('');
+    expect(actual).toBe('');
   });
 
-  it('validateString() min length should throw', () => {
+  test('validateString() min length should throw', () => {
     helper.shouldThrow(
       () => validateString('te', { message, min: 3 }),
       'Must have at least 3 characters.'
     );
   });
 
-  it('validateString() min length should verify', () => {
+  test('validateString() min length should verify', () => {
     const actual = validateString('test', { min: 3 });
-    actual.should.equal('test');
+    expect(actual).toBe('test');
   });
 
-  it('validateString() max length should throw', () => {
+  test('validateString() max length should throw', () => {
     helper.shouldThrow(
       () => validateString('test', { message, max: 3 }),
       'Must have at most 3 characters.'
     );
   });
 
-  it('validateString() max length should verify', () => {
+  test('validateString() max length should verify', () => {
     const actual = validateString('te', { max: 3 });
-    actual.should.equal('te');
+    expect(actual).toBe('te');
   });
 
-  it('validateString() length should throw', () => {
+  test('validateString() length should throw', () => {
     helper.shouldThrow(
       () => validateString('te', { message, length: 3 }),
       'Must have exactly 3 characters.'
     );
   });
 
-  it('validateString() length length should verify', () => {
+  test('validateString() length length should verify', () => {
     const actual = validateString('test', { length: 4 });
-    actual.should.equal('test');
+    expect(actual).toBe('test');
   });
 
-  it('validateString() with regex should verify', () => {
+  test('validateString() with regex should verify', () => {
     const actual = validateString('TEST', {
       regex: { pattern: /[A-Z]/, locales: {} }
     });
-    actual.should.equal('TEST');
+    expect(actual).toBe('TEST');
   });
 
-  it('validateString() with regex should throw', () => {
+  test('validateString() with regex should throw', () => {
     helper.shouldThrow(
       () =>
         validateString('test', {
@@ -128,7 +127,7 @@ describe('validator/default/validation/string', () => {
     );
   });
 
-  it('validateString() with regex should return custom error message', () => {
+  test('validateString() with regex should return custom error message', () => {
     helper.shouldThrow(
       () =>
         validateString('test', {
@@ -142,7 +141,7 @@ describe('validator/default/validation/string', () => {
     );
   });
 
-  it('validateString() with regex should return default error message', () => {
+  test('validateString() with regex should return default error message', () => {
     helper.shouldThrow(
       () =>
         validateString('test', {
@@ -156,13 +155,13 @@ describe('validator/default/validation/string', () => {
     );
   });
 
-  it('validateSync() should return given value', () => {
+  test('validateSync() should return given value', () => {
     const actual = validateSync('test', {});
-    actual.should.equal('test');
+    expect(actual).toBe('test');
   });
 
-  it('validate() should return given value', async () => {
+  test('validate() should return given value', async () => {
     const actual = await validate('test', {});
-    actual.should.equal('test');
+    expect(actual).toBe('test');
   });
 });

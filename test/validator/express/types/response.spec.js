@@ -11,13 +11,13 @@ describe('validator/express/types/response', () => {
   const message = Message('en');
   const validator = ExpressValidatorFactory();
 
-  it('ResponseFactory() should return RESPONSE object', () => {
-    ResponseFactory(validator.Object({})).constructor.name.should.equal(
+  test('ResponseFactory() should return RESPONSE object', () => {
+    expect(ResponseFactory(validator.Object({})).constructor.name).toBe(
       'RESPONSE'
     );
   });
 
-  it('options() should return options', () => {
+  test('options() should return options', () => {
     const description = 'description';
     const status = 300;
     const body = validator.Object({});
@@ -27,20 +27,20 @@ describe('validator/express/types/response', () => {
       .status(300)
       .body(body);
 
-    schema.options({ validation: true }).should.deepEqual({
+    expect(schema.options({ validation: true })).toEqual({
       message,
       status,
       body
     });
 
-    schema.options().should.deepEqual({
+    expect(schema.options()).toEqual({
       type: 'response',
       description,
       status
     });
   });
 
-  it('toObject() should return object', () => {
+  test('toObject() should return object', () => {
     const description = 'description';
     const body = validator.Object({});
 
@@ -48,7 +48,7 @@ describe('validator/express/types/response', () => {
       .body(body)
       .description(description);
 
-    schema.toObject().should.deepEqual({
+    expect(schema.toObject()).toEqual({
       type: 'response',
       description,
       body: body.toObject(),
@@ -56,7 +56,7 @@ describe('validator/express/types/response', () => {
     });
   });
 
-  it('validateSync() should fail', () => {
+  test('validateSync() should fail', () => {
     const body = validator.Object({ name: validator.String() });
     const res = { status: 300, body: { name: undefined } };
     helper.shouldThrow(
@@ -71,16 +71,16 @@ describe('validator/express/types/response', () => {
     );
   });
 
-  it('validateSync() should verify', () => {
+  test('validateSync() should verify', () => {
     const body = validator.Object({ name: validator.String() });
     const expected = { status: 200, body: { name: 'Jane Doe' } };
     const actual = ResponseFactory()
       .body(body)
       .validateSync(expected);
-    actual.should.deepEqual(expected);
+    expect(actual).toEqual(expected);
   });
 
-  it('validateAsync() should fail', async () => {
+  test('validateAsync() should fail', async () => {
     const body = validator.Object({ name: validator.String() });
     const res = { status: 300, body: { name: undefined } };
     await helper.shouldEventuallyThrow(
@@ -94,47 +94,47 @@ describe('validator/express/types/response', () => {
     );
   });
 
-  it('validateAsync() should verify', async () => {
+  test('validateAsync() should verify', async () => {
     const body = validator.Object({ name: validator.String() });
     const expected = { status: 200, body: { name: 'Jane Doe' } };
     const actual = await ResponseFactory()
       .body(body)
       .validate(expected);
-    actual.should.deepEqual(expected);
+    expect(actual).toEqual(expected);
   });
 
-  it('toObject() should return object without body', () => {
+  test('toObject() should return object without body', () => {
     const description = 'description';
 
     const schema = ResponseFactory().description(description);
 
-    schema.toObject().should.deepEqual({
+    expect(schema.toObject()).toEqual({
       type: 'response',
       description,
       status: 200
     });
   });
 
-  it('example() should return body example', () => {
+  test('example() should return body example', () => {
     const body = validator.Object({}).example({ test: 'value' });
 
     const schema = ResponseFactory().body(body);
 
-    schema.toObject().should.deepEqual({
+    expect(schema.toObject()).toEqual({
       type: 'response',
       status: 200,
       body: body.toObject()
     });
   });
 
-  it('body() with invalid schema should throw', () => {
+  test('body() with invalid schema should throw', () => {
     helper.shouldThrow(
       () => ResponseFactory().body(undefined),
       'Validator configuration error: Invalid schema.'
     );
   });
 
-  it('body() with unknown schema should throw', () => {
+  test('body() with unknown schema should throw', () => {
     helper.shouldThrow(
       () => ResponseFactory().body('test'),
       'Validator configuration error: Unknown schema.'

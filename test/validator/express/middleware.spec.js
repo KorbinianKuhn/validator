@@ -5,22 +5,22 @@ const { Response } = require('./../../helper');
 
 describe('middleware()', () => {
   const message = Message();
-  it('should respond with default settings', () => {
+  test('should respond with default settings', () => {
     const err = new ValidationError('message', 'details');
     const req = {};
     const res = new Response();
     const next = () => {};
 
     middleware(message)(err, req, res, next);
-    res._status.should.equal(400);
-    res._json.should.have.property(
+    expect(res._status).toBe(400);
+    expect(res._json).toHaveProperty(
       'message',
       'Invalid input parameters and/or values.'
     );
-    res._json.should.have.property('details', 'details');
+    expect(res._json).toHaveProperty('details', 'details');
   });
 
-  it('should respond without details', () => {
+  test('should respond without details', () => {
     const err = new ValidationError('message', 'details');
     const req = {};
     const res = new Response();
@@ -29,11 +29,11 @@ describe('middleware()', () => {
     middleware(message, {
       details: false
     })(err, req, res, next);
-    res._status.should.equal(400);
-    res._json.should.not.have.property('details');
+    expect(res._status).toBe(400);
+    expect(res._json).not.toHaveProperty('details');
   });
 
-  it('other error should get nexted', () => {
+  test('other error should get nexted', () => {
     const err = new Error('message');
     const req = {};
     const res = new Response();
@@ -41,11 +41,11 @@ describe('middleware()', () => {
     middleware(message, {
       details: false
     })(err, req, res, err2 => {
-      err.should.equal(err2);
+      expect(err).toBe(err2);
     });
   });
 
-  it('validation err should get nexted', () => {
+  test('validation err should get nexted', () => {
     const err = new ValidationError('message', 'details');
     const req = {};
     const res = new Response();
@@ -53,9 +53,9 @@ describe('middleware()', () => {
     middleware(message, {
       next: true
     })(err, req, res, err2 => {
-      err.should.equal(err2);
+      expect(err).toBe(err2);
     });
-    res._status.should.equal(400);
-    res._json.should.have.property('details');
+    expect(res._status).toBe(400);
+    expect(res._json).toHaveProperty('details');
   });
 });

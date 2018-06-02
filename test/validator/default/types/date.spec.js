@@ -7,11 +7,11 @@ const helper = require('./../../../helper');
 describe('validator/default/types/date', () => {
   const message = Message('en');
 
-  it('DateFactory() should return DATE object', () => {
-    DateFactory().constructor.name.should.equal('DATE');
+  test('DateFactory() should return DATE object', () => {
+    expect(DateFactory().constructor.name).toBe('DATE');
   });
 
-  it('options() should return options', () => {
+  test('options() should return options', () => {
     const func = () => {};
     const defaultValue = '2018-01-01T00:00:00.000Z';
     const allowed = [null];
@@ -43,7 +43,7 @@ describe('validator/default/types/date', () => {
       .min(min)
       .max(max);
 
-    schema.options({ validation: true }).should.deepEqual({
+    expect(schema.options({ validation: true })).toEqual({
       defaultValue,
       allowed,
       func,
@@ -59,7 +59,7 @@ describe('validator/default/types/date', () => {
       max
     });
 
-    schema.options().should.deepEqual({
+    expect(schema.options()).toEqual({
       type: 'date',
       description,
       example,
@@ -77,14 +77,14 @@ describe('validator/default/types/date', () => {
     });
   });
 
-  it('func() with invalid argument should fail', () => {
+  test('func() with invalid argument should fail', () => {
     helper.shouldThrow(
       () => DateFactory().func('wrong'),
       'Validator configuration error: Must be a function.'
     );
   });
 
-  it('toObject() should return object', () => {
+  test('toObject() should return object', () => {
     const description = 'description';
     const example = 'example';
 
@@ -93,7 +93,7 @@ describe('validator/default/types/date', () => {
       .example(example)
       .required();
 
-    schema.toObject().should.deepEqual({
+    expect(schema.toObject()).toEqual({
       type: 'date',
       description,
       example,
@@ -105,13 +105,13 @@ describe('validator/default/types/date', () => {
     });
   });
 
-  it('validateSync() should verify', () => {
-    DateFactory()
-      .validateSync('2018-01-01T00:00:00.000Z')
-      .should.equal('2018-01-01T00:00:00.000Z');
+  test('validateSync() should verify', () => {
+    expect(DateFactory().validateSync('2018-01-01T00:00:00.000Z')).toBe(
+      '2018-01-01T00:00:00.000Z'
+    );
   });
 
-  it('validateSync() should fail', () => {
+  test('validateSync() should fail', () => {
     helper.shouldThrow(
       () =>
         DateFactory()
@@ -121,15 +121,15 @@ describe('validator/default/types/date', () => {
     );
   });
 
-  it('validateAsync() should verify', async () => {
+  test('validateAsync() should verify', async () => {
     await DateFactory()
       .validate('2018-01-01T00:00:00.000Z')
       .then(value => {
-        value.should.equal('2018-01-01T00:00:00.000Z');
+        expect(value).toBe('2018-01-01T00:00:00.000Z');
       });
   });
 
-  it('validateAsync() should fail', async () => {
+  test('validateAsync() should fail', async () => {
     await helper.shouldEventuallyThrow(
       DateFactory()
         .required()

@@ -1,5 +1,4 @@
 const { AssertionError } = require('assert');
-const should = require('should');
 
 exports.shouldThrow = (func, code) => {
   let error;
@@ -11,7 +10,7 @@ exports.shouldThrow = (func, code) => {
   if (!error) {
     throw new AssertionError({ message: 'Did not throw' });
   }
-  should.deepEqual(error, code);
+  expect(error).toEqual(code);
 };
 
 exports.shouldEventuallyThrow = async (promise, code) => {
@@ -24,7 +23,7 @@ exports.shouldEventuallyThrow = async (promise, code) => {
   if (!error) {
     throw new AssertionError({ message: 'Did not throw' });
   }
-  should.deepEqual(error, code);
+  expect(error).toEqual(code);
 };
 
 class Response {

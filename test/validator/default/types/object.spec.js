@@ -10,18 +10,18 @@ const helper = require('./../../../helper');
 describe('validator/default/types/object', () => {
   const message = Message('en');
 
-  it('ObjectFactory() should return OBJECT object', () => {
-    ObjectFactory().constructor.name.should.equal('OBJECT');
+  test('ObjectFactory() should return OBJECT object', () => {
+    expect(ObjectFactory().constructor.name).toBe('OBJECT');
   });
 
-  it('ObjectFactory() should with invalid object should throw', () => {
+  test('ObjectFactory() should with invalid object should throw', () => {
     helper.shouldThrow(
       () => ObjectFactory('wrong'),
       'Validator configuration error: Must be an object.'
     );
   });
 
-  it('options() should return options', () => {
+  test('options() should return options', () => {
     const func = () => {};
     const defaultValue = ['test'];
     const allowed = [null];
@@ -54,7 +54,7 @@ describe('validator/default/types/object', () => {
       .empty(empty)
       .unknown(unknown);
 
-    schema.options({ validation: true }).should.deepEqual({
+    expect(schema.options({ validation: true })).toEqual({
       defaultValue,
       allowed,
       func: {
@@ -75,7 +75,7 @@ describe('validator/default/types/object', () => {
       conditions: []
     });
 
-    schema.options().should.deepEqual({
+    expect(schema.options()).toEqual({
       type: 'object',
       description,
       example,
@@ -93,7 +93,7 @@ describe('validator/default/types/object', () => {
     });
   });
 
-  it('toObject() should return object', () => {
+  test('toObject() should return object', () => {
     const description = 'description';
     const example = 'example';
     const name = StringFactory();
@@ -103,7 +103,7 @@ describe('validator/default/types/object', () => {
       .example(example)
       .required();
 
-    schema.toObject().should.deepEqual({
+    expect(schema.toObject()).toEqual({
       type: 'object',
       description,
       example,
@@ -117,13 +117,11 @@ describe('validator/default/types/object', () => {
     });
   });
 
-  it('validateSync() should verify', () => {
-    ObjectFactory()
-      .validateSync({})
-      .should.deepEqual({});
+  test('validateSync() should verify', () => {
+    expect(ObjectFactory().validateSync({})).toEqual({});
   });
 
-  it('validateSync() should fail', () => {
+  test('validateSync() should fail', () => {
     helper.shouldThrow(
       () =>
         ObjectFactory()
@@ -133,15 +131,15 @@ describe('validator/default/types/object', () => {
     );
   });
 
-  it('validateAsync() should verify', async () => {
+  test('validateAsync() should verify', async () => {
     await ObjectFactory()
       .validate({})
       .then(value => {
-        value.should.deepEqual({});
+        expect(value).toEqual({});
       });
   });
 
-  it('validateAsync() should fail', async () => {
+  test('validateAsync() should fail', async () => {
     await helper.shouldEventuallyThrow(
       ObjectFactory()
         .required()
@@ -150,14 +148,14 @@ describe('validator/default/types/object', () => {
     );
   });
 
-  it('func() with invalid type should throw', () => {
+  test('func() with invalid type should throw', () => {
     helper.shouldThrow(
       () => ObjectFactory({}).func('wrong'),
       'Validator configuration error: Must be a function.'
     );
   });
 
-  it('conditions should get added', () => {
+  test('conditions should get added', () => {
     const schema = ObjectFactory({})
       .gt('a', 'b')
       .gte('a', 'b')
@@ -168,7 +166,7 @@ describe('validator/default/types/object', () => {
       .dependsOn('a', 'b')
       .xor('a', 'b')
       .or('a', 'b');
-    schema._conditions.should.deepEqual([
+    expect(schema._conditions).toEqual([
       { keyA: 'a', keyB: 'b', method: 'gt' },
       { keyA: 'a', keyB: 'b', method: 'gte' },
       { keyA: 'a', keyB: 'b', method: 'lt' },
@@ -181,20 +179,20 @@ describe('validator/default/types/object', () => {
     ]);
   });
 
-  it('example() should return generated example', () => {
+  test('example() should return generated example', () => {
     const schema = ObjectFactory({ name: StringFactory().example('Jane Doe') });
-    schema.example().should.deepEqual({ name: 'Jane Doe' });
+    expect(schema.example()).toEqual({ name: 'Jane Doe' });
   });
 
-  it('example() should return generated example', () => {
+  test('example() should return generated example', () => {
     const schema = ObjectFactory({ name: StringFactory() });
-    schema.example().should.deepEqual({ name: 'No example provided' });
+    expect(schema.example()).toEqual({ name: 'No example provided' });
   });
 
-  it('example() should return set example', () => {
+  test('example() should return set example', () => {
     const schema = ObjectFactory({
       name: StringFactory().example('Jane Doe')
     }).example({ name: 'John Doe' });
-    schema.example().should.deepEqual({ name: 'John Doe' });
+    expect(schema.example()).toEqual({ name: 'John Doe' });
   });
 });

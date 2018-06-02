@@ -6,39 +6,38 @@ const {
 const { Message } = require('./../../../../src/utils/message');
 const helper = require('./../../../helper');
 const moment = require('moment');
-const should = require('should');
 
 describe('validator/default/validation/date', () => {
   const message = Message('en');
   const validISOString = '2018-01-01T00:00:00.000Z';
 
-  it('validateDate() should return given value', () => {
+  test('validateDate() should return given value', () => {
     const actual = validateDate(validISOString, { message, required: true });
-    actual.should.equal(validISOString);
+    expect(actual).toBe(validISOString);
   });
 
-  it('validateDate() should return defaultValue', () => {
+  test('validateDate() should return defaultValue', () => {
     const actual = validateDate(undefined, {
       message,
       required: true,
       defaultValue: validISOString
     });
-    actual.should.equal(validISOString);
+    expect(actual).toBe(validISOString);
   });
 
-  it('validateDate() with undefined should verify', () => {
+  test('validateDate() with undefined should verify', () => {
     const actual = validateDate(undefined, {});
-    should.equal(actual, undefined);
+    expect(actual).toBe(undefined);
   });
 
-  it('validateDate() with null should verify', () => {
+  test('validateDate() with null should verify', () => {
     const actual = validateDate(null, {
       allowed: [null]
     });
-    should.equal(actual, null);
+    expect(actual).toBe(null);
   });
 
-  it('validateDate() with undefined should throw', () => {
+  test('validateDate() with undefined should throw', () => {
     helper.shouldThrow(
       () =>
         validateDate(undefined, {
@@ -50,7 +49,7 @@ describe('validator/default/validation/date', () => {
     );
   });
 
-  it('validateDate() should throw', () => {
+  test('validateDate() should throw', () => {
     helper.shouldThrow(
       () =>
         validateDate('123213', {
@@ -63,39 +62,34 @@ describe('validator/default/validation/date', () => {
     );
   });
 
-  it('validateDate() should parse to date', () => {
+  test('validateDate() should parse to date', () => {
     let actual = validateDate(validISOString, {
       message,
       required: true,
       parse: true
     });
-    moment(actual)
-      .toISOString()
-      .should.equal(validISOString);
+    expect(moment(actual).toISOString()).toBe(validISOString);
   });
 
-  it('validateDate() should parse to utc date', () => {
+  test('validateDate() should parse to utc date', () => {
     let actual = validateDate(validISOString, {
       message,
       required: true,
       parse: true,
       utc: true
     });
-    moment
-      .utc(actual)
-      .toISOString()
-      .should.equal(validISOString);
+    expect(moment.utc(actual).toISOString()).toBe(validISOString);
   });
 
-  it('validateDate() min date should verify', () => {
+  test('validateDate() min date should verify', () => {
     const actual = validateDate(validISOString, {
       message,
       min: '2017-01-01'
     });
-    actual.should.equal(validISOString);
+    expect(actual).toBe(validISOString);
   });
 
-  it('validateDate() min date should fail', () => {
+  test('validateDate() min date should fail', () => {
     helper.shouldThrow(
       () =>
         validateDate(validISOString, {
@@ -106,15 +100,15 @@ describe('validator/default/validation/date', () => {
     );
   });
 
-  it('validateDate() max date should verify', () => {
+  test('validateDate() max date should verify', () => {
     const actual = validateDate(validISOString, {
       message,
       max: '2019-01-01'
     });
-    actual.should.equal(validISOString);
+    expect(actual).toBe(validISOString);
   });
 
-  it('validateDate() max date should fail', () => {
+  test('validateDate() max date should fail', () => {
     helper.shouldThrow(
       () =>
         validateDate(validISOString, {
@@ -125,13 +119,13 @@ describe('validator/default/validation/date', () => {
     );
   });
 
-  it('validateSync() should return given value', () => {
+  test('validateSync() should return given value', () => {
     const actual = validateSync(validISOString, {});
-    actual.should.equal(validISOString);
+    expect(actual).toBe(validISOString);
   });
 
-  it('validate() should return given value', async () => {
+  test('validate() should return given value', async () => {
     const actual = await validate(validISOString, {});
-    actual.should.equal(validISOString);
+    expect(actual).toBe(validISOString);
   });
 });
