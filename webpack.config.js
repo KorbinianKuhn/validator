@@ -25,8 +25,5 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist')
   },
-  plugins: [
-    new LodashModuleReplacementPlugin(),
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
-  ]
+  plugins: [new LodashModuleReplacementPlugin()]
 };
