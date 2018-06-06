@@ -20,8 +20,6 @@ describe('validator/default/types/date', () => {
     const parse = false;
     const description = 'description';
     const example = 'example';
-    const format = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
-    const strict = true;
     const utc = true;
     const min = '2018-01-01T00:00:00.000Z';
     const max = '2019-01-01T00:00:00.000Z';
@@ -37,8 +35,6 @@ describe('validator/default/types/date', () => {
       .required()
       .optional()
       .func(func)
-      .format(format)
-      .strict(strict)
       .utc(utc)
       .min(min)
       .max(max);
@@ -52,8 +48,6 @@ describe('validator/default/types/date', () => {
       parse,
       required: false,
       message,
-      format,
-      strict,
       utc,
       min,
       max
@@ -69,8 +63,6 @@ describe('validator/default/types/date', () => {
       only,
       parse,
       required: false,
-      format,
-      strict,
       utc,
       min,
       max
@@ -99,9 +91,7 @@ describe('validator/default/types/date', () => {
       example,
       required: true,
       parse: false,
-      strict: false,
-      utc: false,
-      format: 'YYYY-MM-DD[T]HH:mm:ss.SSSZ'
+      utc: false
     });
   });
 

@@ -1,14 +1,13 @@
-const moment = require('moment');
-
-const toMomentDate = (message, value, utc, format, strict) => {
-  const momentDate = utc
-    ? moment.utc(value, format, strict)
-    : moment(value, format, strict);
-
-  if (momentDate.isValid()) {
-    return momentDate;
-  } else {
-    throw message.get('date_invalid', { format });
+const toDate = (message, value, utc) => {
+  const date = new Date(value);
+  if (isNaN(date.getTime())) {
+    throw message.get('date_invalid', {});
   }
+  return utc ? setUTCTimezone(date) : date;
 };
-exports.toMomentDate = toMomentDate;
+exports.toDate = toDate;
+
+const setUTCTimezone = date => {
+  //date.setTime(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
+  return date;
+};

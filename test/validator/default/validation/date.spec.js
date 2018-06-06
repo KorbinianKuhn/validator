@@ -49,19 +49,6 @@ describe('validator/default/validation/date', () => {
     );
   });
 
-  test('validateDate() should throw', () => {
-    helper.shouldThrow(
-      () =>
-        validateDate('123213', {
-          message,
-          required: true,
-          strict: true,
-          format: 'YYYY-MM-DD'
-        }),
-      'Must be a valid date with the format YYYY-MM-DD.'
-    );
-  });
-
   test('validateDate() should parse to date', () => {
     let actual = validateDate(validISOString, {
       message,
@@ -84,7 +71,7 @@ describe('validator/default/validation/date', () => {
   test('validateDate() min date should verify', () => {
     const actual = validateDate(validISOString, {
       message,
-      min: '2017-01-01'
+      min: '2017-01-01T00:00:00.000Z'
     });
     expect(actual).toBe(validISOString);
   });
@@ -94,16 +81,16 @@ describe('validator/default/validation/date', () => {
       () =>
         validateDate(validISOString, {
           message,
-          min: '2019-01-01'
+          min: '2019-01-01T00:00:00.000Z'
         }),
-      'Must be at minimum 2019-01-01.'
+      'Must be at minimum 2019-01-01T00:00:00.000Z.'
     );
   });
 
   test('validateDate() max date should verify', () => {
     const actual = validateDate(validISOString, {
       message,
-      max: '2019-01-01'
+      max: '2019-01-01T00:00:00.000Z'
     });
     expect(actual).toBe(validISOString);
   });
@@ -113,9 +100,9 @@ describe('validator/default/validation/date', () => {
       () =>
         validateDate(validISOString, {
           message,
-          max: '2017-01-01'
+          max: '2017-01-01T00:00:00.000Z'
         }),
-      'Must be at maximum 2017-01-01.'
+      'Must be at maximum 2017-01-01T00:00:00.000Z.'
     );
   });
 

@@ -4,22 +4,12 @@ const {
 } = require('./../../../utils/lodash');
 const { ANY } = require('./any');
 const { validate, validateSync } = require('./../validation/date');
-const { toMomentDate } = require('./../../../utils/date');
+const { toDate } = require('./../../../utils/date');
 
 class DATE extends ANY {
   constructor(options, defaults) {
     super(options, defaults);
-    this._format = defaultToAny(
-      options.dateFormat,
-      defaults.dateFormat,
-      'YYYY-MM-DD[T]HH:mm:ss.SSSZ'
-    );
     this._utc = defaultToAny(options.utc, defaults.utc, false);
-    this._strict = defaultToAny(
-      options.strictDateValidation,
-      defaults.strictDateValidation,
-      false
-    );
   }
 
   options(options = {}) {
@@ -27,9 +17,7 @@ class DATE extends ANY {
       allowed: this._allowed,
       required: this._required,
       parse: this._parse,
-      format: this._format,
       utc: this._utc,
-      strict: this._strict,
       only: this._only,
       not: this._not
     };
@@ -63,40 +51,18 @@ class DATE extends ANY {
     return validateSync(value, this.options({ validation: true }));
   }
 
-  format(string) {
-    this._format = string;
-    return this;
-  }
-
-  strict(boolean) {
-    this._strict = boolean;
-    return this;
-  }
-
   utc(boolean) {
     this._utc = boolean;
     return this;
   }
 
   min(value) {
-    this._min = toMomentDate(
-      this._message,
-      value,
-      this._utc,
-      this._format,
-      this._strict
-    ).toISOString();
+    this._min = toDate(this._message, value, this._utc).toISOString();
     return this;
   }
 
   max(value) {
-    this._max = toMomentDate(
-      this._message,
-      value,
-      this._utc,
-      this._format,
-      this._strict
-    ).toISOString();
+    this._max = toDate(this._message, value, this._utc).toISOString();
     return this;
   }
 

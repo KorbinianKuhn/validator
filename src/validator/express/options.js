@@ -3,9 +3,6 @@ exports.MIDDLEWARE_OPTIONS = {
   next: false
 };
 
-const DATE_FORMAT = 'YYYY-MM-DD[T]HH:mm:ss.SSSZ';
-exports.DATE_FORMAT = DATE_FORMAT;
-
 exports.TYPES = [
   'ANY',
   'ARRAY',
@@ -28,10 +25,8 @@ exports.VALIDATOR_OPTIONS = {
   emptyArrays: false,
   emptyObjects: false,
   unknownObjectKeys: false,
-  dateFormat: DATE_FORMAT,
   parseDates: true,
-  utc: true,
-  strictDateValidation: true
+  utc: true
 };
 
 exports.URI_OPTIONS = {};

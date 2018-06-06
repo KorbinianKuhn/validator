@@ -1,18 +1,17 @@
-const isInteger = require('lodash/isInteger');
 const isPlainObject = require('lodash/isPlainObject');
 const get = require('lodash/get');
 const set = require('lodash/set');
-const has = require('lodash/has');
-const hasIn = require('lodash/hasIn');
 const cloneDeep = require('lodash/cloneDeep');
 const uniqWith = require('lodash/uniqWith');
 const isEqual = require('lodash/isEqual');
-
-const isObject = require('lodash/isObject');
+const has = require('lodash/has');
+const hasIn = require('lodash/hasIn');
 
 const isAsyncFunction = func => func.constructor.name === 'AsyncFunction';
 
-const isNotNil = value => value != null;
+const isNil = value => value == null;
+
+const isNotNil = value => !isNil(value);
 
 const isUndefined = value => value === undefined;
 
@@ -26,6 +25,8 @@ const isString = value =>
 const isBoolean = value =>
   Object.prototype.toString.call(value) === '[object Boolean]';
 
+const isInteger = value => Number.isInteger(value);
+
 const isNumber = value =>
   Object.prototype.toString.call(value) === '[object Number]';
 
@@ -37,6 +38,11 @@ const isRegExp = value =>
 
 const isArray = value => Array.isArray(value);
 
+const isObject = value => {
+  const type = typeof value;
+  return value != null && (type == 'object' || type == 'function');
+};
+
 const defaultToAny = (...values) => {
   for (const value of values) {
     if (isNotNil(value)) return value;
@@ -46,13 +52,13 @@ const defaultToAny = (...values) => {
 
 const removeUndefinedProperties = object => {
   Object.keys(object).forEach(
-    key => object[key] === undefined && delete object[key]
+    key => isUndefined(object[key]) && delete object[key]
   );
   return object;
 };
 
 const removeNilProperties = object => {
-  Object.keys(object).forEach(key => object[key] == null && delete object[key]);
+  Object.keys(object).forEach(key => isNil(object[key]) && delete object[key]);
   return object;
 };
 
