@@ -1,6 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 module.exports = {
   entry: './index.js',
@@ -12,10 +10,7 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         options: {
-          plugins: [
-            'lodash',
-            ['transform-object-rest-spread', { useBuiltIns: true }]
-          ],
+          plugins: [['transform-object-rest-spread', { useBuiltIns: true }]],
           presets: [['env', { modules: false, targets: { node: 8 } }]]
         }
       }
@@ -24,6 +19,5 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist')
-  },
-  plugins: [new LodashModuleReplacementPlugin()]
+  }
 };

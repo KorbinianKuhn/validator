@@ -1,5 +1,5 @@
 const {
-  hasIn,
+  has,
   defaultToAny,
   isPlainObject,
   removeUndefinedProperties
@@ -14,7 +14,7 @@ const {
 const { Message } = require('./../../../utils/message');
 
 const toSchema = (schema, options, defaults, message, allowArray = false) => {
-  if (!hasIn(schema, 'constructor.name')) {
+  if (!has(schema, 'constructor.name')) {
     throw message.error('invalid_schema', {});
   }
 

@@ -122,6 +122,18 @@ class ANY {
   toObject(options = {}) {
     return toObject(this.options(), options);
   }
+
+  clone() {
+    const obj = Object.create(Object.getPrototypeOf(this));
+    Object.getOwnPropertyNames(this).forEach(key => {
+      if (key === '_message') {
+        obj._message = this._message;
+      } else {
+        obj[key] = JSON.parse(JSON.stringify(this[key]));
+      }
+    });
+    return obj;
+  }
 }
 
 exports.ANY = ANY;

@@ -1,11 +1,82 @@
-const isPlainObject = require('lodash/isPlainObject');
-const get = require('lodash/get');
-const set = require('lodash/set');
-const cloneDeep = require('lodash/cloneDeep');
-const uniqWith = require('lodash/uniqWith');
-const isEqual = require('lodash/isEqual');
-const has = require('lodash/has');
-const hasIn = require('lodash/hasIn');
+const isObjectObject = value => {
+  return (
+    value != null && typeof value === 'object' && Array.isArray(value) === false
+  );
+};
+
+const isPlainObject = value => {
+  let ctor, prot;
+
+  if (isObjectObject(value) === false) {
+    return false;
+  }
+
+  ctor = value.constructor;
+  if (typeof ctor !== 'function') {
+    return false;
+  }
+
+  prot = ctor.prototype;
+  if (isObjectObject(prot) === false) {
+    return false;
+  }
+
+  if (prot.hasOwnProperty('isPrototypeOf') === false) {
+    return false;
+  }
+
+  return true;
+};
+
+const get = (object, path, defaultValue) => {
+  let temp = object;
+  try {
+    path.split('.').map(key => {
+      temp = temp[key];
+    });
+  } catch (err) {
+    return defaultValue;
+  }
+  return temp === undefined ? defaultValue : temp;
+};
+
+const set = (object, path, value) => {
+  let temp = object;
+  const keys = path.split('.');
+  const length = keys.length - 1;
+  for (let i = 0; i < length; i++) {
+    const key = keys[i];
+    if (temp[key] === undefined) {
+      temp[key] = {};
+    }
+    temp = temp[key];
+  }
+  temp[keys[length]] = value;
+};
+
+const has = (object, path) => {
+  return get(object, path) !== undefined;
+};
+
+const isEqual = (value, other) => {
+  try {
+    return JSON.stringify(value) === JSON.stringify(other);
+  } catch (err) {
+    return false;
+  }
+};
+
+const uniqWith = (array, comparator) => {
+  const unique = [];
+
+  array.map(v => {
+    if (unique.find(o => comparator(o, v)) === undefined) {
+      unique.push(v);
+    }
+  });
+
+  return unique;
+};
 
 const isAsyncFunction = func => func.constructor.name === 'AsyncFunction';
 
@@ -74,9 +145,7 @@ module.exports = {
   set,
   has,
   keys,
-  hasIn,
   isNumber,
-  cloneDeep,
   isAsyncFunction,
   isNotNil,
   uniqWith,

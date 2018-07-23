@@ -65,9 +65,9 @@ const validateArray = (
     empty,
     min,
     max,
-    length,
-    not,
-    only
+    length
+    // not,
+    // only
   }
 ) => {
   if (isUndefined(value)) {

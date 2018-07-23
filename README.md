@@ -18,9 +18,10 @@ Features
 - highly customizable
 - automatic documentation generation (e.g. RAML)
 - reusable custom types
-- short syntax through stacked function calls
+- short syntax through function chaining
 - parse input values to target type
 - special support for expressjs, angular, mongoose
+- no dependencies
 
 ## API
 
@@ -50,30 +51,29 @@ $ git clone https://github.com/KorbinianKuhn/validator
 
 Initialize a new Validator:
 
-``` javascript
+```javascript
 const { Validator } = require('@korbiniankuhn/validator');
 const validator = Validator();
 ```
 
 Create a new Schema:
 
-``` javascript
+```javascript
 const schema = validator.Object({
   name: validator.String()
 });
 
-schema.validate({name: 'Jane Doe'})
-  .then((object) => {
-    // returns the given object
-  });
+schema.validate({ name: 'Jane Doe' }).then(object => {
+  // returns the given object
+});
 
-schema.validateSync({name: 'Jane Doe'});
+schema.validateSync({ name: 'Jane Doe' });
 // returns given object
 ```
 
 Extend the validator with custom schemas and types to reuse them later:
 
-``` javascript
+```javascript
 // Create a reusable regular expression
 const myRegex = validator.String().regex(/[A-Z]/);
 validator.addType('myRegex', myRegex);

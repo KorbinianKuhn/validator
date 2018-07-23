@@ -14,6 +14,7 @@
     - [validateSync(value)](#validatesyncvalue)
     - [required()](#required)
     - [optional()](#optional)
+    - [clone()](#clone)
     - [description(description)](#descriptiondescription)
     - [example(example)](#exampleexample)
     - [default(value)](#defaultvalue)
@@ -78,8 +79,8 @@ All types created by a validator get the validators options as default options. 
 - `throwValidationErrors (boolean)`: Throw an error if validation fails. Default `true`.
 - `parseToType (boolean)`: Parse input data to type (e.g. 'true' -> true, '1.2' -> 1.2). Default`true`,
 - `emptyStrings (boolean)`: Allow empty strings. Default `false`,
-- `trimStrings (boolean)`:  Trim strings. Default `true`,
-- `emptyArrays (boolean)`:  Allow empty arrays. Default `false`,
+- `trimStrings (boolean)`: Trim strings. Default `true`,
+- `emptyArrays (boolean)`: Allow empty arrays. Default `false`,
 - `emptyObjects (boolean)`: Allow empty objects. Default `false`,
 - `unknownObjectKeys (boolean)`: Allow keys that are not defined by the schema. Default `false`,
 - `parseDates (boolean)`: Parse date string to Date objects. Default `true`,
@@ -90,8 +91,8 @@ All types created by a validator get the validators options as default options. 
 Add a custom language pack. Check the locales folder for the available keys.
 
 ```javascript
-validator.addLocale('custom', {
-  wrong_type: "Beep",
+validator.addLocale("custom", {
+  wrong_type: "Beep"
   // ...
 });
 ```
@@ -101,7 +102,7 @@ validator.addLocale('custom', {
 Set the language.
 
 ```javascript
-validator.setLocale('de');
+validator.setLocale("de");
 ```
 
 ### addType(name, schema)
@@ -115,7 +116,7 @@ const address = validator.Object({
   city: validator.String()
 });
 
-validator.addType('address', address);
+validator.addType("address", address);
 ```
 
 ### Custom(name)
@@ -123,8 +124,7 @@ validator.addType('address', address);
 Use a custom type.
 
 ```javascript
-validator.Custom('address')
-  .validate(value);
+validator.Custom("address").validate(value);
 ```
 
 ### listCustomTypes()
@@ -143,12 +143,12 @@ Validate a schema with the validator to return a `ValidationError` object.
 ```javascript
 const validator = Validator();
 
-validator.validate(validator.String(), undefined)
+validator.validate(validator.String(), undefined);
 // ValidationError({
 //   message: 'Invalid input parameters and/or values.',
 //   code: 'validation_error',
 //   type: 'validator',
-//   details: 'Required but is undefined' 
+//   details: 'Required but is undefined'
 // })
 ```
 
@@ -159,12 +159,12 @@ Validate a schema with the validator to return a `ValidationError` object.
 ```javascript
 const validator = Validator();
 
-validator.validateSync(validator.String(), undefined)
+validator.validateSync(validator.String(), undefined);
 // ValidationError({
 //   message: 'Invalid input parameters and/or values.',
 //   code: 'validation_error',
 //   type: 'validator',
-//   details: 'Required but is undefined' 
+//   details: 'Required but is undefined'
 // })
 ```
 
@@ -179,10 +179,9 @@ Asynchronous validation of a schema.
 ```javascript
 const schema = validator.Any();
 
-schema.validate('test')
-  .then(value => {
-    // test
-  });
+schema.validate("test").then(value => {
+  // test
+});
 ```
 
 ### validateSync(value)
@@ -192,7 +191,7 @@ Synchronous validation of a schema.
 ```javascript
 const schema = validator.Any();
 
-schema.validateSync('test');
+schema.validateSync("test");
 // test
 ```
 
@@ -201,7 +200,8 @@ schema.validateSync('test');
 Marks a key as required which will not allow undefined as value
 
 ```javascript
-const schema = validator.Any()
+const schema = validator
+  .Any()
   .required()
   .validate(undefined);
 // throws
@@ -212,10 +212,23 @@ const schema = validator.Any()
 Marks a key as optional which will allow undefined as value
 
 ```javascript
-const schema = validator.Any()
+const schema = validator
+  .Any()
   .optional()
   .validate(undefined);
 // undefined
+```
+
+### clone()
+
+Creates a copy of the schema.
+
+```javascript
+const requiredSchema = validator
+  .Any()
+  .example("test")
+  .required();
+const optionalSchema = schema.clone().optional();
 ```
 
 ### description(description)
@@ -223,8 +236,7 @@ const schema = validator.Any()
 Sets a description for the type. Useful for automated documentation generation.
 
 ```javascript
-const schema = validator.Any()
-  .example("Any value is allowed.");
+const schema = validator.Any().example("Any value is allowed.");
 ```
 
 ### example(example)
@@ -234,8 +246,7 @@ Provide an example for the key. Useful for automated documentation generation.
 > If no parameter is given, the schemas example is returned
 
 ```javascript
-const schema = validator.Any()
-  .example("test");
+const schema = validator.Any().example("test");
 
 schema.example();
 // test
@@ -246,8 +257,9 @@ schema.example();
 Set a default value used if key is empty.
 
 ```javascript
-const schema = validator.Any()
-  .default('test')
+const schema = validator
+  .Any()
+  .default("test")
   .validate(undefined);
 // test
 ```
@@ -257,9 +269,10 @@ const schema = validator.Any()
 Parse value to schema type.
 
 ```javascript
-const schema = validator.Boolean()
+const schema = validator
+  .Boolean()
   .parse(true)
-  .validate('true');
+  .validate("true");
 // true
 ```
 
@@ -268,9 +281,10 @@ const schema = validator.Boolean()
 Only allow the given values.
 
 ```javascript
-const schema = validator.Any()
-  .only('test', 'hello')
-  .validate('wrong');
+const schema = validator
+  .Any()
+  .only("test", "hello")
+  .validate("wrong");
 // throws
 ```
 
@@ -279,9 +293,10 @@ const schema = validator.Any()
 Disallow the given values.
 
 ```javascript
-const schema = validator.Any()
-  .not('test', 'hello')
-  .validate('test');
+const schema = validator
+  .Any()
+  .not("test", "hello")
+  .validate("test");
 // throws
 ```
 
@@ -290,15 +305,17 @@ const schema = validator.Any()
 Allow specific values.
 
 ```javascript
-const schema = validator.Any()
-  .allow(null, 'test')
+const schema = validator
+  .Any()
+  .allow(null, "test")
   .validate(null);
 // null
 ```
 
 ### func(func)
 
-Use a custom function for validation. 
+Use a custom function for validation.
+
 > validate() supports normal functions and async functions
 
 > validateSync() only supports normal functions
@@ -328,15 +345,13 @@ schema.validate('hello');
 Returns an object representation of the schema.
 
 ```javascript
-const schema = validator.Number()
-  .integer(true);
-  
+const schema = validator.Number().integer(true);
+
 schema.toObject();
 // { type: 'number', required: true, integer: true }
 
-schema.toObject({ type: 'raml' });
+schema.toObject({ type: "raml" });
 // { type: 'integer', required: true }
-
 ```
 
 ## Array([type, options])
@@ -346,9 +361,10 @@ schema.toObject({ type: 'raml' });
 Set a minimum length of the array.
 
 ```javascript
-const schema = validator.Array()
+const schema = validator
+  .Array()
   .min(2)
-  .validate(['test']);
+  .validate(["test"]);
 // throws
 ```
 
@@ -357,9 +373,10 @@ const schema = validator.Array()
 Set a minimum length of the array.
 
 ```javascript
-const schema = validator.Array()
+const schema = validator
+  .Array()
   .max(1)
-  .validate(['test', 'hello']);
+  .validate(["test", "hello"]);
 // throws
 ```
 
@@ -368,9 +385,10 @@ const schema = validator.Array()
 Set the exact length of the array.
 
 ```javascript
-const schema = validator.Array()
+const schema = validator
+  .Array()
   .length(1)
-  .validate(['test']);
+  .validate(["test"]);
 // ['test']
 ```
 
@@ -379,7 +397,8 @@ const schema = validator.Array()
 Allow array to be empty.
 
 ```javascript
-const schema = validator.Array()
+const schema = validator
+  .Array()
   .empty(false)
   .validate([]);
 // throws
@@ -390,17 +409,17 @@ const schema = validator.Array()
 Require unique array items.
 
 ```javascript
-const schema = validator.Array()
+const schema = validator
+  .Array()
   .unique(true)
-  .validate(['test', 'test']);
+  .validate(["test", "test"]);
 // throws
 ```
 
 ## Boolean([options])
 
 ```javascript
-const schema = validator.Boolean()
-  .validate(false);
+const schema = validator.Boolean().validate(false);
 // false
 ```
 
@@ -411,9 +430,10 @@ const schema = validator.Boolean()
 The given value will get validated with [moment](https://github.com/moment/moment). Default format is the ISO6801 standard 'YYYY-MM-DD[T]HH:mm:ss.SSSZ'.
 
 ```javascript
-const schema = validator.Date()
-  .format('YYYY-MM-DD')
-  .validate('2018');
+const schema = validator
+  .Date()
+  .format("YYYY-MM-DD")
+  .validate("2018");
 // throws
 ```
 
@@ -422,9 +442,10 @@ const schema = validator.Date()
 Use UTC time.
 
 ```javascript
-const schema = validator.Date()
+const schema = validator
+  .Date()
   .utc(true)
-  .validate('2018');
+  .validate("2018");
 // UTC Date object
 ```
 
@@ -433,9 +454,10 @@ const schema = validator.Date()
 Set a minimum date.
 
 ```javascript
-const schema = validator.Date()
-  .min('2018-01-01T00:00:00.000Z')
-  .validate('2017-01-01T00:00:00.000Z');
+const schema = validator
+  .Date()
+  .min("2018-01-01T00:00:00.000Z")
+  .validate("2017-01-01T00:00:00.000Z");
 // throws
 ```
 
@@ -444,9 +466,10 @@ const schema = validator.Date()
 Set a maximum date.
 
 ```javascript
-const schema = validator.Date()
-  .max('2018-01-01T00:00:00.000Z')
-  .validate('2017-01-01T00:00:00.000Z');
+const schema = validator
+  .Date()
+  .max("2018-01-01T00:00:00.000Z")
+  .validate("2017-01-01T00:00:00.000Z");
 // Date object
 ```
 
@@ -457,7 +480,8 @@ const schema = validator.Date()
 Require integer values.
 
 ```javascript
-const schema = validator.Number()
+const schema = validator
+  .Number()
   .integer()
   .validate(2.2);
 // throws
@@ -468,7 +492,8 @@ const schema = validator.Number()
 Set a minimum value.
 
 ```javascript
-const schema = validator.Number()
+const schema = validator
+  .Number()
   .min(5)
   .validate(2.2);
 // throws
@@ -479,7 +504,8 @@ const schema = validator.Number()
 Set a maximum value.
 
 ```javascript
-const schema = validator.Number()
+const schema = validator
+  .Number()
   .max(5)
   .validate(2.2);
 // 2.2
@@ -490,7 +516,8 @@ const schema = validator.Number()
 Require value to be less than given number.
 
 ```javascript
-const schema = validator.Number()
+const schema = validator
+  .Number()
   .less(5)
   .validate(2.2);
 // 2.2.
@@ -501,7 +528,8 @@ const schema = validator.Number()
 Require value to be greater than given number.
 
 ```javascript
-const schema = validator.Number()
+const schema = validator
+  .Number()
   .greater(5)
   .validate(2.2);
 // throws
@@ -512,7 +540,8 @@ const schema = validator.Number()
 Require value to be a positive number.
 
 ```javascript
-const schema = validator.Number()
+const schema = validator
+  .Number()
   .positive()
   .validate(0);
 // throws
@@ -523,7 +552,8 @@ const schema = validator.Number()
 Require value to be a negative number.
 
 ```javascript
-const schema = validator.Number()
+const schema = validator
+  .Number()
   .negative()
   .validate(0);
 // throws
@@ -536,7 +566,8 @@ const schema = validator.Number()
 Allow object to be empty.
 
 ```javascript
-const schema = validator.Object()
+const schema = validator
+  .Object()
   .empty(true)
   .validate({});
 // {}
@@ -547,9 +578,10 @@ const schema = validator.Object()
 Allow unknown object keys.
 
 ```javascript
-const schema = validator.Object({ name: validator.String() })
+const schema = validator
+  .Object({ name: validator.String() })
   .unknown(false)
-  .validate({ name: 'Jane Doe', age: 26 });
+  .validate({ name: "Jane Doe", age: 26 });
 // throws
 ```
 
@@ -562,12 +594,13 @@ Execute a custom function with the values of the given keys as parameters.
 > validateSync() only supports sync functions
 
 ```javascript
-const schema = validator.Object({ 
+const schema = validator
+  .Object({
     name: validator.String(),
     age: validator.Number()
   })
-  .func(async (name, age) => {}, 'name', 'age')
-  .validate({ name: 'John Doe', age: 30 });
+  .func(async (name, age) => {}, "name", "age")
+  .validate({ name: "John Doe", age: 30 });
 // { name: 'John Doe' }
 ```
 
@@ -576,7 +609,8 @@ const schema = validator.Object({
 Set a minimum number of object keys.
 
 ```javascript
-const schema = validator.Object()
+const schema = validator
+  .Object()
   .min(2)
   .validate({});
 // throws
@@ -587,9 +621,10 @@ const schema = validator.Object()
 Set a maximum number of object keys.
 
 ```javascript
-const schema = validator.Object({ name: validator.String() })
+const schema = validator
+  .Object({ name: validator.String() })
   .max(2)
-  .validate({ name: 'John Doe' });
+  .validate({ name: "John Doe" });
 // { name: 'John Doe' }
 ```
 
@@ -598,9 +633,10 @@ const schema = validator.Object({ name: validator.String() })
 Set the exact number of object keys.
 
 ```javascript
-const schema = validator.Object({ name: validator.String() })
+const schema = validator
+  .Object({ name: validator.String() })
   .length(1)
-  .validate({ name: 'John Doe' });
+  .validate({ name: "John Doe" });
 // { name: 'John Doe' }
 ```
 
@@ -609,12 +645,13 @@ const schema = validator.Object({ name: validator.String() })
 `a` must be greater than `b`
 
 ```javascript
-const schema = validator.Object({
+const schema = validator
+  .Object({
     a: validator.Number(),
     b: validator.Number()
   })
-  .gt('a', 'b')
-  .validate({ a: 0, b: 2})
+  .gt("a", "b")
+  .validate({ a: 0, b: 2 });
 // throws
 ```
 
@@ -623,12 +660,13 @@ const schema = validator.Object({
 `a` must be greater than or equal `b`
 
 ```javascript
-const schema = validator.Object({
+const schema = validator
+  .Object({
     a: validator.Number(),
     b: validator.Number()
   })
-  .gte('a', 'b')
-  .validate({ a: 2, b: 2})
+  .gte("a", "b")
+  .validate({ a: 2, b: 2 });
 // { a: 2, b: 2}
 ```
 
@@ -637,12 +675,13 @@ const schema = validator.Object({
 `a` must be less than `b`
 
 ```javascript
-const schema = validator.Object({
+const schema = validator
+  .Object({
     a: validator.Number(),
     b: validator.Number()
   })
-  .lt('a', 'b')
-  .validate({ a: 0, b: 2})
+  .lt("a", "b")
+  .validate({ a: 0, b: 2 });
 // { a: 0, b: 2}
 ```
 
@@ -651,12 +690,13 @@ const schema = validator.Object({
 `a` must be less than or equal `b`
 
 ```javascript
-const schema = validator.Object({
+const schema = validator
+  .Object({
     a: validator.Number(),
     b: validator.Number()
   })
-  .lte('a', 'b')
-  .validate({ a: 5, b: 2})
+  .lte("a", "b")
+  .validate({ a: 5, b: 2 });
 // throws
 ```
 
@@ -665,12 +705,13 @@ const schema = validator.Object({
 `a` must equal `b`
 
 ```javascript
-const schema = validator.Object({
+const schema = validator
+  .Object({
     a: validator.Number(),
     b: validator.Number()
   })
-  .equals('a', 'b')
-  .validate({ a: 5, b: 2})
+  .equals("a", "b")
+  .validate({ a: 5, b: 2 });
 // throws
 ```
 
@@ -679,12 +720,13 @@ const schema = validator.Object({
 `a` must not equal `b`
 
 ```javascript
-const schema = validator.Object({
+const schema = validator
+  .Object({
     a: validator.Number(),
     b: validator.Number()
   })
-  .notEquals('a', 'b')
-  .validate({ a: 2, b: 2})
+  .notEquals("a", "b")
+  .validate({ a: 2, b: 2 });
 // throws
 ```
 
@@ -693,12 +735,13 @@ const schema = validator.Object({
 `a` dependsOn `b`
 
 ```javascript
-const schema = validator.Object({
+const schema = validator
+  .Object({
     a: validator.Number().optional(),
     b: validator.Number().optional()
   })
-  .dependsOn('a', 'b')
-  .validate({ a: 5 })
+  .dependsOn("a", "b")
+  .validate({ a: 5 });
 // throws
 ```
 
@@ -707,12 +750,13 @@ const schema = validator.Object({
 Only `a` or `b` must be set.
 
 ```javascript
-const schema = validator.Object({
+const schema = validator
+  .Object({
     a: validator.Number().optional(),
     b: validator.Number().optional()
   })
-  .xor('a', 'b')
-  .validate({ })
+  .xor("a", "b")
+  .validate({});
 // throws
 ```
 
@@ -721,12 +765,13 @@ const schema = validator.Object({
 Only `a` or `b` can be set.
 
 ```javascript
-const schema = validator.Object({
+const schema = validator
+  .Object({
     a: validator.Number().optional(),
     b: validator.Number().optional()
   })
-  .or('a', 'b')
-  .validate({ a: 2, b: 2})
+  .or("a", "b")
+  .validate({ a: 2, b: 2 });
 // throws
 ```
 
@@ -737,9 +782,10 @@ const schema = validator.Object({
 Set minimum length of the string.
 
 ```javascript
-const schema = validator.String()
+const schema = validator
+  .String()
   .min(10)
-  .validate('test');
+  .validate("test");
 // throws
 ```
 
@@ -748,9 +794,10 @@ const schema = validator.String()
 Set maximum length of the string.
 
 ```javascript
-const schema = validator.String()
+const schema = validator
+  .String()
   .max(10)
-  .validate('test');
+  .validate("test");
 // test
 ```
 
@@ -759,9 +806,10 @@ const schema = validator.String()
 Set exact length of the string.
 
 ```javascript
-const schema = validator.String()
+const schema = validator
+  .String()
   .length(4)
-  .validate('test');
+  .validate("test");
 // test
 ```
 
@@ -770,9 +818,10 @@ const schema = validator.String()
 Allow string to be empty.
 
 ```javascript
-const schema = validator.String()
+const schema = validator
+  .String()
   .empty(false)
-  .validate('');
+  .validate("");
 // throws
 ```
 
@@ -781,9 +830,10 @@ const schema = validator.String()
 Trim string.
 
 ```javascript
-const schema = validator.String()
+const schema = validator
+  .String()
   .trim(true)
-  .validate('  string with whitespaces   ');
+  .validate("  string with whitespaces   ");
 // string with whitespaces
 ```
 
@@ -792,15 +842,14 @@ const schema = validator.String()
 Value must match the regular expression.
 
 ```javascript
-const schema = validator.String()
-  .regex(/[A-Z]/, {
-    en: 'Only uppercase letters.',
-    de: 'Nur Großbuchstaben'
-  });
+const schema = validator.String().regex(/[A-Z]/, {
+  en: "Only uppercase letters.",
+  de: "Nur Großbuchstaben"
+});
 
-schema.validate('ABC');
+schema.validate("ABC");
 // ABC
 
-schema.validate('abc');
+schema.validate("abc");
 // Only uppercase letters.
 ```

@@ -1,4 +1,4 @@
-const { defaultToAny, cloneDeep, hasIn } = require('./../../utils/lodash');
+const { defaultToAny, has } = require('./../../utils/lodash');
 const { ValidationError } = require('./../../utils/error');
 const { Message } = require('./../../utils/message');
 const { VALIDATOR_OPTIONS } = require('./options');
@@ -22,7 +22,7 @@ class Validator {
   }
 
   async validate(schema, data) {
-    if (!hasIn(schema, 'constructor.name')) {
+    if (!has(schema, 'constructor.name')) {
       throw this._message.error('invalid_schema');
     }
 
@@ -46,7 +46,7 @@ class Validator {
   }
 
   validateSync(schema, data) {
-    if (!hasIn(schema, 'constructor.name')) {
+    if (!has(schema, 'constructor.name')) {
       throw this._message.error('invalid_schema');
     }
 
@@ -91,14 +91,14 @@ class Validator {
       });
     }
 
-    this._customs[name] = cloneDeep(schema);
+    this._customs[name] = schema.clone();
 
     return this;
   }
 
   Custom(name) {
     if (name in this._customs) {
-      return cloneDeep(this._customs[name]);
+      return this._customs[name].clone();
     } else {
       throw this._message.error('unknown_custom_type', { name });
     }

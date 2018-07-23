@@ -6,5 +6,6 @@ test
 .eslintrc
 .gitignore
 .travis.yml
+.prettierrc
 README.md
 webpack.config.js

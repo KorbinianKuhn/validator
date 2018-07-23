@@ -20,5 +20,3 @@ coverage
 /dist
 
 .vscode
-
-stats.json

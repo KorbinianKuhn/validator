@@ -2,7 +2,7 @@ const { toObject } = require('./../../../utils/to-object');
 const {
   removeUndefinedProperties,
   defaultToAny,
-  hasIn,
+  has,
   isPlainObject
 } = require('./../../../utils/lodash');
 const {
@@ -59,7 +59,7 @@ class RESPONSE {
     if (isPlainObject(schema)) {
       schema = ObjectFactory(schema, {}, this._options);
     } else {
-      if (!hasIn(schema, 'constructor.name')) {
+      if (!has(schema, 'constructor.name')) {
         throw this._message.error('invalid_schema', {});
       }
 

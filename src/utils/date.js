@@ -3,11 +3,20 @@ const toDate = (message, value, utc) => {
   if (isNaN(date.getTime())) {
     throw message.get('date_invalid', {});
   }
-  return utc ? setUTCTimezone(date) : date;
+  return utc ? toUTC(date) : date;
 };
 exports.toDate = toDate;
 
-const setUTCTimezone = date => {
-  //date.setTime(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
-  return date;
+const toUTC = date => {
+  return new Date(
+    Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate(),
+      date.getUTCHours(),
+      date.getUTCMinutes(),
+      date.getUTCSeconds(),
+      date.getUTCMilliseconds()
+    )
+  );
 };
