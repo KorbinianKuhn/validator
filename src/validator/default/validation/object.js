@@ -71,7 +71,10 @@ const validateObjectPropertiesSync = (value, object) => {
 
   for (const key in object) {
     try {
-      value[key] = object[key].validateSync(value[key]);
+      const ret = object[key].validateSync(value[key]);
+      if (isNotUndefined(ret)) {
+        value[key] = ret;
+      }
     } catch (err) {
       errors[key] = err;
     }
@@ -89,7 +92,10 @@ const validateObjectPropertiesAsync = async (value, object) => {
 
   for (const key in object) {
     try {
-      value[key] = await object[key].validate(value[key]);
+      const ret = await object[key].validate(value[key]);
+      if (isNotUndefined(ret)) {
+        value[key] = ret;
+      }
     } catch (err) {
       errors[key] = err;
     }
