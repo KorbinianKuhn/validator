@@ -7,7 +7,6 @@
 [![Dev Dependencies](https://img.shields.io/david/dev/KorbinianKuhn/validator.svg?style=flat-square)](https://david-dm.org/KorbinianKuhn/validator)
 [![npm](https://img.shields.io/npm/dt/@korbiniankuhn/validator.svg?style=flat-square)](https://www.npmjs.com/package/@korbiniankuhn/validator)
 [![npm-version](https://img.shields.io/npm/v/@korbiniankuhn/validator.svg?style=flat-square)](https://www.npmjs.com/package/@korbiniankuhn/validator)
-[![Greenkeeper badge](https://badges.greenkeeper.io/KorbinianKuhn/validator.svg?style=flat-square)](https://greenkeeper.io/)
 ![license](https://img.shields.io/github/license/KorbinianKuhn/validator.svg?style=flat-square)
 
 Validate input values with object schemas.
@@ -78,17 +77,17 @@ Extend the validator with custom schemas and types to reuse them later:
 const myRegex = validator.String().regex(/[A-Z]/);
 validator.addType('myRegex', myRegex);
 
-await validator.Custom('myRegex').validate(value)
+await validator.Custom('myRegex').validate(value);
 
 // Create a reusable address schema
 const address = validator.Object({
   street: validator.String(),
   postal: validator.Integer(),
   city: validator.String()
-})
+});
 validator.addType('address', address);
 
-await validator.Custom('address').validate(value)
+await validator.Custom('address').validate(value);
 ```
 
 ## Testing
