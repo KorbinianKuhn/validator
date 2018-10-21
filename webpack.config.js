@@ -10,8 +10,9 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         options: {
-          plugins: [['transform-object-rest-spread', { useBuiltIns: true }]],
-          presets: [['env', { modules: false, targets: { node: 8 } }]]
+          presets: [
+            ['@babel/preset-env', { modules: false, targets: { node: 8 } }]
+          ]
         }
       }
     ]
