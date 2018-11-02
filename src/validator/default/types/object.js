@@ -178,6 +178,23 @@ class OBJECT extends ANY {
     return toObject({ ...this.options(), properties }, options);
   }
 
+  clone() {
+    const obj = Object.create(Object.getPrototypeOf(this));
+    Object.getOwnPropertyNames(this).forEach(key => {
+      if (key === '_message') {
+        obj._message = this._message;
+      } else if (key === '_object') {
+        obj._object = {};
+        Object.keys(this._object).map(k => {
+          obj._object[k] = this._object[k].clone();
+        });
+      } else {
+        obj[key] = JSON.parse(JSON.stringify(this[key]));
+      }
+    });
+    return obj;
+  }
+
   // TODO rename
   // rename(source, target) {
   //   return this;
