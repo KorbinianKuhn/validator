@@ -1,7 +1,9 @@
 const {
   defaultToAny,
   isRegExp,
-  removeUndefinedProperties
+  removeUndefinedProperties,
+  cloneRegex,
+  clone
 } = require('./../../../utils/lodash');
 const { ANY } = require('./any');
 const { validate, validateSync } = require('./../validation/string');
@@ -92,6 +94,24 @@ class STRING extends ANY {
       locales
     };
     return this;
+  }
+
+  clone() {
+    const obj = Object.create(Object.getPrototypeOf(this));
+    Object.getOwnPropertyNames(this).forEach(key => {
+      if (key === '_message') {
+        obj._message = this._message;
+      } else if (key === '_regex') {
+        console.log(this._regex.pattern);
+        obj._regex = {
+          pattern: cloneRegex(this._regex.pattern),
+          locales: this._regex.locales
+        };
+      } else {
+        obj[key] = clone(this[key]);
+      }
+    });
+    return obj;
   }
 
   // TODO email

@@ -1,6 +1,7 @@
 const {
   defaultToAny,
-  removeUndefinedProperties
+  removeUndefinedProperties,
+  clone
 } = require('./../../../utils/lodash');
 const { toObject } = require('./../../../utils/to-object');
 const { validate, validateSync } = require('./../validation/any');
@@ -129,7 +130,7 @@ class ANY {
       if (key === '_message') {
         obj._message = this._message;
       } else {
-        obj[key] = JSON.parse(JSON.stringify(this[key]));
+        obj[key] = clone(this[key]);
       }
     });
     return obj;

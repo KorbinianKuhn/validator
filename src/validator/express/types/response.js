@@ -3,7 +3,8 @@ const {
   removeUndefinedProperties,
   defaultToAny,
   has,
-  isPlainObject
+  isPlainObject,
+  clone
 } = require('./../../../utils/lodash');
 const {
   validateResponse,
@@ -93,7 +94,7 @@ class RESPONSE {
       } else if (['_body'].includes(key)) {
         obj[key] = this[key].clone();
       } else {
-        obj[key] = JSON.parse(JSON.stringify(this[key]));
+        obj[key] = clone(this[key]);
       }
     });
     return obj;

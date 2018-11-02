@@ -1,6 +1,7 @@
 const {
   defaultToAny,
-  removeUndefinedProperties
+  removeUndefinedProperties,
+  clone
 } = require('./../../../utils/lodash');
 const { ANY } = require('./any');
 const { validate, validateSync } = require('./../validation/array');
@@ -104,7 +105,7 @@ class ARRAY extends ANY {
       } else if (key === '_type') {
         obj._type = this._type.clone();
       } else {
-        obj[key] = JSON.parse(JSON.stringify(this[key]));
+        obj[key] = clone(this[key]);
       }
     });
     return obj;

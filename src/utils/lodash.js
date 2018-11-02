@@ -133,6 +133,31 @@ const removeNilProperties = object => {
   return object;
 };
 
+const clone = object => {
+  return JSON.parse(JSON.stringify(object));
+};
+
+const REGEX_FLAGS = {
+  global: 'g',
+  ignoreCase: 'i',
+  multiline: 'm',
+  dotAll: 's',
+  sticky: 'y',
+  unicode: 'u'
+};
+
+const cloneRegex = regex => {
+  const flags = Object.keys(REGEX_FLAGS)
+    .map(flag => (regex[flag] ? REGEX_FLAGS[flag] : ''))
+    .join('');
+
+  const clonedRegexp = new RegExp(regex.source, flags);
+
+  clonedRegexp.lastIndex = regex.lastIndex;
+
+  return clonedRegexp;
+};
+
 module.exports = {
   defaultToAny,
   isString,
@@ -155,5 +180,7 @@ module.exports = {
   isNotUndefined,
   removeUndefinedProperties,
   isObject,
-  removeNilProperties
+  removeNilProperties,
+  clone,
+  cloneRegex
 };

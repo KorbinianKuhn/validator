@@ -2,7 +2,8 @@ const {
   defaultToAny,
   isPlainObject,
   isFunction,
-  removeUndefinedProperties
+  removeUndefinedProperties,
+  clone
 } = require('./../../../utils/lodash');
 const { ANY } = require('./any');
 const { validate, validateSync } = require('./../validation/object');
@@ -189,7 +190,7 @@ class OBJECT extends ANY {
           obj._object[k] = this._object[k].clone();
         });
       } else {
-        obj[key] = JSON.parse(JSON.stringify(this[key]));
+        obj[key] = clone(this[key]);
       }
     });
     return obj;

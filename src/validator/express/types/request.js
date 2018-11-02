@@ -2,7 +2,8 @@ const {
   has,
   defaultToAny,
   isPlainObject,
-  removeUndefinedProperties
+  removeUndefinedProperties,
+  clone
 } = require('./../../../utils/lodash');
 const { ObjectFactory } = require('./../../default/types/object');
 const { URI_OPTIONS, QUERY_OPTIONS, BODY_OPTIONS } = require('./../options');
@@ -140,7 +141,7 @@ class REQUEST {
       } else if (['_body', '_query', '_params'].includes(key)) {
         obj[key] = this[key].clone();
       } else {
-        obj[key] = JSON.parse(JSON.stringify(this[key]));
+        obj[key] = clone(this[key]);
       }
     });
     return obj;
