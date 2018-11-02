@@ -102,7 +102,6 @@ class STRING extends ANY {
       if (key === '_message') {
         obj._message = this._message;
       } else if (key === '_regex') {
-        console.log(this._regex.pattern);
         obj._regex = {
           pattern: cloneRegex(this._regex.pattern),
           locales: this._regex.locales
