@@ -1,7 +1,8 @@
 const {
   defaultToAny,
   removeUndefinedProperties,
-  clone
+  clone,
+  isArray
 } = require('./../../../utils/lodash');
 const { toObject } = require('./../../../utils/to-object');
 const { validate, validateSync } = require('./../validation/any');
@@ -98,7 +99,7 @@ class ANY {
   }
 
   only(...values) {
-    this._only = values;
+    this._only = isArray(values[0]) ? values[0] : values;
     return this;
   }
 

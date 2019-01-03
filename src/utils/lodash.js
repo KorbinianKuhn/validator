@@ -78,8 +78,6 @@ const uniqWith = (array, comparator) => {
   return unique;
 };
 
-const isAsyncFunction = func => func.constructor.name === 'AsyncFunction';
-
 const isNil = value => value == null;
 
 const isNotNil = value => !isNil(value);
@@ -101,8 +99,12 @@ const isInteger = value => Number.isInteger(value);
 const isNumber = value =>
   Object.prototype.toString.call(value) === '[object Number]';
 
-const isFunction = value =>
+const isSyncFunction = value =>
   Object.prototype.toString.call(value) === '[object Function]';
+
+const isAsyncFunction = func => func.constructor.name === 'AsyncFunction';
+
+const isFunction = func => isSyncFunction(func) || isAsyncFunction(func);
 
 const isRegExp = value =>
   Object.prototype.toString.call(value) === '[object RegExp]';
@@ -166,12 +168,13 @@ module.exports = {
   isPlainObject,
   isArray,
   isFunction,
+  isSyncFunction,
+  isAsyncFunction,
   get,
   set,
   has,
   keys,
   isNumber,
-  isAsyncFunction,
   isNotNil,
   uniqWith,
   isEqual,
