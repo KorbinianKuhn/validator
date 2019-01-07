@@ -1,5 +1,5 @@
 const { Validator } = require('./../default/validator');
-const { VALIDATOR_OPTIONS } = require('./options');
+const { VALIDATOR_OPTIONS, TYPES } = require('./options');
 const { AnyFactory } = require('./types/any');
 const { ArrayFactory } = require('./types/array');
 const { BooleanFactory } = require('./types/boolean');
@@ -11,6 +11,7 @@ const { StringFactory } = require('./types/string');
 class AngularValidator extends Validator {
   constructor(options) {
     super({ ...VALIDATOR_OPTIONS, ...options });
+    this._types = TYPES;
   }
 
   Any(options = {}) {

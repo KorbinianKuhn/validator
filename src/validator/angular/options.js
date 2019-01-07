@@ -11,3 +11,13 @@ exports.VALIDATOR_OPTIONS = {
   parseDates: true,
   utc: true
 };
+
+exports.TYPES = [
+  'ANY_ANGULAR',
+  'ARRAY_ANGULAR',
+  'BOOLEAN_ANGULAR',
+  'DATE_ANGULAR',
+  'NUMBER_ANGULAR',
+  'OBJECT_ANGULAR',
+  'STRING_ANGULAR'
+];

@@ -11,3 +11,13 @@ exports.VALIDATOR_OPTIONS = {
   parseDates: true,
   utc: true
 };
+
+exports.TYPES = [
+  'ANY',
+  'ARRAY',
+  'BOOLEAN',
+  'DATE',
+  'NUMBER',
+  'OBJECT',
+  'STRING'
+];

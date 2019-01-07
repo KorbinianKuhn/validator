@@ -1,7 +1,7 @@
 const { defaultToAny, has } = require('./../../utils/lodash');
 const { ValidationError } = require('./../../utils/error');
 const { Message } = require('./../../utils/message');
-const { VALIDATOR_OPTIONS } = require('./options');
+const { VALIDATOR_OPTIONS, TYPES } = require('./options');
 const { AnyFactory } = require('./types/any');
 const { ArrayFactory } = require('./types/array');
 const { BooleanFactory } = require('./types/boolean');
@@ -9,8 +9,6 @@ const { DateFactory } = require('./types/date');
 const { NumberFactory } = require('./types/number');
 const { ObjectFactory } = require('./types/object');
 const { StringFactory } = require('./types/string');
-
-const TYPES = ['ANY', 'ARRAY', 'BOOLEAN', 'DATE', 'NUMBER', 'OBJECT', 'STRING'];
 
 class Validator {
   constructor(options) {
