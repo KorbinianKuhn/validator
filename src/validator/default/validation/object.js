@@ -384,7 +384,7 @@ const validate = async (
     object
   });
 
-  validateObjectFunctionAsync(value, func);
+  await validateObjectFunctionAsync(value, func);
 
   return value;
 };
