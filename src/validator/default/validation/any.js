@@ -24,6 +24,10 @@ const validateAny = (
     return value;
   }
 
+  if (value === null) {
+    throw message.get('not_null', { value });
+  }
+
   validateOnly(only, value, message);
   validateNot(not, value, message);
 

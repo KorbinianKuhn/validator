@@ -85,6 +85,10 @@ const validateArray = (
     return value;
   }
 
+  if (value === null) {
+    throw message.get('not_null', { value });
+  }
+
   if (parse && isString(value)) {
     try {
       value = JSON.parse(value);

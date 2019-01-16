@@ -42,6 +42,10 @@ const validateString = (
     return value;
   }
 
+  if (value === null) {
+    throw message.get('not_null', { value });
+  }
+
   if (!isString(value)) {
     throw message.get('wrong_type', {
       expected: 'string',

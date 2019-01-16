@@ -12,6 +12,7 @@ module.exports = {
   unknown_custom_type: 'Unbekanntes eigenes Schema {{name}}.',
   no_example: 'Kein Beispiel vorhanden.',
   required: 'Erforderlich aber ist {{value}}.',
+  not_null: 'Null is not allowed.',
   wrong_type: 'Muss {{expected}} sein aber ist {{actual}}.',
   only: "Nur '{{only}}' ist erlaubt.",
   not: 'Ist nicht erlaubt.',

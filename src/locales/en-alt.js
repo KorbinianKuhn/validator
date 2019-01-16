@@ -12,6 +12,7 @@ module.exports = {
   unknown_custom_type: 'Error getting custom type {{name}}. Unknown type.',
   no_example: 'No example provided',
   required: 'Required but is {{value}}.',
+  not_null: 'Null is not allowed.',
   wrong_type: 'Must be type {{expected}} but is {{actual}}.',
   only: "Only '{{only}}' is allowed.",
   not: 'Is not allowed.',

@@ -26,6 +26,10 @@ const validateDate = (
     return value;
   }
 
+  if (value === null) {
+    throw message.get('not_null', { value });
+  }
+
   const date = toDate(message, value, utc);
 
   if (min && date.toISOString() < min) {

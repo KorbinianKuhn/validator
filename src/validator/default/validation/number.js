@@ -46,6 +46,10 @@ const validateNumber = (
     return value;
   }
 
+  if (value === null) {
+    throw message.get('not_null', { value });
+  }
+
   if (parse && isString(value)) {
     if (integer && value.match(/^[+-]?\d+$/)) {
       value = parseInt(value);

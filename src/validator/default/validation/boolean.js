@@ -32,6 +32,10 @@ const validateBoolean = (
     return value;
   }
 
+  if (value === null) {
+    throw message.get('not_null', { value });
+  }
+
   if (parse) {
     if (TRUES.indexOf(value) !== -1) {
       return true;
