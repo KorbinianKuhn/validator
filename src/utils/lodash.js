@@ -175,6 +175,7 @@ module.exports = {
   has,
   keys,
   isNumber,
+  isNil,
   isNotNil,
   uniqWith,
   isEqual,

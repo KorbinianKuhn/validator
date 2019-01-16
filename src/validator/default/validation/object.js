@@ -7,7 +7,8 @@ const {
   has,
   get,
   isEqual,
-  isAsyncFunction
+  isAsyncFunction,
+  isNil
 } = require('./../../../utils/lodash');
 const { getErrorMessage } = require('./../../../../src/utils/error');
 
@@ -136,7 +137,7 @@ const validateObjectAfterProperties = (
 };
 
 const isGreaterThan = (message, keyA, keyB, a, b) => {
-  if (isPlainObject(a) || isPlainObject(b)) {
+  if (isNil(a) || isNil(b) || isPlainObject(a) || isPlainObject(b)) {
     return;
   }
 
@@ -146,7 +147,7 @@ const isGreaterThan = (message, keyA, keyB, a, b) => {
 };
 
 const isGreaterOrEqualThan = (message, keyA, keyB, a, b) => {
-  if (isPlainObject(a) || isPlainObject(b)) {
+  if (isNil(a) || isNil(b) || isPlainObject(a) || isPlainObject(b)) {
     return;
   }
 
@@ -156,7 +157,7 @@ const isGreaterOrEqualThan = (message, keyA, keyB, a, b) => {
 };
 
 const isLessThan = (message, keyA, keyB, a, b) => {
-  if (isPlainObject(a) || isPlainObject(b)) {
+  if (isNil(a) || isNil(b) || isPlainObject(a) || isPlainObject(b)) {
     return;
   }
 
@@ -166,7 +167,7 @@ const isLessThan = (message, keyA, keyB, a, b) => {
 };
 
 const isLessOrEqualThan = (message, keyA, keyB, a, b) => {
-  if (isPlainObject(a) || isPlainObject(b)) {
+  if (isNil(a) || isNil(b) || isPlainObject(a) || isPlainObject(b)) {
     return;
   }
 
