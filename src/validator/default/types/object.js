@@ -2,8 +2,7 @@ const {
   defaultToAny,
   isPlainObject,
   isFunction,
-  removeUndefinedProperties,
-  clone
+  removeUndefinedProperties
 } = require('./../../../utils/lodash');
 const { ANY } = require('./any');
 const { validate, validateSync } = require('./../validation/object');

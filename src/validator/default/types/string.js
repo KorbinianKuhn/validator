@@ -1,9 +1,7 @@
 const {
   defaultToAny,
   isRegExp,
-  removeUndefinedProperties,
-  cloneRegex,
-  clone
+  removeUndefinedProperties
 } = require('./../../../utils/lodash');
 const { ANY } = require('./any');
 const { validate, validateSync } = require('./../validation/string');

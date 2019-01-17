@@ -1,7 +1,6 @@
 const {
   defaultToAny,
-  removeUndefinedProperties,
-  clone
+  removeUndefinedProperties
 } = require('./../../../utils/lodash');
 const { ANY } = require('./any');
 const { validate, validateSync } = require('./../validation/array');
