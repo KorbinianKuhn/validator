@@ -8,7 +8,7 @@ component.ts
 import { AngularValidator } from '@korbiniankuhn/validator/dist/bundle.js';
 
 // en-alt is optimized for frontend form errors
-const validator = AngularValidator({ language: 'en-alt' });
+const validator = AngularValidator({ locale: 'en-alt' });
 
 // Synchronous validation
 this.formBuilder.group({
@@ -18,7 +18,7 @@ this.formBuilder.group({
 
 // Asynchronous validation
 this.formBuilder.group({
-  'name': new FormControl({}, null, validator.String().min(5).validatec())
+  'name': new FormControl({}, null, validator.String().min(5).validate())
 });
 
 ```

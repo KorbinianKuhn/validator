@@ -195,4 +195,28 @@ describe('validator/default/types/object', () => {
     }).example({ name: 'John Doe' });
     expect(schema.example()).toEqual({ name: 'John Doe' });
   });
+
+  test('clone() should keep function', () => {
+    const func = () => {};
+    const schema = ObjectFactory({
+      name: StringFactory()
+    }).func(func, 'name');
+
+    const cloned = schema.clone();
+
+    expect(cloned._func.fn).toEqual(func);
+  });
+
+  test('validation of optional object with null allowed and value of null should return null', () => {
+    const schema = ObjectFactory({
+      subschema: ObjectFactory({
+        name: StringFactory()
+      })
+        .optional()
+        .allow(null)
+    });
+
+    const result = schema.validateSync({ subschema: null });
+    expect(result).toEqual({ subschema: null });
+  });
 });

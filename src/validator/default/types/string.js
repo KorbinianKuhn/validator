@@ -96,23 +96,6 @@ class STRING extends ANY {
     return this;
   }
 
-  clone() {
-    const obj = Object.create(Object.getPrototypeOf(this));
-    Object.getOwnPropertyNames(this).forEach(key => {
-      if (key === '_message') {
-        obj._message = this._message;
-      } else if (key === '_regex') {
-        obj._regex = {
-          pattern: cloneRegex(this._regex.pattern),
-          locales: this._regex.locales
-        };
-      } else {
-        obj[key] = clone(this[key]);
-      }
-    });
-    return obj;
-  }
-
   // TODO email
   // email({remove}) {
   //   return this;

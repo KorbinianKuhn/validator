@@ -56,5 +56,6 @@
       "eslint",
       "git add"
     ]
-  }
+  },
+  "dependencies": {}
 }

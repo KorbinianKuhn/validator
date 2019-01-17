@@ -9,6 +9,15 @@ const { ANY } = require('./any');
 const { validate, validateSync } = require('./../validation/object');
 const { toObject } = require('./../../../utils/to-object');
 
+const objectToSchema = (object, options, defaults) => {
+  Object.keys(object)
+    .filter(k => object[k].constructor.name === 'Object')
+    .map(k => {
+      object[k] = new OBJECT(object[k], options, defaults);
+    });
+  return object;
+};
+
 class OBJECT extends ANY {
   constructor(object = {}, options, defaults) {
     super(options, defaults);
@@ -17,7 +26,7 @@ class OBJECT extends ANY {
       throw this._message.error('object_invalid_type');
     }
 
-    this._object = object;
+    this._object = objectToSchema(object, options, defaults);
     this._conditions = [];
     this._empty = defaultToAny(
       options.emptyObjects,
@@ -177,23 +186,6 @@ class OBJECT extends ANY {
       properties[key] = this._object[key].toObject(options);
     }
     return toObject({ ...this.options(), properties }, options);
-  }
-
-  clone() {
-    const obj = Object.create(Object.getPrototypeOf(this));
-    Object.getOwnPropertyNames(this).forEach(key => {
-      if (key === '_message') {
-        obj._message = this._message;
-      } else if (key === '_object') {
-        obj._object = {};
-        Object.keys(this._object).map(k => {
-          obj._object[k] = this._object[k].clone();
-        });
-      } else {
-        obj[key] = clone(this[key]);
-      }
-    });
-    return obj;
   }
 
   // TODO rename

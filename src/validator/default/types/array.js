@@ -97,20 +97,6 @@ class ARRAY extends ANY {
     return toObject({ ...this.options(), items }, options);
   }
 
-  clone() {
-    const obj = Object.create(Object.getPrototypeOf(this));
-    Object.getOwnPropertyNames(this).forEach(key => {
-      if (key === '_message') {
-        obj._message = this._message;
-      } else if (key === '_type') {
-        obj._type = this._type.clone();
-      } else {
-        obj[key] = clone(this[key]);
-      }
-    });
-    return obj;
-  }
-
   // TODO compact
   // compact() {
   //   return this;

@@ -1,13 +1,13 @@
 const {
   defaultToAny,
   removeUndefinedProperties,
-  clone,
   isArray
 } = require('./../../../utils/lodash');
 const { toObject } = require('./../../../utils/to-object');
 const { validate, validateSync } = require('./../validation/any');
 const { isFunction } = require('./../../../utils/lodash');
 const { Message } = require('./../../../utils/message');
+const { cloneSchema } = require('./../../../utils/clone');
 
 class ANY {
   constructor(options, defaults) {
@@ -126,15 +126,7 @@ class ANY {
   }
 
   clone() {
-    const obj = Object.create(Object.getPrototypeOf(this));
-    Object.getOwnPropertyNames(this).forEach(key => {
-      if (key === '_message') {
-        obj._message = this._message;
-      } else {
-        obj[key] = clone(this[key]);
-      }
-    });
-    return obj;
+    return cloneSchema(this);
   }
 }
 

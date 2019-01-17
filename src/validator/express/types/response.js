@@ -85,20 +85,6 @@ class RESPONSE {
 
     return toObject({ ...this.options(), ...object }, options);
   }
-
-  clone() {
-    const obj = Object.create(Object.getPrototypeOf(this));
-    Object.getOwnPropertyNames(this).forEach(key => {
-      if (key === '_message') {
-        obj._message = this._message;
-      } else if (['_body'].includes(key)) {
-        obj[key] = this[key].clone();
-      } else {
-        obj[key] = clone(this[key]);
-      }
-    });
-    return obj;
-  }
 }
 
 exports.ResponseFactory = (options = {}, defaults = {}) =>

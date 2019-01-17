@@ -24,7 +24,7 @@ describe('validator/default/validation/object', () => {
       {},
       { message, required: true }
     );
-    expect(actual).toEqual({});
+    expect(actual).toEqual([true, {}]);
   });
 
   test('validateObjectBeforeProperties() should return defaultValue', () => {
@@ -33,19 +33,19 @@ describe('validator/default/validation/object', () => {
       required: true,
       defaultValue: {}
     });
-    expect(actual).toEqual({});
+    expect(actual).toEqual([false, {}]);
   });
 
   test('validateObjectBeforeProperties() with undefined should verify', () => {
     const actual = validateObjectBeforeProperties(undefined, {});
-    expect(actual).toBe(undefined);
+    expect(actual).toEqual([false, undefined]);
   });
 
   test('validateObjectBeforeProperties() with null should verify', () => {
     const actual = validateObjectBeforeProperties(null, {
       allowed: [null]
     });
-    expect(actual).toBe(null);
+    expect(actual).toEqual([false, null]);
   });
 
   test('validateObjectBeforeProperties() with undefined should throw', () => {
@@ -72,7 +72,7 @@ describe('validator/default/validation/object', () => {
     let actual = validateObjectBeforeProperties('{}', {
       parse: true
     });
-    expect(actual).toEqual({});
+    expect(actual).toEqual([true, {}]);
   });
 
   test('validateObjectBeforeProperties() should try parse to object but fail', () => {
@@ -93,7 +93,7 @@ describe('validator/default/validation/object', () => {
         empty: true
       }
     );
-    expect(actual).toEqual({});
+    expect(actual).toEqual([true, {}]);
   });
 
   test('validateObjectBeforeProperties() empty object should fail', () => {
@@ -117,7 +117,7 @@ describe('validator/default/validation/object', () => {
         length: 1
       }
     );
-    expect(actual).toEqual({ key: 'value' });
+    expect(actual).toEqual([true, { key: 'value' }]);
   });
 
   test('validateObjectBeforeProperties() min length should fail', () => {
@@ -141,7 +141,7 @@ describe('validator/default/validation/object', () => {
         min: 1
       }
     );
-    expect(actual).toEqual({ key: 'value' });
+    expect(actual).toEqual([true, { key: 'value' }]);
   });
 
   test('validateObjectBeforeProperties() max length should fail', () => {
@@ -165,7 +165,7 @@ describe('validator/default/validation/object', () => {
         max: 1
       }
     );
-    expect(actual).toEqual({ key: 'value' });
+    expect(actual).toEqual([true, { key: 'value' }]);
   });
 
   test('validateObjectBeforeProperties() length should fail', () => {

@@ -18,17 +18,17 @@ const validateObjectBeforeProperties = (
 ) => {
   if (isUndefined(value)) {
     if (isNotUndefined(defaultValue)) {
-      return defaultValue;
+      return [false, defaultValue];
     }
     if (required) {
       throw message.get('required', { value });
     } else {
-      return undefined;
+      return [false, undefined];
     }
   }
 
   if (allowed && allowed.indexOf(value) !== -1) {
-    return value;
+    return [false, value];
   }
 
   if (value === null) {
@@ -68,13 +68,17 @@ const validateObjectBeforeProperties = (
     throw message.get('object_length', { expected: length, actual: numKeys });
   }
 
-  return value;
+  return [true, value];
 };
 
 const validateObjectPropertiesSync = (value, object) => {
   const errors = {};
 
   for (const key in object) {
+    const schema = object[key];
+    if (!schema._required && isUndefined(value[key])) {
+      continue;
+    }
     try {
       const ret = object[key].validateSync(value[key]);
       if (isNotUndefined(ret)) {
@@ -324,30 +328,35 @@ const validateSync = (
     conditions
   }
 ) => {
-  value = validateObjectBeforeProperties(value, {
-    defaultValue,
-    allowed,
-    required,
-    message,
-    parse,
-    empty,
-    min,
-    max,
-    length
-  });
+  let [continueValidation, checkedValue] = validateObjectBeforeProperties(
+    value,
+    {
+      defaultValue,
+      allowed,
+      required,
+      message,
+      parse,
+      empty,
+      min,
+      max,
+      length
+    }
+  );
 
-  value = validateObjectPropertiesSync(value, object);
+  if (continueValidation) {
+    checkedValue = validateObjectPropertiesSync(checkedValue, object);
 
-  validateObjectAfterProperties(value, {
-    unknown,
-    conditions,
-    message,
-    object
-  });
+    validateObjectAfterProperties(checkedValue, {
+      unknown,
+      conditions,
+      message,
+      object
+    });
 
-  validateObjectFunctionSync(value, func);
+    validateObjectFunctionSync(checkedValue, func);
+  }
 
-  return value;
+  return checkedValue;
 };
 
 const validate = async (
@@ -368,30 +377,35 @@ const validate = async (
     conditions
   }
 ) => {
-  value = validateObjectBeforeProperties(value, {
-    defaultValue,
-    allowed,
-    required,
-    message,
-    parse,
-    empty,
-    min,
-    max,
-    length
-  });
+  let [continueValidation, checkedValue] = validateObjectBeforeProperties(
+    value,
+    {
+      defaultValue,
+      allowed,
+      required,
+      message,
+      parse,
+      empty,
+      min,
+      max,
+      length
+    }
+  );
 
-  value = await validateObjectPropertiesAsync(value, object);
+  if (continueValidation) {
+    checkedValue = await validateObjectPropertiesAsync(checkedValue, object);
 
-  validateObjectAfterProperties(value, {
-    unknown,
-    conditions,
-    message,
-    object
-  });
+    validateObjectAfterProperties(checkedValue, {
+      unknown,
+      conditions,
+      message,
+      object
+    });
 
-  await validateObjectFunctionAsync(value, func);
+    await validateObjectFunctionAsync(checkedValue, func);
+  }
 
-  return value;
+  return checkedValue;
 };
 
 module.exports = {

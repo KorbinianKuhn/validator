@@ -184,4 +184,22 @@ describe('validator/express/validation/request', () => {
       }
     );
   });
+
+  test('validateRequestSync() with empty but optional body should return empty body', () => {
+    const req = { params: {}, query: {}, body: { name: 'Test' } };
+
+    const schema = validator.Request().body(
+      validator.Body({
+        name: validator.String(),
+        address: validator
+          .Object({
+            street: validator.String()
+          })
+          .optional()
+      })
+    );
+
+    const result = validator.validateSync(schema, req);
+    expect(result).toEqual(req);
+  });
 });
