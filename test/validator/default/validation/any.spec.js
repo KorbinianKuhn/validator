@@ -142,4 +142,28 @@ describe('validator/default/validation/any', () => {
     const actual = await validate('test', {});
     expect(actual).toBe('test');
   });
+
+  test('validateAny() with nullAsUndefined false should return correct error message', () => {
+    helper.shouldThrow(
+      () =>
+        validateAny(null, {
+          message,
+          required: true,
+          nullAsUndefined: false
+        }),
+      'Null is not allowed.'
+    );
+  });
+
+  test('validateAny() with nullAsUndefined true should return correct error message', () => {
+    helper.shouldThrow(
+      () =>
+        validateAny(null, {
+          message,
+          required: true,
+          nullAsUndefined: true
+        }),
+      'Required but is null.'
+    );
+  });
 });

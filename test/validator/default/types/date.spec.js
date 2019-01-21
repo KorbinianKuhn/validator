@@ -50,7 +50,8 @@ describe('validator/default/types/date', () => {
       message,
       utc,
       min,
-      max
+      max,
+      nullAsUndefined: false
     });
 
     expect(schema.options()).toEqual({

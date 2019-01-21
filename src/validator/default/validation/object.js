@@ -8,15 +8,27 @@ const {
   get,
   isEqual,
   isAsyncFunction,
-  isNil
+  isNil,
+  isNull
 } = require('./../../../utils/lodash');
 const { getErrorMessage } = require('./../../../../src/utils/error');
 
 const validateObjectBeforeProperties = (
   value,
-  { defaultValue, allowed, required, message, parse, empty, min, max, length }
+  {
+    defaultValue,
+    allowed,
+    required,
+    message,
+    parse,
+    empty,
+    min,
+    max,
+    length,
+    nullAsUndefined
+  }
 ) => {
-  if (isUndefined(value)) {
+  if (isUndefined(value) || (nullAsUndefined && isNull(value))) {
     if (isNotUndefined(defaultValue)) {
       return [false, defaultValue];
     }
@@ -325,7 +337,8 @@ const validateSync = (
     object,
     func,
     unknown,
-    conditions
+    conditions,
+    nullAsUndefined
   }
 ) => {
   let [continueValidation, checkedValue] = validateObjectBeforeProperties(
@@ -339,7 +352,8 @@ const validateSync = (
       empty,
       min,
       max,
-      length
+      length,
+      nullAsUndefined
     }
   );
 
@@ -374,7 +388,8 @@ const validate = async (
     object,
     func,
     unknown,
-    conditions
+    conditions,
+    nullAsUndefined
   }
 ) => {
   let [continueValidation, checkedValue] = validateObjectBeforeProperties(
@@ -388,7 +403,8 @@ const validate = async (
       empty,
       min,
       max,
-      length
+      length,
+      nullAsUndefined
     }
   );
 

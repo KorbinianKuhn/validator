@@ -41,7 +41,8 @@ describe('validator/default/types/boolean', () => {
       only,
       parse,
       required: false,
-      message
+      message,
+      nullAsUndefined: false
     });
 
     expect(schema.options()).toEqual({

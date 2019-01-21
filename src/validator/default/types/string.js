@@ -36,7 +36,8 @@ class STRING extends ANY {
         defaultValue: this._default,
         message: this._message,
         func: this._func,
-        regex: this._regex
+        regex: this._regex,
+        nullAsUndefined: this._nullAsUndefined
       });
     } else {
       return removeUndefinedProperties({

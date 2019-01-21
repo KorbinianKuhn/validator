@@ -26,6 +26,11 @@ class ANY {
       defaults.parseToType,
       false
     );
+    this._nullAsUndefined = defaultToAny(
+      options.nullAsUndefined,
+      defaults.nullAsUndefined,
+      false
+    );
   }
 
   options(options = {}) {
@@ -41,7 +46,8 @@ class ANY {
         ...settings,
         defaultValue: this._default,
         message: this._message,
-        func: this._func
+        func: this._func,
+        nullAsUndefined: this._nullAsUndefined
       });
     } else {
       return removeUndefinedProperties({

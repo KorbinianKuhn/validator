@@ -5,7 +5,8 @@ const {
   isString,
   uniqWith,
   isEqual,
-  keys
+  keys,
+  isNull
 } = require('./../../../utils/lodash');
 const { validateFunctionSync, validateFunctionAsync } = require('./any');
 
@@ -65,12 +66,13 @@ const validateArray = (
     empty,
     min,
     max,
-    length
+    length,
+    nullAsUndefined
     // not,
     // only
   }
 ) => {
-  if (isUndefined(value)) {
+  if (isUndefined(value) || (nullAsUndefined && isNull(value))) {
     if (isNotUndefined(defaultValue)) {
       return defaultValue;
     }
@@ -151,7 +153,8 @@ const validateSync = (
     not,
     only,
     func,
-    itemSchema
+    itemSchema,
+    nullAsUndefined
   }
 ) => {
   value = validateArray(value, {
@@ -166,7 +169,8 @@ const validateSync = (
     max,
     length,
     not,
-    only
+    only,
+    nullAsUndefined
   });
 
   value = validateItemsSync(value, itemSchema);
@@ -189,7 +193,8 @@ const validate = async (
     not,
     only,
     func,
-    itemSchema
+    itemSchema,
+    nullAsUndefined
   }
 ) => {
   value = validateArray(value, {
@@ -204,7 +209,8 @@ const validate = async (
     max,
     length,
     not,
-    only
+    only,
+    nullAsUndefined
   });
 
   value = await validateItemsAsync(value, itemSchema);

@@ -78,6 +78,8 @@ const uniqWith = (array, comparator) => {
   return unique;
 };
 
+const isNull = value => value === null;
+
 const isNil = value => value == null;
 
 const isNotNil = value => !isNil(value);
@@ -186,5 +188,6 @@ module.exports = {
   isObject,
   removeNilProperties,
   clone,
-  cloneRegex
+  cloneRegex,
+  isNull
 };

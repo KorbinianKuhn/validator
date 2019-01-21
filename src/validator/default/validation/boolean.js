@@ -1,7 +1,8 @@
 const {
   isUndefined,
   isNotUndefined,
-  isBoolean
+  isBoolean,
+  isNull
 } = require('./../../../utils/lodash');
 const {
   validateFunctionSync,
@@ -15,9 +16,18 @@ const TRUES = ['1', 1, 'true'];
 
 const validateBoolean = (
   value,
-  { defaultValue, allowed, required, message, parse, not, only }
+  {
+    defaultValue,
+    allowed,
+    required,
+    message,
+    parse,
+    not,
+    only,
+    nullAsUndefined
+  }
 ) => {
-  if (isUndefined(value)) {
+  if (isUndefined(value) || (nullAsUndefined && isNull(value))) {
     if (isNotUndefined(defaultValue)) {
       return defaultValue;
     }
@@ -59,7 +69,17 @@ const validateBoolean = (
 
 const validateSync = (
   value,
-  { defaultValue, allowed, required, message, func, parse, not, only }
+  {
+    defaultValue,
+    allowed,
+    required,
+    message,
+    func,
+    parse,
+    not,
+    only,
+    nullAsUndefined
+  }
 ) => {
   value = validateBoolean(value, {
     defaultValue,
@@ -68,14 +88,25 @@ const validateSync = (
     message,
     parse,
     not,
-    only
+    only,
+    nullAsUndefined
   });
   return validateFunctionSync(func, value);
 };
 
 const validate = async (
   value,
-  { defaultValue, allowed, required, message, func, parse, not, only }
+  {
+    defaultValue,
+    allowed,
+    required,
+    message,
+    func,
+    parse,
+    not,
+    only,
+    nullAsUndefined
+  }
 ) => {
   value = validateBoolean(value, {
     defaultValue,
@@ -84,7 +115,8 @@ const validate = async (
     message,
     parse,
     not,
-    only
+    only,
+    nullAsUndefined
   });
   return validateFunctionAsync(func, value);
 };

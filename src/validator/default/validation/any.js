@@ -1,15 +1,16 @@
 const {
   isUndefined,
   isNotUndefined,
-  defaultToAny
+  defaultToAny,
+  isNull
 } = require('./../../../utils/lodash');
 const { getErrorMessage } = require('./../../../utils/error');
 
 const validateAny = (
   value,
-  { defaultValue, allowed, required, message, not, only }
+  { defaultValue, allowed, required, message, not, only, nullAsUndefined }
 ) => {
-  if (isUndefined(value)) {
+  if (isUndefined(value) || (nullAsUndefined && isNull(value))) {
     if (isNotUndefined(defaultValue)) {
       return defaultValue;
     }
@@ -71,7 +72,7 @@ const validateNot = (not, value, message) => {
 
 const validateSync = (
   value,
-  { defaultValue, allowed, required, message, not, only, func }
+  { defaultValue, allowed, required, message, not, only, func, nullAsUndefined }
 ) => {
   value = validateAny(value, {
     defaultValue,
@@ -79,14 +80,15 @@ const validateSync = (
     required,
     message,
     not,
-    only
+    only,
+    nullAsUndefined
   });
   return validateFunctionSync(func, value);
 };
 
 const validate = async (
   value,
-  { defaultValue, allowed, required, message, not, only, func }
+  { defaultValue, allowed, required, message, not, only, func, nullAsUndefined }
 ) => {
   value = validateAny(value, {
     defaultValue,
@@ -94,7 +96,8 @@ const validate = async (
     required,
     message,
     not,
-    only
+    only,
+    nullAsUndefined
   });
   return validateFunctionAsync(func, value);
 };

@@ -59,7 +59,8 @@ describe('validator/default/types/array', () => {
       max,
       length,
       empty,
-      unique
+      unique,
+      nullAsUndefined: false
     });
 
     expect(schema.options()).toEqual({

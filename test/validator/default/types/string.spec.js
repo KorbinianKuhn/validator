@@ -63,7 +63,8 @@ describe('validator/default/types/string', () => {
         pattern,
         locales
       },
-      empty
+      empty,
+      nullAsUndefined: false
     });
 
     expect(schema.options()).toEqual({

@@ -28,7 +28,8 @@ class NUMBER extends ANY {
         ...settings,
         defaultValue: this._default,
         message: this._message,
-        func: this._func
+        func: this._func,
+        nullAsUndefined: this._nullAsUndefined
       });
     } else {
       return removeUndefinedProperties({

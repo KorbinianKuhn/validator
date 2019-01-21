@@ -32,7 +32,8 @@ class ARRAY extends ANY {
         defaultValue: this._default,
         message: this._message,
         itemSchema: this._type,
-        func: this._func
+        func: this._func,
+        nullAsUndefined: this._nullAsUndefined
       });
     } else {
       return removeUndefinedProperties({

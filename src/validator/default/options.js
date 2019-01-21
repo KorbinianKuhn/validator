@@ -9,7 +9,8 @@ exports.VALIDATOR_OPTIONS = {
   emptyObjects: false,
   unknownObjectKeys: false,
   parseDates: true,
-  utc: true
+  utc: true,
+  nullAsUndefined: false
 };
 
 exports.TYPES = [

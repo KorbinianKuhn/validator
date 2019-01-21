@@ -1,4 +1,8 @@
-const { isUndefined, isNotUndefined } = require('./../../../utils/lodash');
+const {
+  isUndefined,
+  isNotUndefined,
+  isNull
+} = require('./../../../utils/lodash');
 const { toDate } = require('./../../../utils/date');
 const {
   validateFunctionSync,
@@ -9,9 +13,21 @@ const {
 
 const validateDate = (
   value,
-  { defaultValue, allowed, required, message, parse, utc, min, max, only, not }
+  {
+    defaultValue,
+    allowed,
+    required,
+    message,
+    parse,
+    utc,
+    min,
+    max,
+    only,
+    not,
+    nullAsUndefined
+  }
 ) => {
-  if (isUndefined(value)) {
+  if (isUndefined(value) || (nullAsUndefined && isNull(value))) {
     if (isNotUndefined(defaultValue)) {
       return defaultValue;
     }
@@ -63,7 +79,8 @@ const validateSync = (
     max,
     only,
     not,
-    func
+    func,
+    nullAsUndefined
   }
 ) => {
   value = validateDate(value, {
@@ -76,7 +93,8 @@ const validateSync = (
     min,
     max,
     only,
-    not
+    not,
+    nullAsUndefined
   });
   return validateFunctionSync(func, value);
 };
@@ -94,7 +112,8 @@ const validate = async (
     max,
     only,
     not,
-    func
+    func,
+    nullAsUndefined
   }
 ) => {
   value = validateDate(value, {
@@ -107,7 +126,8 @@ const validate = async (
     min,
     max,
     only,
-    not
+    not,
+    nullAsUndefined
   });
   return validateFunctionAsync(func, value);
 };

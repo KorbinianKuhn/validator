@@ -72,7 +72,8 @@ describe('validator/default/types/object', () => {
       empty,
       object,
       unknown,
-      conditions: []
+      conditions: [],
+      nullAsUndefined: false
     });
 
     expect(schema.options()).toEqual({

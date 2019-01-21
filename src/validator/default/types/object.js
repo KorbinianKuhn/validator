@@ -59,7 +59,8 @@ class OBJECT extends ANY {
         message: this._message,
         object: this._object,
         func: this._func,
-        conditions: this._conditions
+        conditions: this._conditions,
+        nullAsUndefined: this._nullAsUndefined
       });
     } else {
       return removeUndefinedProperties({

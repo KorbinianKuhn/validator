@@ -2,13 +2,13 @@
 
 - [API Reference](#api-reference)
   - [Validator([options])](#validatoroptions)
-    - [addLocale(name, messages)](#addlocalename--messages)
+    - [addLocale(name, messages)](#addlocalename-messages)
     - [setLocale(name)](#setlocalename)
-    - [addType(name, schema)](#addtypename--schema)
+    - [addType(name, schema)](#addtypename-schema)
     - [Custom(name)](#customname)
     - [listCustomTypes()](#listcustomtypes)
-    - [validate(schema, data)](#validateschema--data)
-    - [validateSync(schema, data)](#validatesyncschema--data)
+    - [validate(schema, data)](#validateschema-data)
+    - [validateSync(schema, data)](#validatesyncschema-data)
   - [Any([options])](#anyoptions)
     - [validate(value)](#validatevalue)
     - [validateSync(value)](#validatesyncvalue)
@@ -24,7 +24,7 @@
     - [allow(...values)](#allowvalues)
     - [func(func)](#funcfunc)
     - [toObject([options])](#toobjectoptions)
-  - [Array([type, options])](#arraytype--options)
+  - [Array([type, options])](#arraytype-options)
     - [min(length)](#minlength)
     - [max(length)](#maxlength)
     - [length(length)](#lengthlength)
@@ -44,29 +44,29 @@
     - [greater(number)](#greaternumber)
     - [positive()](#positive)
     - [negative()](#negative)
-  - [Object([object, options])](#objectobject--options)
-    - [empty(boolean)](#emptyboolean)
+  - [Object([object, options])](#objectobject-options)
+    - [empty(boolean)](#emptyboolean-1)
     - [unknown(boolean)](#unknownboolean)
-    - [func(func, ...keys)](#funcfunc--keys)
-    - [min(length)](#minlength)
-    - [max(length)](#maxlength)
-    - [length(length)](#lengthlength)
-    - [gt(a, b)](#gta--b)
-    - [gte(a, b)](#gtea--b)
-    - [lt(a, b)](#lta--b)
-    - [lte(a, b)](#ltea--b)
-    - [equals(a, b)](#equalsa--b)
-    - [notEquals(a, b)](#notequalsa--b)
-    - [dependsOn(a, b)](#dependsona--b)
-    - [xor(a, b)](#xora--b)
-    - [or(a, b)](#ora--b)
+    - [func(func, ...keys)](#funcfunc-keys)
+    - [min(length)](#minlength-1)
+    - [max(length)](#maxlength-1)
+    - [length(length)](#lengthlength-1)
+    - [gt(a, b)](#gta-b)
+    - [gte(a, b)](#gtea-b)
+    - [lt(a, b)](#lta-b)
+    - [lte(a, b)](#ltea-b)
+    - [equals(a, b)](#equalsa-b)
+    - [notEquals(a, b)](#notequalsa-b)
+    - [dependsOn(a, b)](#dependsona-b)
+    - [xor(a, b)](#xora-b)
+    - [or(a, b)](#ora-b)
   - [String([options])](#stringoptions)
-    - [min(length)](#minlength)
-    - [max(length)](#maxlength)
-    - [length(length)](#lengthlength)
-    - [empty(boolean)](#emptyboolean)
+    - [min(length)](#minlength-2)
+    - [max(length)](#maxlength-2)
+    - [length(length)](#lengthlength-2)
+    - [empty(boolean)](#emptyboolean-2)
     - [trim(boolean)](#trimboolean)
-    - [regex(pattern, [locales])](#regexpattern--locales)
+    - [regex(pattern, [locales])](#regexpattern-locales)
 
 ## Validator([options])
 
@@ -85,14 +85,15 @@ All types created by a validator get the validators options as default options. 
 - `unknownObjectKeys (boolean)`: Allow keys that are not defined by the schema. Default `false`,
 - `parseDates (boolean)`: Parse date string to Date objects. Default `true`,
 - `utc (boolean)`: Use UTC to parse dates. Default `true`,
+- `nullAsUndefined (boolean)`: Treat null values as undefined. Default `false`. AngularValidator(Default: `true`)
 
 ### addLocale(name, messages)
 
 Add a custom language pack. Check the locales folder for the available keys.
 
 ```javascript
-validator.addLocale("custom", {
-  wrong_type: "Beep"
+validator.addLocale('custom', {
+  wrong_type: 'Beep'
   // ...
 });
 ```
@@ -102,7 +103,7 @@ validator.addLocale("custom", {
 Set the language.
 
 ```javascript
-validator.setLocale("de");
+validator.setLocale('de');
 ```
 
 ### addType(name, schema)
@@ -116,7 +117,7 @@ const address = validator.Object({
   city: validator.String()
 });
 
-validator.addType("address", address);
+validator.addType('address', address);
 ```
 
 ### Custom(name)
@@ -124,7 +125,7 @@ validator.addType("address", address);
 Use a custom type.
 
 ```javascript
-validator.Custom("address").validate(value);
+validator.Custom('address').validate(value);
 ```
 
 ### listCustomTypes()
@@ -179,7 +180,7 @@ Asynchronous validation of a schema.
 ```javascript
 const schema = validator.Any();
 
-schema.validate("test").then(value => {
+schema.validate('test').then(value => {
   // test
 });
 ```
@@ -191,7 +192,7 @@ Synchronous validation of a schema.
 ```javascript
 const schema = validator.Any();
 
-schema.validateSync("test");
+schema.validateSync('test');
 // test
 ```
 
@@ -226,7 +227,7 @@ Creates a copy of the schema.
 ```javascript
 const requiredSchema = validator
   .Any()
-  .example("test")
+  .example('test')
   .required();
 const optionalSchema = schema.clone().optional();
 ```
@@ -236,7 +237,7 @@ const optionalSchema = schema.clone().optional();
 Sets a description for the type. Useful for automated documentation generation.
 
 ```javascript
-const schema = validator.Any().example("Any value is allowed.");
+const schema = validator.Any().example('Any value is allowed.');
 ```
 
 ### example(example)
@@ -246,7 +247,7 @@ Provide an example for the key. Useful for automated documentation generation.
 > If no parameter is given, the schemas example is returned
 
 ```javascript
-const schema = validator.Any().example("test");
+const schema = validator.Any().example('test');
 
 schema.example();
 // test
@@ -259,7 +260,7 @@ Set a default value used if key is empty.
 ```javascript
 const schema = validator
   .Any()
-  .default("test")
+  .default('test')
   .validate(undefined);
 // test
 ```
@@ -272,7 +273,7 @@ Parse value to schema type.
 const schema = validator
   .Boolean()
   .parse(true)
-  .validate("true");
+  .validate('true');
 // true
 ```
 
@@ -283,8 +284,8 @@ Only allow the given values.
 ```javascript
 const schema = validator
   .Any()
-  .only("test", "hello")
-  .validate("wrong");
+  .only('test', 'hello')
+  .validate('wrong');
 // throws
 ```
 
@@ -295,8 +296,8 @@ Disallow the given values.
 ```javascript
 const schema = validator
   .Any()
-  .not("test", "hello")
-  .validate("test");
+  .not('test', 'hello')
+  .validate('test');
 // throws
 ```
 
@@ -307,7 +308,7 @@ Allow specific values.
 ```javascript
 const schema = validator
   .Any()
-  .allow(null, "test")
+  .allow(null, 'test')
   .validate(null);
 // null
 ```
@@ -350,7 +351,7 @@ const schema = validator.Number().integer(true);
 schema.toObject();
 // { type: 'number', required: true, integer: true }
 
-schema.toObject({ type: "raml" });
+schema.toObject({ type: 'raml' });
 // { type: 'integer', required: true }
 ```
 
@@ -364,7 +365,7 @@ Set a minimum length of the array.
 const schema = validator
   .Array()
   .min(2)
-  .validate(["test"]);
+  .validate(['test']);
 // throws
 ```
 
@@ -376,7 +377,7 @@ Set a minimum length of the array.
 const schema = validator
   .Array()
   .max(1)
-  .validate(["test", "hello"]);
+  .validate(['test', 'hello']);
 // throws
 ```
 
@@ -388,7 +389,7 @@ Set the exact length of the array.
 const schema = validator
   .Array()
   .length(1)
-  .validate(["test"]);
+  .validate(['test']);
 // ['test']
 ```
 
@@ -412,7 +413,7 @@ Require unique array items.
 const schema = validator
   .Array()
   .unique(true)
-  .validate(["test", "test"]);
+  .validate(['test', 'test']);
 // throws
 ```
 
@@ -432,8 +433,8 @@ The given value will get validated with [moment](https://github.com/moment/momen
 ```javascript
 const schema = validator
   .Date()
-  .format("YYYY-MM-DD")
-  .validate("2018");
+  .format('YYYY-MM-DD')
+  .validate('2018');
 // throws
 ```
 
@@ -445,7 +446,7 @@ Use UTC time.
 const schema = validator
   .Date()
   .utc(true)
-  .validate("2018");
+  .validate('2018');
 // UTC Date object
 ```
 
@@ -456,8 +457,8 @@ Set a minimum date.
 ```javascript
 const schema = validator
   .Date()
-  .min("2018-01-01T00:00:00.000Z")
-  .validate("2017-01-01T00:00:00.000Z");
+  .min('2018-01-01T00:00:00.000Z')
+  .validate('2017-01-01T00:00:00.000Z');
 // throws
 ```
 
@@ -468,8 +469,8 @@ Set a maximum date.
 ```javascript
 const schema = validator
   .Date()
-  .max("2018-01-01T00:00:00.000Z")
-  .validate("2017-01-01T00:00:00.000Z");
+  .max('2018-01-01T00:00:00.000Z')
+  .validate('2017-01-01T00:00:00.000Z');
 // Date object
 ```
 
@@ -581,7 +582,7 @@ Allow unknown object keys.
 const schema = validator
   .Object({ name: validator.String() })
   .unknown(false)
-  .validate({ name: "Jane Doe", age: 26 });
+  .validate({ name: 'Jane Doe', age: 26 });
 // throws
 ```
 
@@ -599,8 +600,8 @@ const schema = validator
     name: validator.String(),
     age: validator.Number()
   })
-  .func(async (name, age) => {}, "name", "age")
-  .validate({ name: "John Doe", age: 30 });
+  .func(async (name, age) => {}, 'name', 'age')
+  .validate({ name: 'John Doe', age: 30 });
 // { name: 'John Doe' }
 ```
 
@@ -624,7 +625,7 @@ Set a maximum number of object keys.
 const schema = validator
   .Object({ name: validator.String() })
   .max(2)
-  .validate({ name: "John Doe" });
+  .validate({ name: 'John Doe' });
 // { name: 'John Doe' }
 ```
 
@@ -636,7 +637,7 @@ Set the exact number of object keys.
 const schema = validator
   .Object({ name: validator.String() })
   .length(1)
-  .validate({ name: "John Doe" });
+  .validate({ name: 'John Doe' });
 // { name: 'John Doe' }
 ```
 
@@ -650,7 +651,7 @@ const schema = validator
     a: validator.Number(),
     b: validator.Number()
   })
-  .gt("a", "b")
+  .gt('a', 'b')
   .validate({ a: 0, b: 2 });
 // throws
 ```
@@ -665,7 +666,7 @@ const schema = validator
     a: validator.Number(),
     b: validator.Number()
   })
-  .gte("a", "b")
+  .gte('a', 'b')
   .validate({ a: 2, b: 2 });
 // { a: 2, b: 2}
 ```
@@ -680,7 +681,7 @@ const schema = validator
     a: validator.Number(),
     b: validator.Number()
   })
-  .lt("a", "b")
+  .lt('a', 'b')
   .validate({ a: 0, b: 2 });
 // { a: 0, b: 2}
 ```
@@ -695,7 +696,7 @@ const schema = validator
     a: validator.Number(),
     b: validator.Number()
   })
-  .lte("a", "b")
+  .lte('a', 'b')
   .validate({ a: 5, b: 2 });
 // throws
 ```
@@ -710,7 +711,7 @@ const schema = validator
     a: validator.Number(),
     b: validator.Number()
   })
-  .equals("a", "b")
+  .equals('a', 'b')
   .validate({ a: 5, b: 2 });
 // throws
 ```
@@ -725,7 +726,7 @@ const schema = validator
     a: validator.Number(),
     b: validator.Number()
   })
-  .notEquals("a", "b")
+  .notEquals('a', 'b')
   .validate({ a: 2, b: 2 });
 // throws
 ```
@@ -740,7 +741,7 @@ const schema = validator
     a: validator.Number().optional(),
     b: validator.Number().optional()
   })
-  .dependsOn("a", "b")
+  .dependsOn('a', 'b')
   .validate({ a: 5 });
 // throws
 ```
@@ -755,7 +756,7 @@ const schema = validator
     a: validator.Number().optional(),
     b: validator.Number().optional()
   })
-  .xor("a", "b")
+  .xor('a', 'b')
   .validate({});
 // throws
 ```
@@ -770,7 +771,7 @@ const schema = validator
     a: validator.Number().optional(),
     b: validator.Number().optional()
   })
-  .or("a", "b")
+  .or('a', 'b')
   .validate({ a: 2, b: 2 });
 // throws
 ```
@@ -785,7 +786,7 @@ Set minimum length of the string.
 const schema = validator
   .String()
   .min(10)
-  .validate("test");
+  .validate('test');
 // throws
 ```
 
@@ -797,7 +798,7 @@ Set maximum length of the string.
 const schema = validator
   .String()
   .max(10)
-  .validate("test");
+  .validate('test');
 // test
 ```
 
@@ -809,7 +810,7 @@ Set exact length of the string.
 const schema = validator
   .String()
   .length(4)
-  .validate("test");
+  .validate('test');
 // test
 ```
 
@@ -821,7 +822,7 @@ Allow string to be empty.
 const schema = validator
   .String()
   .empty(false)
-  .validate("");
+  .validate('');
 // throws
 ```
 
@@ -833,7 +834,7 @@ Trim string.
 const schema = validator
   .String()
   .trim(true)
-  .validate("  string with whitespaces   ");
+  .validate('  string with whitespaces   ');
 // string with whitespaces
 ```
 
@@ -843,13 +844,13 @@ Value must match the regular expression.
 
 ```javascript
 const schema = validator.String().regex(/[A-Z]/, {
-  en: "Only uppercase letters.",
-  de: "Nur Großbuchstaben"
+  en: 'Only uppercase letters.',
+  de: 'Nur Großbuchstaben'
 });
 
-schema.validate("ABC");
+schema.validate('ABC');
 // ABC
 
-schema.validate("abc");
+schema.validate('abc');
 // Only uppercase letters.
 ```

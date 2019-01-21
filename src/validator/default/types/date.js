@@ -28,7 +28,8 @@ class DATE extends ANY {
         message: this._message,
         func: this._func,
         min: this._min,
-        max: this._max
+        max: this._max,
+        nullAsUndefined: this._nullAsUndefined
       });
     } else {
       return removeUndefinedProperties({

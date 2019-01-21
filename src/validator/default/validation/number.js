@@ -3,7 +3,8 @@ const {
   isNotUndefined,
   isNumber,
   isString,
-  isInteger
+  isInteger,
+  isNull
 } = require('./../../../utils/lodash');
 const {
   validateFunctionSync,
@@ -28,10 +29,11 @@ const validateNumber = (
     negative,
     integer,
     only,
-    not
+    not,
+    nullAsUndefined
   }
 ) => {
-  if (isUndefined(value)) {
+  if (isUndefined(value) || (nullAsUndefined && isNull(value))) {
     if (isNotUndefined(defaultValue)) {
       return defaultValue;
     }
@@ -139,7 +141,8 @@ const validateSync = (
     integer,
     only,
     not,
-    func
+    func,
+    nullAsUndefined
   }
 ) => {
   value = validateNumber(value, {
@@ -156,7 +159,8 @@ const validateSync = (
     negative,
     integer,
     only,
-    not
+    not,
+    nullAsUndefined
   });
   return validateFunctionSync(func, value);
 };
@@ -178,7 +182,8 @@ const validate = async (
     integer,
     only,
     not,
-    func
+    func,
+    nullAsUndefined
   }
 ) => {
   value = validateNumber(value, {
@@ -195,7 +200,8 @@ const validate = async (
     negative,
     integer,
     only,
-    not
+    not,
+    nullAsUndefined
   });
   return validateFunctionAsync(func, value);
 };

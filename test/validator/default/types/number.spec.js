@@ -61,7 +61,8 @@ describe('validator/default/types/number', () => {
       greater,
       negative,
       positive,
-      integer: true
+      integer: true,
+      nullAsUndefined: false
     });
 
     expect(schema.options()).toEqual({
