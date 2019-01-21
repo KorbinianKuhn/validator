@@ -9,8 +9,11 @@ class Message {
     this.setLocale(locale);
   }
 
-  addLocale(name, messages) {
-    messages = { ...this._locales['en'], ...messages };
+  addLocale(name, messages, fallback = 'en') {
+    if (!(fallback in this._locales)) {
+      throw this.error('unknown_locale', { locale: name });
+    }
+    messages = { ...this._locales[fallback], ...messages };
     this._locales[name] = messages;
     return this;
   }
