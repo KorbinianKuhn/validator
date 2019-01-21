@@ -2,8 +2,7 @@ const {
   has,
   defaultToAny,
   isPlainObject,
-  removeUndefinedProperties,
-  clone
+  removeUndefinedProperties
 } = require('./../../../utils/lodash');
 const { ObjectFactory } = require('./../../default/types/object');
 const { URI_OPTIONS, QUERY_OPTIONS, BODY_OPTIONS } = require('./../options');

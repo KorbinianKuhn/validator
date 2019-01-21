@@ -3,8 +3,7 @@ const {
   removeUndefinedProperties,
   defaultToAny,
   has,
-  isPlainObject,
-  clone
+  isPlainObject
 } = require('./../../../utils/lodash');
 const {
   validateResponse,
