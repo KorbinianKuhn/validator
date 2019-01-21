@@ -14,6 +14,16 @@ class AngularValidator extends Validator {
     this._types = TYPES;
   }
 
+  addType(name, schema) {
+    if (name in this._customs) {
+      throw this._message.error('duplicate_custom_type', { name });
+    }
+
+    this._customs[name] = schema.clone();
+
+    return this;
+  }
+
   Any(options = {}) {
     return AnyFactory(options, this._options);
   }
