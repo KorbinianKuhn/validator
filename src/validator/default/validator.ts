@@ -80,12 +80,12 @@ export class Validator {
       throw this._message.error('duplicate_custom_type', { name });
     }
 
-    if (this._types.indexOf(schema.constructor) === -1) {
-      throw this._message.error('invalid_custom_type', {
-        name,
-        type: schema.constructor.name
-      });
-    }
+    // if (this._types.indexOf(schema.constructor) === -1) {
+    //   throw this._message.error('invalid_custom_type', {
+    //     name,
+    //     type: schema.constructor.name
+    //   });
+    // }
 
     this._customs[name] = schema.clone();
 
