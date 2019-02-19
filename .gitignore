@@ -1,0 +1,22 @@
+# IDE files
+.idea
+
+# Dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Coverage
+coverage
+.nyc_output
+
+/dist
+
+.vscode

@@ -1,0 +1,15 @@
+.nyc_output
+.vscode
+coverage
+node_modules
+test
+src
+.eslintrc
+.gitignore
+.prettierrc
+.travis.yml
+jest.config.js
+tslint.json
+tsconfig.json
+tsconfig.build.json
+webpack.config.js
