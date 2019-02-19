@@ -32,8 +32,8 @@ export class Validator {
   }
 
   async validate(schema: AnySchema, data: any): Promise<any> {
-    if (this._types.indexOf(schema.constructor) === -1) {
-      throw this._message.error('unknown_schema');
+    if (!('validate' in schema)) {
+      throw this._message.error('invalid_schema');
     }
 
     try {
@@ -49,8 +49,8 @@ export class Validator {
   }
 
   validateSync(schema: AnySchema, data: any): any {
-    if (this._types.indexOf(schema.constructor) === -1) {
-      throw this._message.error('unknown_schema');
+    if (!('validateSync' in schema)) {
+      throw this._message.error('invalid_schema');
     }
 
     try {
@@ -79,13 +79,6 @@ export class Validator {
     if (name in this._customs) {
       throw this._message.error('duplicate_custom_type', { name });
     }
-
-    // if (this._types.indexOf(schema.constructor) === -1) {
-    //   throw this._message.error('invalid_custom_type', {
-    //     name,
-    //     type: schema.constructor.name
-    //   });
-    // }
 
     this._customs[name] = schema.clone();
 

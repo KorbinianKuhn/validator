@@ -1,5 +1,12 @@
 import { ValidatorOptions } from './../../../interfaces';
-import { Message, defaultToAny, removeUndefinedProperties, isPlainObject, toObject } from './../../../utils';
+import {
+  Message,
+  defaultToAny,
+  removeUndefinedProperties,
+  isPlainObject,
+  toObject,
+  cloneSchema
+} from './../../../utils';
 import { ObjectSchema, AnySchema } from './../../default';
 import * as express from 'express';
 import { validateResponseSync, validateResponseAsync } from '..';
@@ -71,5 +78,9 @@ export class ResponseSchemaExpress {
     });
 
     return toObject({ ...this.options(), ...object }, options);
+  }
+
+  clone(): this {
+    return cloneSchema(this);
   }
 }

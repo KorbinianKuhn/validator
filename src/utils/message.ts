@@ -54,10 +54,7 @@ export class Message {
     return text ? this.replace(text, replacements) : this._messages['default'];
   }
 
-  error(code: string, replacements: Replacement = {}): string {
-    return `${this.get('configuration_error')}: ${this.get(
-      code,
-      replacements
-    )}`;
+  error(code: string, replacements: Replacement = {}): Error {
+    return new Error(`${this.get('configuration_error')}: ${this.get(code, replacements)}`);
   }
 }

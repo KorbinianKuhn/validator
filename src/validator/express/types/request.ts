@@ -1,5 +1,12 @@
 import { ValidatorOptions } from './../../../interfaces';
-import { Message, isPlainObject, defaultToAny, removeUndefinedProperties, toObject } from './../../../utils';
+import {
+  Message,
+  isPlainObject,
+  defaultToAny,
+  removeUndefinedProperties,
+  toObject,
+  cloneSchema
+} from './../../../utils';
 import { ObjectSchema, ArraySchema } from './../../default';
 import { URI_OPTIONS, QUERY_OPTIONS, BODY_OPTIONS } from '../options';
 import * as express from 'express';
@@ -111,5 +118,9 @@ export class RequestSchemaExpress {
       body: this._body ? this._body.toObject(options) : undefined
     });
     return toObject({ ...this.options(), ...object }, options);
+  }
+
+  clone(): this {
+    return cloneSchema(this);
   }
 }
