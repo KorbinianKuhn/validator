@@ -1,6 +1,6 @@
 {
   "name": "@korbiniankuhn/validator",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-beta.2",
   "description": "Validate object schemas for js, expressjs, angular and mongoose.",
   "author": "Korbinian Kuhn",
   "license": "MIT",
