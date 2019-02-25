@@ -7,10 +7,16 @@ export class DateSchemaMongoose extends DateSchema {
   }
 
   validate(): (value?: any) => Promise<any> {
-    return async value => await validateDateAsync(value, this.options({ validation: true }));
+    return async value => {
+      await validateDateAsync(value, this.options({ validation: true }));
+      return true;
+    };
   }
 
   validateSync(): (value?: any) => any {
-    return value => validateDateSync(value, this.options({ validation: true }));
+    return value => {
+      validateDateSync(value, this.options({ validation: true }));
+      return true;
+    };
   }
 }

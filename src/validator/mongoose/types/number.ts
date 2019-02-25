@@ -7,10 +7,16 @@ export class NumberSchemaMongoose extends NumberSchema {
   }
 
   validate(): (value?: any) => Promise<any> {
-    return async value => await validateNumberAsync(value, this.options({ validation: true }));
+    return async value => {
+      await validateNumberAsync(value, this.options({ validation: true }));
+      return true;
+    };
   }
 
   validateSync(): (value?: any) => any {
-    return value => validateNumberSync(value, this.options({ validation: true }));
+    return value => {
+      validateNumberSync(value, this.options({ validation: true }));
+      return true;
+    };
   }
 }

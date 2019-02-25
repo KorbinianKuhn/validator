@@ -7,10 +7,16 @@ export class StringSchemaMongoose extends StringSchema {
   }
 
   validate(): (value?: any) => Promise<any> {
-    return async value => await validateStringAsync(value, this.options({ validation: true }));
+    return async value => {
+      await validateStringAsync(value, this.options({ validation: true }));
+      return true;
+    };
   }
 
   validateSync(): (value?: any) => any {
-    return value => validateStringSync(value, this.options({ validation: true }));
+    return value => {
+      validateStringSync(value, this.options({ validation: true }));
+      return true;
+    };
   }
 }

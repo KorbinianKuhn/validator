@@ -7,10 +7,16 @@ export class ObjectSchemaMongoose extends ObjectSchema {
   }
 
   validate(): (value?: any) => Promise<any> {
-    return async value => await validateObjectAsync(value, this.options({ validation: true }));
+    return async value => {
+      await validateObjectAsync(value, this.options({ validation: true }));
+      return true;
+    };
   }
 
   validateSync(): (value?: any) => any {
-    return value => validateObjectSync(value, this.options({ validation: true }));
+    return value => {
+      validateObjectSync(value, this.options({ validation: true }));
+      return true;
+    };
   }
 }

@@ -7,10 +7,16 @@ export class ArraySchemaMongoose extends ArraySchema {
   }
 
   validate(): (value?: any) => Promise<any> {
-    return async value => await validateArrayAsync(value, this.options({ validation: true }));
+    return async value => {
+      await validateArrayAsync(value, this.options({ validation: true }));
+      return true;
+    };
   }
 
   validateSync(): (value?: any) => any {
-    return value => validateArraySync(value, this.options({ validation: true }));
+    return value => {
+      validateArraySync(value, this.options({ validation: true }));
+      return true;
+    };
   }
 }

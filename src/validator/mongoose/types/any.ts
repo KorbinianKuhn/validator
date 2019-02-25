@@ -7,10 +7,16 @@ export class AnySchemaMongoose extends AnySchema {
   }
 
   validate(): (value?: any) => Promise<any> {
-    return async value => await validateAnyAsync(value, this.options({ validation: true }));
+    return async value => {
+      await validateAnyAsync(value, this.options({ validation: true }));
+      return true;
+    };
   }
 
   validateSync(): (value?: any) => any {
-    return value => validateAnySync(value, this.options({ validation: true }));
+    return value => {
+      validateAnySync(value, this.options({ validation: true }));
+      return true;
+    };
   }
 }

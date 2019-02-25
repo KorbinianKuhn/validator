@@ -7,10 +7,16 @@ export class BooleanSchemaMongoose extends BooleanSchema {
   }
 
   validate(): (value?: any) => Promise<any> {
-    return async value => await validateBooleanAsync(value, this.options({ validation: true }));
+    return async value => {
+      await validateBooleanAsync(value, this.options({ validation: true }));
+      return true;
+    };
   }
 
   validateSync(): (value?: any) => any {
-    return value => validateBooleanSync(value, this.options({ validation: true }));
+    return value => {
+      validateBooleanSync(value, this.options({ validation: true }));
+      return true;
+    };
   }
 }
