@@ -15,6 +15,7 @@ export class NumberSchema extends AnySchema {
   constructor(options: ValidatorOptions = {}, defaults: ValidatorOptions = {}) {
     super(options, defaults);
     this._integer = false;
+    this._defaultExample = 0;
   }
 
   options(options: any = {}) {

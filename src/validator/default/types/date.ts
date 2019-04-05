@@ -11,6 +11,7 @@ export class DateSchema extends AnySchema {
   constructor(options: ValidatorOptions = {}, defaults: ValidatorOptions = {}) {
     super(options, defaults);
     this._utc = defaultToAny(options.utc, defaults.utc, false);
+    this._defaultExample = new Date();
   }
 
   options(options: any = {}) {

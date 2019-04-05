@@ -18,6 +18,7 @@ export class StringSchema extends AnySchema {
     super(options, defaults);
     this._empty = defaultToAny(options.emptyStrings, defaults.emptyStrings, true);
     this._trim = defaultToAny(options.trimStrings, defaults.trimStrings, false);
+    this._defaultExample = 'string';
   }
 
   options(options: any = {}): any {

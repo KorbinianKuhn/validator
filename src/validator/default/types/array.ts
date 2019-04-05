@@ -60,11 +60,7 @@ export class ArraySchema extends AnySchema {
 
   example(example?: any): any {
     if (example === undefined) {
-      return this._example === undefined
-        ? this._type === undefined
-          ? undefined
-          : [this._type.example()]
-        : this._example;
+      return this._example === undefined ? (this._type === undefined ? [] : [this._type.example()]) : this._example;
     } else {
       this._example = example;
       return this;

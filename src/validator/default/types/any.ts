@@ -22,6 +22,7 @@ export class AnySchema {
   public _not: any[];
   public _allowed: any[];
   public _func: Function;
+  public _defaultExample: any = 'any';
 
   constructor(options: ValidatorOptions = {}, defaults: ValidatorOptions = {}) {
     this._message = defaultToAny(options.message, defaults.message, new Message('en'));
@@ -82,7 +83,7 @@ export class AnySchema {
 
   example(example?: any): this {
     if (example === undefined) {
-      return this._example;
+      return this._example === undefined ? this._defaultExample : this._example;
     } else {
       this._example = example;
       return this;

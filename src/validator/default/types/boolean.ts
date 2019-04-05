@@ -6,6 +6,7 @@ import { validateBooleanAsync, validateBooleanSync } from '../validation/boolean
 export class BooleanSchema extends AnySchema {
   constructor(options: ValidatorOptions = {}, defaults: ValidatorOptions = {}) {
     super(options, defaults);
+    this._defaultExample = true;
   }
 
   options(options: any = {}) {
