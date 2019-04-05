@@ -8,7 +8,6 @@ export interface Locale {
   invalid_custom_type?: string;
   duplicate_custom_type?: string;
   unknown_custom_type?: string;
-  no_example?: string;
   required?: string;
   not_null?: string;
   wrong_type?: string;

@@ -7,12 +7,9 @@ export const EN: Locale = {
   unknown_locale: 'Unknown locale {{locale}}.',
   invalid_schema: 'Invalid schema.',
   unknown_schema: 'Unknown schema.',
-  invalid_custom_type:
-    'Cannot add custom type {{name}}. Invalid type {{type}}.',
-  duplicate_custom_type:
-    'Cannot add custom type. Name {{name}} is already set.',
+  invalid_custom_type: 'Cannot add custom type {{name}}. Invalid type {{type}}.',
+  duplicate_custom_type: 'Cannot add custom type. Name {{name}} is already set.',
   unknown_custom_type: 'Error getting custom type {{name}}. Unknown type.',
-  no_example: 'No example provided',
   required: 'Required but is {{value}}.',
   not_null: 'Null is not allowed.',
   wrong_type: 'Must be type {{expected}} but is {{actual}}.',
@@ -62,6 +59,5 @@ export const EN: Locale = {
   express_unknown_query: 'Query parameters are not allowed.',
   express_unknown_body: 'Body parameters are not allowed.',
   express_object_or_array_schema: 'Must be object or array schema.',
-  express_invalid_status_code:
-    'Must have status code {{expected}} but has {{actual}}.'
+  express_invalid_status_code: 'Must have status code {{expected}} but has {{actual}}.'
 };

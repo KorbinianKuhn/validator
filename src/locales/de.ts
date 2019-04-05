@@ -7,12 +7,9 @@ export const DE: Locale = {
   unknown_locale: 'Unbekanntes Sprachpaket {{locale}}.',
   invalid_schema: 'Ungültiges Schema.',
   unknown_schema: 'Unbekanntes Schema.',
-  invalid_custom_type:
-    'Eigenes Schema {{name}} kann nicht hinzugefügt werden. Ungültiges Schema {{type}}.',
-  duplicate_custom_type:
-    'Eigenes Schema kann nicht hinzugefügt werden, da {{name}} schon in Verwendung ist.',
+  invalid_custom_type: 'Eigenes Schema {{name}} kann nicht hinzugefügt werden. Ungültiges Schema {{type}}.',
+  duplicate_custom_type: 'Eigenes Schema kann nicht hinzugefügt werden, da {{name}} schon in Verwendung ist.',
   unknown_custom_type: 'Unbekanntes eigenes Schema {{name}}.',
-  no_example: 'Kein Beispiel vorhanden.',
   required: 'Erforderlich aber ist {{value}}.',
   not_null: 'Null ist nicht erlaubt.',
   wrong_type: 'Muss {{expected}} sein aber ist {{actual}}.',
@@ -62,6 +59,5 @@ export const DE: Locale = {
   express_unknown_query: 'Query Parameter sind nicht erlaubt.',
   express_unknown_body: 'Body Parameter sind nicht erlaubt.',
   express_object_or_array_schema: 'Muss ein Objekt oder Array Schema sein.',
-  express_invalid_status_code:
-    'Status Code muss {{expected}} sein, aber ist {{actual}}.'
+  express_invalid_status_code: 'Status Code muss {{expected}} sein, aber ist {{actual}}.'
 };

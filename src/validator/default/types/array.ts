@@ -62,7 +62,7 @@ export class ArraySchema extends AnySchema {
     if (example === undefined) {
       return this._example === undefined
         ? this._type === undefined
-          ? this._message.get('no_example')
+          ? undefined
           : [this._type.example()]
         : this._example;
     } else {

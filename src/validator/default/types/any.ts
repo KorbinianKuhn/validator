@@ -82,7 +82,7 @@ export class AnySchema {
 
   example(example?: any): this {
     if (example === undefined) {
-      return this._example !== undefined ? this._example : this._message.get('no_example');
+      return this._example;
     } else {
       this._example = example;
       return this;
