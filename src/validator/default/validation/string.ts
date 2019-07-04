@@ -35,8 +35,12 @@ export const validateString = (
     value = value.trim();
   }
 
-  if (value === '' && empty === false) {
-    throw message.get('string_empty');
+  if (value === '') {
+    if (empty === false) {
+      throw message.get('string_empty');
+    } else {
+      return value;
+    }
   }
 
   validateOnly(only, value, message);
