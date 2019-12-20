@@ -1,9 +1,9 @@
-import { getErrorMessage, isNotUndefined, defaultToAny, isUndefined, isNull } from '../../../utils';
+import { clone, defaultToAny, getErrorMessage, isNotUndefined, isNull, isUndefined } from '../../../utils';
 
 export const validateAny = (value: any, { defaultValue, allowed, required, message, not, only, nullAsUndefined }) => {
   if (isUndefined(value) || (nullAsUndefined && isNull(value))) {
     if (isNotUndefined(defaultValue)) {
-      return defaultValue;
+      return clone(defaultValue);
     }
     if (required) {
       throw message.get('required', { value });

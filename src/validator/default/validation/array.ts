@@ -1,5 +1,5 @@
+import { clone, isArray, isEqual, isNotUndefined, isNull, isString, isUndefined, keys, uniqWith } from '../../../utils';
 import { validateFunctionAsync, validateFunctionSync } from './any';
-import { keys, isUndefined, isNull, isNotUndefined, isString, isArray, uniqWith, isEqual } from '../../../utils';
 
 export const validateItemsSync = (value, itemSchema) => {
   if (itemSchema !== undefined) {
@@ -51,7 +51,7 @@ export const validateArray = (
 ) => {
   if (isUndefined(value) || (nullAsUndefined && isNull(value))) {
     if (isNotUndefined(defaultValue)) {
-      return defaultValue;
+      return clone(defaultValue);
     }
     if (required) {
       throw message.get('required', { value });

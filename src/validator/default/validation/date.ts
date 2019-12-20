@@ -1,5 +1,5 @@
-import { isUndefined, isNull, isNotUndefined, toDate } from '../../../utils';
-import { validateOnly, validateNot, validateFunctionSync, validateFunctionAsync } from './any';
+import { clone, isNotUndefined, isNull, isUndefined, toDate } from '../../../utils';
+import { validateFunctionAsync, validateFunctionSync, validateNot, validateOnly } from './any';
 
 export const validateDate = (
   value,
@@ -7,7 +7,7 @@ export const validateDate = (
 ) => {
   if (isUndefined(value) || (nullAsUndefined && isNull(value))) {
     if (isNotUndefined(defaultValue)) {
-      return defaultValue;
+      return clone(defaultValue);
     }
     if (required) {
       throw message.get('required', { value });

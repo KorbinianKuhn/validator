@@ -1,5 +1,5 @@
-import { isUndefined, isNull, isNotUndefined, isBoolean } from '../../../utils';
-import { validateOnly, validateNot, validateFunctionSync, validateFunctionAsync } from './any';
+import { clone, isBoolean, isNotUndefined, isNull, isUndefined } from '../../../utils';
+import { validateFunctionAsync, validateFunctionSync, validateNot, validateOnly } from './any';
 
 const FALSES = ['0', 0, 'false'];
 const TRUES = ['1', 1, 'true'];
@@ -10,7 +10,7 @@ export const validateBoolean = (
 ) => {
   if (isUndefined(value) || (nullAsUndefined && isNull(value))) {
     if (isNotUndefined(defaultValue)) {
-      return defaultValue;
+      return clone(defaultValue);
     }
     if (required) {
       throw message.get('required', { value });
