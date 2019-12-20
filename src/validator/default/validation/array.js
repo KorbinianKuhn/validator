@@ -6,7 +6,8 @@ const {
   uniqWith,
   isEqual,
   keys,
-  isNull
+  isNull,
+  clone
 } = require('./../../../utils/lodash');
 const { validateFunctionSync, validateFunctionAsync } = require('./any');
 
@@ -74,7 +75,7 @@ const validateArray = (
 ) => {
   if (isUndefined(value) || (nullAsUndefined && isNull(value))) {
     if (isNotUndefined(defaultValue)) {
-      return defaultValue;
+      return clone(defaultValue);
     }
     if (required) {
       throw message.get('required', { value });

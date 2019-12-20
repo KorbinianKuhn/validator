@@ -2,7 +2,8 @@ const {
   isUndefined,
   isNotUndefined,
   defaultToAny,
-  isNull
+  isNull,
+  clone
 } = require('./../../../utils/lodash');
 const { getErrorMessage } = require('./../../../utils/error');
 
@@ -12,7 +13,7 @@ const validateAny = (
 ) => {
   if (isUndefined(value) || (nullAsUndefined && isNull(value))) {
     if (isNotUndefined(defaultValue)) {
-      return defaultValue;
+      return clone(defaultValue);
     }
     if (required) {
       throw message.get('required', { value });

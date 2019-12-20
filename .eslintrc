@@ -2,7 +2,8 @@
   "extends": ["eslint:recommended", "prettier"],
   "rules": {
     "prettier/prettier": ["error"],
-    "no-console": "off"
+    "no-console": "off",
+    "require-atomic-updates": "off"
   },
   "parserOptions": {
     "ecmaVersion": 2017,

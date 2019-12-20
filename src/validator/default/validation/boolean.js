@@ -2,7 +2,8 @@ const {
   isUndefined,
   isNotUndefined,
   isBoolean,
-  isNull
+  isNull,
+  clone
 } = require('./../../../utils/lodash');
 const {
   validateFunctionSync,
@@ -29,7 +30,7 @@ const validateBoolean = (
 ) => {
   if (isUndefined(value) || (nullAsUndefined && isNull(value))) {
     if (isNotUndefined(defaultValue)) {
-      return defaultValue;
+      return clone(defaultValue);
     }
     if (required) {
       throw message.get('required', { value });

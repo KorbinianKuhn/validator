@@ -1,7 +1,8 @@
 const {
   isUndefined,
   isNotUndefined,
-  isNull
+  isNull,
+  clone
 } = require('./../../../utils/lodash');
 const { toDate } = require('./../../../utils/date');
 const {
@@ -29,7 +30,7 @@ const validateDate = (
 ) => {
   if (isUndefined(value) || (nullAsUndefined && isNull(value))) {
     if (isNotUndefined(defaultValue)) {
-      return defaultValue;
+      return clone(defaultValue);
     }
     if (required) {
       throw message.get('required', { value });
